@@ -1,0 +1,77 @@
+#pragma once
+class Direct3D
+{
+private:
+	Direct3D() = default;
+	~Direct3D() = default;
+
+	bool vsync_;
+	int videocardmemory_;
+	char videocarddescription[128];
+	Matrix projection_;
+	Matrix world_;
+	Matrix ortho_;
+
+	//インターフェース
+	ComPtr<ID3D11Device> cpdevice_;
+	ComPtr<ID3D11DeviceContext> cpdevicecontext_;
+	ComPtr<ID3D11RenderTargetView> cprendertarget_;
+	ComPtr<ID3D11DepthStencilState> cpdepthstate_;
+	ComPtr<ID3D11DepthStencilView> cpdepthview_;
+	ComPtr<ID3D11RasterizerState> cprasterstate_;
+	ComPtr<ID3D11RasterizerState> cprasterstatenoculling_;
+	ComPtr<ID3D11Texture2D> cpdepthstencilbuffer_;
+	ComPtr<ID3D11BlendState> cpenabledalphablendstate_;
+	ComPtr<ID3D11BlendState> cpdisabledalphablendstate_;
+	ComPtr<ID3D11DepthStencilState> cpdepthdisabledstate_;
+	ComPtr<ID3D11Debug> cpdebug_;
+	ComPtr<IDXGISwapChain> cpswapchain_;
+	ComPtr<IDXGIDebug> cpdxgidebug_;
+	D3D11_VIEWPORT viewport_;
+
+
+public:
+	Direct3D(const Direct3D&) = delete;
+	Direct3D& operator = (const Direct3D&) = delete;
+	Direct3D(Direct3D&&) = delete;
+	Direct3D& operator = (Direct3D&&) = delete;
+
+	bool init(const int ScreenWidth,const int ScreenHeight,const bool Vsync,HWND Hwnd,const bool FullScreen,const float ScreenDepth,const float ScreenNear);
+	void begin(XMVECTORF32 Color);
+	void end();
+	void destroy();
+
+	//get
+	inline ID3D11Device* getDevice()const { return cpdevice_.Get(); }
+	inline ID3D11DeviceContext* getContext()const { return cpdevicecontext_.Get(); }
+	inline ID3D11DepthStencilView* getStencilView()const { return cpdepthview_.Get(); }
+
+	inline void getProjection(Matrix& Projection) { Projection = projection_; }
+	inline void getWorld(Matrix& World) { World = world_; }
+	inline void getOrtho(Matrix& Ortho) { Ortho = ortho_; }
+
+	//set
+	void setVideoCardInfo(char* CardName, int& Memory);
+	void setBackBufferRenderTarget();
+
+	//reset
+	inline void resetViewPort() { cpdevicecontext_.Get()->RSSetViewports(1, &viewport_); }
+
+	//Zbuffer切り替え関数
+	inline void turnZbufferOn() { cpdevicecontext_.Get()->OMSetDepthStencilState(cpdepthstate_.Get(), 1); }
+	inline void turnZbufferOff() { cpdevicecontext_.Get()->OMSetDepthStencilState(cpdepthdisabledstate_.Get(), 1); }
+
+	//Culling切り替え関数
+	inline void turnCullingOn() { cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get()); }
+	inline void turnCullingOff() { cpdevicecontext_.Get()->RSSetState(cprasterstatenoculling_.Get()); }
+
+
+	//static
+	static inline Direct3D* getInstance()
+	{
+		static Direct3D instance;
+		return &instance;
+	}
+
+};
+

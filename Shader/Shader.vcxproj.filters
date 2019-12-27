@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="MainSystem">
+      <UniqueIdentifier>{db67da5c-a3d6-42e7-85c2-6b834d15d00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer">
+      <UniqueIdentifier>{6c33b3cb-d1a6-46aa-960c-8a8193b1fc54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Light">
+      <UniqueIdentifier>{16dd9396-fd93-4f78-a150-17fc59810042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader">
+      <UniqueIdentifier>{905a3028-c829-4ca5-8cf3-591eac907a2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{70ce20b9-6b0b-423e-bcfe-83d36920e68b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="control">
+      <UniqueIdentifier>{8909b097-2751-40d1-9ca1-5a566be31c9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="support">
+      <UniqueIdentifier>{d42c3cde-c3ea-4435-8be6-ded1d313cd2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="support\checker">
+      <UniqueIdentifier>{a7d50920-2f5c-4c8b-ac09-67ced9bf0def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainSystem\Direct3D">
+      <UniqueIdentifier>{69ab7b8a-b055-48b1-b6f5-974ec37d91cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>MainSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>MainSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Alphamapshader.cpp">
+      <Filter>Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Depthshader.cpp">
+      <Filter>Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Bumpmap.cpp">
+      <Filter>Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="LightShader.cpp">
+      <Filter>Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Shadowshader.cpp">
+      <Filter>Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="checkinputlayout.cpp">
+      <Filter>support\checker</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendertexture.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureArray.cpp">
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D.cpp">
+      <Filter>MainSystem\Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Deferredbuffers.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Deferredshader.cpp">
+      <Filter>Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="OrthoWindow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFactory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>MainSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Alphamapshader.h">
+      <Filter>Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Bumpmap.h">
+      <Filter>Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Depthshader.h">
+      <Filter>Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Lightshader.h">
+      <Filter>Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadowshader.h">
+      <Filter>Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="checkinputlayout.h">
+      <Filter>support\checker</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendertexture.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureArray.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="error.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="release.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3D.h">
+      <Filter>MainSystem\Direct3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Deferredbuffers.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Deferredshader.h">
+      <Filter>Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="OrthoWindow.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFactory.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="alphamapps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="alphamapvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="bumpmapps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="bumpmapvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="depthps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="depthvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="lightvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="shadowvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="lightps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="shadowps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="deferredbuffps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="deferredbuffvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="deferredps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="deferredvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
