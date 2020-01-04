@@ -52,7 +52,7 @@ bool Application::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	result = model_->init("Resource/seafloor.dds","Resource/cube.txt");
+	result = model_->init(L"Resource/seafloor.dds",L"Resource/cube.txt");
 	if (!result)
 	{
 		return false;
@@ -115,7 +115,7 @@ bool Application::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 
 bool Application::update()
 {
-	return false;
+	return true;
 }
 
 bool Application::render()

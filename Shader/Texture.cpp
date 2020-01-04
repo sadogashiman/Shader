@@ -3,7 +3,6 @@
 #include"release.h"
 #include"Direct3D.h"
 #include"error.h"
-#include<stdio.h>
 
 Texture::Texture()
 {
@@ -15,7 +14,7 @@ Texture::~Texture()
 {
 }
 
-bool Texture::init(std::string TextureName)
+bool Texture::init(const wchar_t* TextureName)
 {
 	HRESULT hr;
 
@@ -33,9 +32,9 @@ bool Texture::init(std::string TextureName)
 		}
 		
 		//拡張子がdds又はDDSの場合DDSローダーを使用
-		if(extensiontype[kDds]==texturepath.extension())
+		if(wcscmp(extensiontype[kDds],TextureName)==0)
 		{
-			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName.c_str, NULL, &texture_, NULL);
+			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName, NULL, &texture_, NULL);
 			if (FAILED(hr))
 			{
 				Error::showDialog("DDSTextureLoaderでの読み込みに失敗しました");
@@ -46,9 +45,9 @@ bool Texture::init(std::string TextureName)
 		//WICTextureLoaderで読めるものはWICを使用
 		for (int i = kPng; i = kGif; i++)
 		{
-			if (extensiontype[i] == texturepath.extension())
+			if (wcscmp(extensiontype[i], TextureName) == 0)
 			{
-				hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName.c_str, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
+				hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
 				if (FAILED(hr))
 				{
 					Error::showDialog("WICTextureLoaderでの読み込みに失敗しました");
@@ -71,7 +70,7 @@ bool Texture::checkExtension( std::filesystem::path PathName)
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
 		//拡張子がローダーで使用できるものか確認
-		if (stricmp(extensiontype[i].c_str, PathName.c_str)==0)
+		if (wcscmp(extensiontype[i], PathName.c_str())==0)
 		{
 			return true;
 		}

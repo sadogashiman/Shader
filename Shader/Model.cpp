@@ -125,13 +125,8 @@ bool Model::Loadtexture(const wchar_t* FileName)
 {
 	bool result;
 
-	texture_ = new Texture;
-	if (!texture_)
-	{
-		return false;
-	}
 
-	result = texture_->init(FileName);
+	//result = texture_->init(FileName);
 	if (!result)
 	{
 		return false;
@@ -142,12 +137,7 @@ bool Model::Loadtexture(const wchar_t* FileName)
 
 void Model::Releasetexture()
 {
-	if (texture_)
-	{
-		texture_->destroy();
-		delete texture_;
-		texture_ = nullptr;
-	}
+
 }
 
 bool Model::LoadModel(const wchar_t* FileName)

@@ -4,6 +4,7 @@
 //******************************
 #define _CRT_SECURE_NO_WARNINGS
 #define DINPUT_VERTION 0x80
+//#define WIN32_LEAN_AND_MEAN
 
 //******************************
 //　　		include
@@ -32,6 +33,7 @@
 #include<filesystem>
 #include<chrono>
 #include<iostream>
+#include<stdio.h>
 
 //******************************
 //　　		リンク

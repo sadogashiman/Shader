@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "TextureFactory.h"
 #include"Direct3D.h"
+#include"Texture.h"
+#include"release.h"
 
 TextureFactory::TextureFactory()
 {
@@ -10,21 +12,34 @@ TextureFactory::~TextureFactory()
 {
 }
 
-bool TextureFactory::loadDDSTexture(std::string FileName)
+void TextureFactory::deleteTexture(const wchar_t* TextureName)
 {
+	if (--cntmap_[TextureName] <= 0)
+	{
+		auto itr = texmap_.find(TextureName);
 
-	return false;
+		if (itr != texmap_.end())
+		{
+			SAFE_RELEASE(itr->second);
+			texmap_.erase(TextureName);
+			resourcemap_.erase(TextureName);
+		}
+	}
 }
 
-void TextureFactory::deleteTexture(std::string TextureName)
+void TextureFactory::allDeleteTexture(const wchar_t* TextureName)
 {
+
+	auto end = texmap_.end();
+
+	for (auto itr = texmap_.begin(); itr != end;)
+	{
+		SAFE_RELEASE(itr->second);
+		itr = texmap_.erase(itr);
+	}
 }
 
-void TextureFactory::allDeleteTexture(std::string TextureName)
-{
-}
-
-ID3D11ShaderResourceView* TextureFactory::getTexture(std::string TextureName)
+ID3D11ShaderResourceView* TextureFactory::getTexture(const wchar_t* TextureName)
 {
 	auto itr = texmap_.find(TextureName);
 
@@ -35,14 +50,41 @@ ID3D11ShaderResourceView* TextureFactory::getTexture(std::string TextureName)
 	}
 	else
 	{
+		//テクスチャがマップ内に存在する場合
+		ID3D11ShaderResourceView* texture;
+		Texture::getInstance()->init(TextureName);
+		if (!(texture = Texture::getInstance()->getTexture()))
+		{
+			return nullptr;
+		}
 
-
+		cntmap_[TextureName] = 1;
+		texmap_[TextureName] = texture;
+		return texture;
 	}
-
-	return nullptr;
 }
 
-ID3D11Resource* TextureFactory::getTextureParameter(std::string TextureName)
+ID3D11Resource* TextureFactory::getTextureParameter(const wchar_t* TextureName)
 {
-	return nullptr;
+	auto itr = resourcemap_.find(TextureName);
+
+	if (itr != resourcemap_.end())
+	{
+		cntmap_[TextureName]++;
+		return itr->second;
+	}
+	else
+	{
+		//テクスチャがマップ内に存在する場合
+		ID3D11Resource* resource;
+		Texture::getInstance()->init(TextureName);
+		if (!(resource = Texture::getInstance()->getTextureResource()))
+		{
+			return nullptr;
+		}
+
+		cntmap_[TextureName] = 1;
+		resourcemap_[TextureName] = resource;
+		return resource;
+	}
 }
