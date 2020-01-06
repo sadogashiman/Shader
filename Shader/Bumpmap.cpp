@@ -44,7 +44,7 @@ bool Bumpmap::render(const int Indexcount, const Matrix World, const Matrix View
 	return true;
 }
 
-bool Bumpmap::initShader( const wchar_t * vsFileName, const wchar_t * psFileName)
+bool Bumpmap::initShader( std::filesystem::path vsFileName, std::filesystem::path psFileName)
 {
 	HRESULT hr;
 	ID3D10Blob* vertexshaderbuffer;
@@ -59,13 +59,13 @@ bool Bumpmap::initShader( const wchar_t * vsFileName, const wchar_t * psFileName
 	pixelshaderbuffer = nullptr;
 
 	//シェーダーコンパイル
-	hr = D3DCompileFromFile(psFileName, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
+	hr = D3DCompileFromFile(psFileName.c_str(), NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = D3DCompileFromFile(vsFileName, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
+	hr = D3DCompileFromFile(vsFileName.c_str(), NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
 	if (FAILED(hr))
 	{
 		return false;

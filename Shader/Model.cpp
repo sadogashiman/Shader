@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "model.h"
 #include"Direct3D.h"
+#include"TextureFactory.h"
 bool Model::initbuff()
 {
 	Vertextype* vertices;
@@ -121,26 +122,20 @@ void Model::renderbuff()
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::Loadtexture(const wchar_t* FileName)
+bool Model::Loadtexture(std::filesystem::path FileName)
 {
-	bool result;
-
-
-	//result = texture_->init(FileName);
-	if (!result)
-	{
-		return false;
-	}
+	memcpy(filename_, FileName.c_str(), sizeof(wchar_t*));
+	texture_ = TextureFactory::getInstance()->getTexture(FileName);
 
 	return true;
 }
 
 void Model::Releasetexture()
 {
-
+	TextureFactory::getInstance()->deleteTexture(filename_);
 }
 
-bool Model::LoadModel(const wchar_t* FileName)
+bool Model::LoadModel(std::filesystem::path FileName)
 {
 	std::ifstream fin;
 	char input;
@@ -209,7 +204,6 @@ Model::Model()
 {
 	vertexbuff_ = nullptr;
 	indexbuff_ = nullptr;
-	texturearray_ = nullptr;
 	model_ = nullptr;
 }
 
@@ -217,7 +211,7 @@ Model::~Model()
 {
 }
 
-bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName)
+bool Model::init(std::filesystem::path TextureFileName, std::filesystem::path ModelFileName)
 {
 	bool result;
 	//モデルデータ読み込み
@@ -276,14 +270,4 @@ void Model::getPosition(float& X, float& Y, float& Z)
 	X = positionx;
 	Y = positiony;
 	Z = positionz;
-}
-
-const int Model::getIndexCount()const
-{
-	return indexcount_;
-}
-
-ID3D11ShaderResourceView* Model::getTexture()
-{
-	return texture_->getTexture();
 }

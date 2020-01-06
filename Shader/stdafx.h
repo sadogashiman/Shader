@@ -33,7 +33,6 @@
 #include<filesystem>
 #include<chrono>
 #include<iostream>
-#include<stdio.h>
 
 //******************************
 //　　		リンク
@@ -65,6 +64,31 @@ const float kScreen_depth = 100.0F;
 const float kScreen_near = 1.0F;
 const int kWindow_Height = 720;
 const int kWindow_Width = 1280;
+const int kExtensionTypeNum = 4;
+//WICTextureLoaderが対応している拡張子
+std::filesystem::path extensionarray[] =
+{
+	L".dds",
+	L".png",
+	L".tiff",
+	L".gif"
+};
+
+
+
+//******************************
+//　　		  列挙隊
+//******************************
+enum ExtensionType
+{
+	kDds,
+	kPng,
+	kTiff,
+	kGif,
+	kEnd
+};
+
+
 
 //******************************
 //　　		  構造体

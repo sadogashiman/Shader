@@ -47,7 +47,7 @@ bool Depthshader::render(int indexCount, Matrix World, Matrix View, Matrix Proje
 	return true;
 }
 
-bool Depthshader::initShader(const wchar_t* vsFilename, const wchar_t* psFilename)
+bool Depthshader::initShader(std::filesystem::path vsFilename, std::filesystem::path psFilename)
 {
 	HRESULT hr;
 	ID3D10Blob* vertexshaderbuffer;
@@ -59,13 +59,13 @@ bool Depthshader::initShader(const wchar_t* vsFilename, const wchar_t* psFilenam
 	pixelshaderbuffer = nullptr;
 	vertexshaderbuffer = nullptr;
 
-	hr = D3DCompileFromFile(psFilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
+	hr = D3DCompileFromFile(psFilename.c_str(), NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = D3DCompileFromFile(vsFilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
+	hr = D3DCompileFromFile(vsFilename.c_str(), NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
 	if (FAILED(hr))
 	{
 		return false;

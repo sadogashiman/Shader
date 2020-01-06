@@ -50,7 +50,7 @@ bool Alphamapshader::render(int Indexcount, Matrix World, Matrix View, Matrix Pr
 }
 
 
-bool Alphamapshader::initshader(const wchar_t * vsFileName, const wchar_t * psFileName)
+bool Alphamapshader::initshader(std::filesystem::path vsFileName, std::filesystem::path psFileName)
 {
 	HRESULT hr;
 	ID3D10Blob* vertexshaderbuffer;
@@ -64,13 +64,13 @@ bool Alphamapshader::initshader(const wchar_t * vsFileName, const wchar_t * psFi
 	pixelshaderbuffer = nullptr;
 
 	//シェーダーコンパイル
-	hr = D3DCompileFromFile(psFileName, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
+	hr = D3DCompileFromFile(psFileName.c_str(), NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = D3DCompileFromFile(vsFileName, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
+	hr = D3DCompileFromFile(vsFileName.c_str(), NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
 	if (FAILED(hr))
 	{
 		return false;

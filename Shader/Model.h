@@ -1,6 +1,4 @@
 #pragma once
-#include"TextureArray.h"
-#include"texture.h"
 class Model
 {
 private:
@@ -41,20 +39,19 @@ private:
 	void destroybuff();
 	void renderbuff();
 
-	bool Loadtexture(const wchar_t* FileName);
+	bool Loadtexture(std::filesystem::path FileName);
 	void Releasetexture();
 
-	bool LoadModel(const wchar_t* FileName);
+	bool LoadModel(std::filesystem::path FileName);
 	void ReleaseModel();
-	TextureArray* texturearray_;
-	Texture* texture_;
+	ID3D11ShaderResourceView* texture_;
 	ModelType* model_;
 	float positionx, positiony, positionz;
-
+	wchar_t* filename_;
 public:
 	Model();
 	~Model();
-	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName);
+	bool init(std::filesystem::path TextureFileName, std::filesystem::path ModelFileName);
 	void destroy();
 	void render();
 
@@ -63,8 +60,8 @@ public:
 
 	//get
 	void getPosition(float& X, float& Y, float& Z);
-	const int getIndexCount()const;
-	ID3D11ShaderResourceView* getTexture();
+	inline const int getIndexCount()const {return indexcount_;}
+	inline ID3D11ShaderResourceView* getTexture()const { return texture_; }
 
 };
 

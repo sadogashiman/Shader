@@ -4,9 +4,9 @@ class TextureFactory
 private:
 	TextureFactory();
 	~TextureFactory();
-	std::map<const wchar_t*, ID3D11ShaderResourceView*>texmap_;
-	std::map<const wchar_t*, int>cntmap_;
-	std::map<const wchar_t*, ID3D11Resource*>resourcemap_;
+	std::map<std::filesystem::path, ID3D11ShaderResourceView*>texmap_;
+	std::map<std::filesystem::path, int>cntmap_;
+	std::map<std::filesystem::path, ID3D11Resource*>resourcemap_;
 public:
 	TextureFactory(const TextureFactory&) = delete;
 	TextureFactory& operator = (const TextureFactory&) = delete;
@@ -14,12 +14,12 @@ public:
 	TextureFactory& operator = (TextureFactory&&) = delete;
 
 	//delete
-	void deleteTexture(const wchar_t* TextureName);
-	void allDeleteTexture(const wchar_t* TextureName);
+	void deleteTexture(std::filesystem::path TextureName);
+	void allDeleteTexture(std::filesystem::path TextureName);
 
 	//get
-	ID3D11ShaderResourceView* getTexture(const wchar_t* TextureName);
-	ID3D11Resource* getTextureParameter(const wchar_t* TextureName);
+	ID3D11ShaderResourceView* getTexture(std::filesystem::path TextureName);
+	ID3D11Resource* getTextureParameter(std::filesystem::path TextureName);
 
 	static inline  TextureFactory* getInstance()
 	{

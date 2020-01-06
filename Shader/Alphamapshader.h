@@ -8,7 +8,7 @@ private:
         Matrix view;
         Matrix projection;
     };
-    bool initshader( const wchar_t* vsFileName, const wchar_t* psFileName);
+    bool initshader( std::filesystem::path vsFileName, std::filesystem::path psFileName);
     void destroyshader();
     bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
     void rendershader(int Indexcount);

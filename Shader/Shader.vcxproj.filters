@@ -40,6 +40,12 @@
     <Filter Include="MainSystem\Direct3D">
       <UniqueIdentifier>{69ab7b8a-b055-48b1-b6f5-974ec37d91cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MainSystem\Application">
+      <UniqueIdentifier>{abc67d18-bb03-4a05-9da7-1874dfaccbf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MainSystem\2D">
+      <UniqueIdentifier>{16fb15f2-c53e-44d8-b5cc-161e934915a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -78,9 +84,6 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
-    <ClCompile Include="TextureArray.cpp">
-      <Filter>Texture</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>control</Filter>
     </ClCompile>
@@ -99,17 +102,17 @@
     <ClCompile Include="Deferredshader.cpp">
       <Filter>Renderer\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="OrthoWindow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="TextureFactory.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>MainSystem\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="OrthoWindow.cpp">
+      <Filter>MainSystem\2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,9 +152,6 @@
     <ClInclude Include="Texture.h">
       <Filter>Texture</Filter>
     </ClInclude>
-    <ClInclude Include="TextureArray.h">
-      <Filter>Texture</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>control</Filter>
     </ClInclude>
@@ -176,17 +176,17 @@
     <ClInclude Include="Deferredshader.h">
       <Filter>Renderer\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="OrthoWindow.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="TextureFactory.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>MainSystem\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="OrthoWindow.h">
+      <Filter>MainSystem\2D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

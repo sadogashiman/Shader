@@ -11,7 +11,7 @@ private:
         Matrix view;
         Matrix projection;
     };
-    bool initShader(const wchar_t* vsFilename, const wchar_t* psFilename);
+    bool initShader(std::filesystem::path vsFilename, std::filesystem::path psFilename);
     void destroyShader();
     bool setShaderParameters(Matrix worldMatrix, Matrix viewMatrix, Matrix projectionMatrix);
     void renderShader(int indexCount);

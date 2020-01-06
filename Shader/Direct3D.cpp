@@ -183,7 +183,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 
 	hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
-		D3D_DRIVER_TYPE_HARDWARE,
+		D3D_DRIVER_TYPE_REFERENCE,
 		NULL,
 		D3D11_CREATE_DEVICE_DEBUG,
 		featurelebel,

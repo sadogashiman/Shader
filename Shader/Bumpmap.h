@@ -17,7 +17,7 @@ private:
         float padding;
     };
 
-    bool initShader(const wchar_t* vsFileName, const wchar_t* psFileName);
+    bool initShader(std::filesystem::path vsFileName, std::filesystem::path psFileName);
     void destroyShader();
     bool SetShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, Vector3 LightDirection, Vector4 DiffuseColor);
     void renderShader( const int Indexcount);
