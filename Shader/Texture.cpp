@@ -4,34 +4,37 @@
 #include"Direct3D.h"
 #include"error.h"
 
+
+
 Texture::Texture()
 {
 	texture_ = nullptr;
 	textureresource_ = nullptr;
+
 }
 
 Texture::~Texture()
 {
 }
 
-bool Texture::init(std::filesystem::path TextureName)
+bool Texture::init(const wchar_t* TextureName)
 {
 	HRESULT hr;
 
 	//渡されたファイル名に拡張子が含まれているか確認
-	if (TextureName.has_extension())
+	if (TextureName)
 	{
 		//拡張子がテクスチャローダーに対応しているか確認
-		if (!checkExtension(TextureName.extension()))
+		if (!checkExtension(TextureName))
 		{
 			Error::showDialog("テクスチャローダーが対応していない拡張子です");
 			return false;
 		}
 
 		//拡張子がdds又はDDSの場合DDSローダーを使用
-		if (extensionarray[kDds] == TextureName)
+		if (wcsstr(extensionarray[kDds],TextureName))
 		{
-			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName.c_str(), NULL, &texture_, NULL);
+			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName, NULL, &texture_, NULL);
 			if (FAILED(hr))
 			{
 				Error::showDialog("DDSTextureLoaderでの読み込みに失敗しました");
@@ -42,9 +45,9 @@ bool Texture::init(std::filesystem::path TextureName)
 		//WICTextureLoaderで読めるものはWICを使用
 		for (int i = kPng; i < kEnd; i++)
 		{
-			if (extensionarray[i] == TextureName)
+			if (wcsstr(extensionarray[i], TextureName))
 			{
-				hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName.c_str(), NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
+				hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
 				if (FAILED(hr))
 				{
 					Error::showDialog("WICTextureLoaderでの読み込みに失敗しました");
@@ -62,13 +65,13 @@ bool Texture::init(std::filesystem::path TextureName)
 	return true;
 }
 
-bool Texture::checkExtension(std::filesystem::path PathName)
+bool Texture::checkExtension(const wchar_t* PathName)
 {
 	//対応している拡張子があるか確認
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
 		//拡張子がローダーで使用できるものか確認
-		if (extensionarray[i]==PathName)
+		if (wcsstr(extensionarray[i],PathName))
 		{
 			return true;
 		}

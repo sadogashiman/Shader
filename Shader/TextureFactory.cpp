@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TextureFactory.h"
-#include"Texture.h"
 #include"release.h"
+#include"Texture.h"
 
 TextureFactory::TextureFactory()
 {
@@ -11,7 +11,7 @@ TextureFactory::~TextureFactory()
 {
 }
 
-void TextureFactory::deleteTexture(std::filesystem::path TextureName)
+void TextureFactory::deleteTexture(const wchar_t* TextureName)
 {
 	if (--cntmap_[TextureName] <= 0)
 	{
@@ -26,7 +26,7 @@ void TextureFactory::deleteTexture(std::filesystem::path TextureName)
 	}
 }
 
-void TextureFactory::allDeleteTexture(std::filesystem::path TextureName)
+void TextureFactory::allDeleteTexture(const wchar_t* TextureName)
 {
 
 	auto end = texmap_.end();
@@ -38,7 +38,7 @@ void TextureFactory::allDeleteTexture(std::filesystem::path TextureName)
 	}
 }
 
-ID3D11ShaderResourceView* TextureFactory::getTexture(std::filesystem::path TextureName)
+ID3D11ShaderResourceView* TextureFactory::getTexture(const wchar_t* TextureName)
 {
 	auto itr = texmap_.find(TextureName);
 
@@ -63,7 +63,7 @@ ID3D11ShaderResourceView* TextureFactory::getTexture(std::filesystem::path Textu
 	}
 }
 
-ID3D11Resource* TextureFactory::getTextureParameter(std::filesystem::path TextureName)
+ID3D11Resource* TextureFactory::getTextureParameter(const wchar_t* TextureName)
 {
 	auto itr = resourcemap_.find(TextureName);
 

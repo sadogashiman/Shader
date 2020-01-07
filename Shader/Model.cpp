@@ -122,9 +122,9 @@ void Model::renderbuff()
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::Loadtexture(std::filesystem::path FileName)
+bool Model::Loadtexture(const wchar_t* FileName)
 {
-	memcpy(filename_, FileName.c_str(), sizeof(wchar_t*));
+	memcpy(filename_, FileName, sizeof(wchar_t*));
 	texture_ = TextureFactory::getInstance()->getTexture(FileName);
 
 	return true;
@@ -135,7 +135,7 @@ void Model::Releasetexture()
 	TextureFactory::getInstance()->deleteTexture(filename_);
 }
 
-bool Model::LoadModel(std::filesystem::path FileName)
+bool Model::LoadModel(const wchar_t* FileName)
 {
 	std::ifstream fin;
 	char input;
@@ -211,7 +211,7 @@ Model::~Model()
 {
 }
 
-bool Model::init(std::filesystem::path TextureFileName, std::filesystem::path ModelFileName)
+bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName)
 {
 	bool result;
 	//モデルデータ読み込み

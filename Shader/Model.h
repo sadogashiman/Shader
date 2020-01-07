@@ -39,10 +39,10 @@ private:
 	void destroybuff();
 	void renderbuff();
 
-	bool Loadtexture(std::filesystem::path FileName);
+	bool Loadtexture(const wchar_t* FileName);
 	void Releasetexture();
 
-	bool LoadModel(std::filesystem::path FileName);
+	bool LoadModel(const wchar_t* FileName);
 	void ReleaseModel();
 	ID3D11ShaderResourceView* texture_;
 	ModelType* model_;
@@ -51,7 +51,7 @@ private:
 public:
 	Model();
 	~Model();
-	bool init(std::filesystem::path TextureFileName, std::filesystem::path ModelFileName);
+	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName);
 	void destroy();
 	void render();
 

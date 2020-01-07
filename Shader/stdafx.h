@@ -65,28 +65,14 @@ const float kScreen_near = 1.0F;
 const int kWindow_Height = 720;
 const int kWindow_Width = 1280;
 const int kExtensionTypeNum = 4;
-//WICTextureLoader‚ª‘Î‰‚µ‚Ä‚¢‚éŠg’£q
-std::filesystem::path extensionarray[] =
-{
-	L".dds",
-	L".png",
-	L".tiff",
-	L".gif"
-};
+
 
 
 
 //******************************
 //@@		  —ñ‹“‘à
 //******************************
-enum ExtensionType
-{
-	kDds,
-	kPng,
-	kTiff,
-	kGif,
-	kEnd
-};
+
 
 
 
