@@ -45,18 +45,18 @@ bool Application::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
 	light_->setDirection(0.0F, 0.0F, 1.0F);
 
-	//モデルオブジェクトを生成
-	model_ = new Model;
-	if (!model_)
-	{
-		return false;
-	}
+	////モデルオブジェクトを生成
+	//model_ = new Model;
+	//if (!model_)
+	//{
+	//	return false;
+	//}
 
-	result = model_->init(L"Resource/seafloor.dds",L"Resource/cube.txt");
-	if (!result)
-	{
-		return false;
-	}
+	//result = model_->init(L"Resource/seafloor.dds",L"Resource/cube.txt");
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	//全画面のオルソウィンドウを生成
 	ortho_ = new OrthoWindow;

@@ -60,13 +60,13 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 	//コンパイル済みシェーダーファイル展開
 	fp.open(VertexShaderFileName, std::ios::in | std::ios::binary);
 
-	if (!fp.is_open())
+	if (fp.fail())
 	{
-		char charfilename[MAX_PATH];
-		wchar_t wcharfilename[MAX_PATH];
+		char charfilename[MAX_PATH] = " ";
+		wchar_t wcharfilename[MAX_PATH] = L" ";
 
 		//wcharからcharに変換
-		wcstombs(charfilename, VertexShaderFileName, sizeof(VertexShaderFileName));
+		wcstombs(charfilename, VertexShaderFileName,MAX_PATH);
 
 		const char* extension = ".hlsl";
 
@@ -139,13 +139,13 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 	//コンパイル済みシェーダーファイル展開
 	fp.open(PixelShaderFileName, std::ios::in | std::ios::binary);
 
-	if (!fp.is_open())
+	if (fp.fail())
 	{
-		char charfilename[MAX_PATH];
-		wchar_t wcharfilename[MAX_PATH];
+		char charfilename[MAX_PATH] = " ";
+		wchar_t wcharfilename[MAX_PATH] = L" ";
 
 		//wcharからcharに変換
-		wcstombs(charfilename, PixelShaderFileName, sizeof(PixelShaderFileName));
+		wcstombs(charfilename, PixelShaderFileName,MAX_PATH);
 
 		const char* extension = ".hlsl";
 
