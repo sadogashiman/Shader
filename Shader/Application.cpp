@@ -97,24 +97,32 @@ bool Application::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	//ライトシェーダーオブジェクトを生成
-	lightshader_ = new LightShader;
+	result = Renderer::getInstance()->init();
 	if (!result)
 	{
+		Error::showDialog("Rendererの初期化に失敗");
 		return false;
 	}
-
-	result = lightshader_->init();
-	if (!result)
-	{
-		return false;
-	}
-
 	return true;
 }
 
 bool Application::update()
 {
+	bool result;
+
+	Input::getInstance()->update();
+
+	if (Input::getInstance()->isPressed(DIKEYBOARD_ESCAPE))
+	{
+		return false;
+	}
+
+	result = render();
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -157,7 +165,6 @@ bool Application::render()
 
 void Application::destroy()
 {
-	SAFE_DELETE_DESTROY(lightshader_);
 	SAFE_DELETE_DESTROY(defshader_);
 	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(ortho_);

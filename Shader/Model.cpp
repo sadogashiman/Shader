@@ -124,9 +124,8 @@ void Model::renderbuff()
 
 bool Model::Loadtexture(const wchar_t* FileName)
 {
-	memcpy(filename_, FileName, sizeof(wchar_t*));
 	texture_ = TextureFactory::getInstance()->getTexture(FileName);
-
+	//wcscpy(filename_, FileName);
 	return true;
 }
 

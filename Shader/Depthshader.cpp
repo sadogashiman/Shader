@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Depthshader.h"
 #include"Direct3D.h"
-#include"checkinputlayout.h"
-
 Depthshader::Depthshader()
 {
 	vertexshader_ = nullptr;
@@ -18,70 +16,37 @@ Depthshader::~Depthshader()
 
 bool Depthshader::init()
 {
-	bool result;
-	result = initShader(L"depthvs.hlsl", L"depthps.hlsl");
-	if (!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void Depthshader::destroy()
-{
-	destroyShader();
-}
-
-bool Depthshader::render(int indexCount, Matrix World, Matrix View, Matrix Projection)
-{
-	bool result;
-	result = setShaderParameters(World, View, Projection);
-	if (!result)
-	{
-		return false;
-	}
-
-	renderShader(indexCount);
-
-	return true;
-}
-
-bool Depthshader::initShader(const wchar_t* vsFilename, const wchar_t* psFilename)
-{
 	HRESULT hr;
-	ID3D10Blob* vertexshaderbuffer;
-	ID3D10Blob* pixelshaderbuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[1];
 	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 
-	pixelshaderbuffer = nullptr;
-	vertexshaderbuffer = nullptr;
-
-	hr = D3DCompileFromFile(psFilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
-	if (FAILED(hr))
+	//Supportクラス生成
+	support_.reset(new Support);
+	if (!support_.get())
 	{
+		Error::showDialog("Supportクラスの生成に失敗");
 		return false;
 	}
 
-	hr = D3DCompileFromFile(vsFilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
+	//シェーダー読み込み
+	hr = support_.get()->createVertexData(L"depthvs.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer->GetBufferPointer(), pixelshaderbuffer->GetBufferSize(), nullptr, &pixelshader_);
+	hr = support_.get()->createPixelData(L"depthps.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), nullptr, &vertexshader_);
-	if (FAILED(hr))
-	{
-		return false;
-	}
+	//作成されたデータをコピー
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -96,24 +61,21 @@ bool Depthshader::initShader(const wchar_t* vsFilename, const wchar_t* psFilenam
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
 #ifdef _DEBUG
-	if (!checkInputLayout(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), polygonlayout, numelements))
+	//データが有効か確認
+	if (!Support::checkInputLayout(support_->getPixelBufferPtr(), support_->getPixelBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
-#endif //_DEBUG
-
+#endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getPixelBufferPtr(), support_->getPixelBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	//不要になったので削除
-	vertexshaderbuffer->Release();
-	vertexshaderbuffer = nullptr;
-	pixelshaderbuffer->Release();
-	pixelshaderbuffer = nullptr;
+	//不要になったデータの削除
+	support_.get()->destroyBufferData();
 
 	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixbufferdesc.ByteWidth = sizeof(MatrixBufferType);
@@ -132,12 +94,26 @@ bool Depthshader::initShader(const wchar_t* vsFilename, const wchar_t* psFilenam
 	return true;
 }
 
-void Depthshader::destroyShader()
+void Depthshader::destroy()
 {
 	SAFE_RELEASE(matrixbuffer_);
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(vertexshader_);
+}
+
+bool Depthshader::render(int indexCount, Matrix World, Matrix View, Matrix Projection)
+{
+	bool result;
+	result = setShaderParameters(World, View, Projection);
+	if (!result)
+	{
+		return false;
+	}
+
+	renderShader(indexCount);
+
+	return true;
 }
 
 bool Depthshader::setShaderParameters( Matrix World, Matrix View, Matrix Projection)

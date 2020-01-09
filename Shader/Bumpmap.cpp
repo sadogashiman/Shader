@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Bumpmap.h"
 #include"Direct3D.h"
-#include"checkinputlayout.h"
+#include"release.h"
+
 
 Bumpmap::Bumpmap()
 {
@@ -19,70 +20,39 @@ Bumpmap::~Bumpmap()
 
 bool Bumpmap::init()
 {
-	if (!initShader( L"bumpmapvs.hlsl", L"bumpmapps.hlsl"))
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void Bumpmap::destroy()
-{
-	destroyShader();
-}
-
-bool Bumpmap::render(const int Indexcount, const Matrix World, const Matrix View, const Matrix Projection, ID3D11ShaderResourceView ** TextureArray, Vector3 LightDirection, Vector4 DiffuseColor)
-{
-	if (!SetShaderParameters(World, View, Projection, TextureArray, LightDirection, DiffuseColor))
-	{
-		return false;
-	}
-
-	renderShader(Indexcount);
-
-	return true;
-}
-
-bool Bumpmap::initShader( const wchar_t* vsFileName, const wchar_t* psFileName)
-{
 	HRESULT hr;
-	ID3D10Blob* vertexshaderbuffer;
-	ID3D10Blob* pixelshaderbuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[5];
 	unsigned int numelements;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_BUFFER_DESC lightbufferdesc;
 
-	vertexshaderbuffer = nullptr;
-	pixelshaderbuffer = nullptr;
-
-	//シェーダーコンパイル
-	hr = D3DCompileFromFile(psFileName, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
-	if (FAILED(hr))
+	//Supportクラス生成
+	support_.reset(new Support);
+	if (!support_.get())
 	{
+		Error::showDialog("Supportクラスの生成に失敗");
 		return false;
 	}
 
-	hr = D3DCompileFromFile(vsFileName, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
+	//シェーダー読み込み
+	hr = support_.get()->createVertexData(L"bumpmapvs.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	//シェーダー作成
-	hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer->GetBufferPointer(), pixelshaderbuffer->GetBufferSize(), nullptr, &pixelshader_);
+	hr = support_.get()->createPixelData(L"bumpmapps.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), NULL, &vertexshader_);
-	if (FAILED(hr))
-	{
-		return false;
-	}
+	//作成されたデータをコピー
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -128,22 +98,23 @@ bool Bumpmap::initShader( const wchar_t* vsFileName, const wchar_t* psFileName)
 	//レイアウト内の要素の数を取得
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
-	if (!checkInputLayout(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), polygonlayout, numelements))
+#ifdef _DEBUG
+	//データが有効か確認
+	if (!Support::checkInputLayout(support_->getPixelBufferPtr(), support_->getPixelBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
+#endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getPixelBufferPtr(), support_->getPixelBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	//不要になったので削除
-	vertexshaderbuffer->Release();
-	vertexshaderbuffer = nullptr;
-	pixelshaderbuffer->Release();
-	pixelshaderbuffer = nullptr;
+	//不要になったデータの削除
+	support_.get()->destroyBufferData();
+
 
 	//動的マトリックス定数バッファの設定
 	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -200,7 +171,7 @@ bool Bumpmap::initShader( const wchar_t* vsFileName, const wchar_t* psFileName)
 	return true;
 }
 
-void Bumpmap::destroyShader()
+void Bumpmap::destroy()
 {
 	SAFE_RELEASE(lightbuffer_);
 	SAFE_RELEASE(matrixbuff_);
@@ -208,6 +179,18 @@ void Bumpmap::destroyShader()
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(vertexshader_);
+}
+
+bool Bumpmap::render(const int Indexcount, const Matrix World, const Matrix View, const Matrix Projection, ID3D11ShaderResourceView ** TextureArray, Vector3 LightDirection, Vector4 DiffuseColor)
+{
+	if (!SetShaderParameters(World, View, Projection, TextureArray, LightDirection, DiffuseColor))
+	{
+		return false;
+	}
+
+	renderShader(Indexcount);
+
+	return true;
 }
 
 bool Bumpmap::SetShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView ** TextureArray, Vector3 LightDirection, Vector4 DiffuseColor)
@@ -279,6 +262,7 @@ void Bumpmap::renderShader( const int Indexcount)
 {
 	//頂点入力レイアウトを設定
 	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+
 	//この三角形のレンダリングに使用される頂点シェーダとシェーダを設定
 	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);

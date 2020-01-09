@@ -6,6 +6,7 @@
 #include"Lightshader.h"
 #include"Deferredbuffers.h"
 #include"Light.h"
+#include"TextureShader.h"
 
 class Renderer
 {
@@ -18,6 +19,7 @@ private:
 	std::unique_ptr<Shadowshader> shadowshader_;
 	std::unique_ptr<Depthshader> depthshader_;
 	std::unique_ptr<Deferredbuffers>deferredbuffer_;
+	std::unique_ptr<Textureshader>textureshader_;
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 	Renderer(Renderer&&) = delete;
@@ -47,12 +49,12 @@ public:
 	bool lightRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2, Light* Lightdata);
 
 	//シャドウシェーダーを使用するときのレンダー(モデルのインデックスカウント、、各行列、テクスチャ、デプスマップのテクスチャ)
-	bool shadowRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture);
+	bool shadowRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture,ID3D11ShaderResourceView* Depthmaptexture2, Light* Lightdata,Light* Lightdata2);
 
 	//テクスチャシェーダーを使用するときのレンダー(モデルのインデックスカウント、、各行列、テクスチャ)
 	bool textureRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 
-	//マルチテクスチャリングを使用するときのレンダー(モデルのインデックスカウント、各行列、テクスチャが二枚入った配列)
-	bool multiTexRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
+	//遅延シェーディングを使用するときのレンダー
+	bool deferredRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 };
 

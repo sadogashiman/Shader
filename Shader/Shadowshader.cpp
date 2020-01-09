@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Shadowshader.h"
 #include"Direct3D.h"
-#include"checkinputlayout.h"
+#include"release.h"
 
 
 Shadowshader::Shadowshader()
@@ -20,44 +20,7 @@ Shadowshader::~Shadowshader()
 
 bool Shadowshader::init()
 {
-	bool result;
-	result = initShader(L"shadowvs.hlsl", L"shadowps.hlsl");
-	if (!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void Shadowshader::destroy()
-{
-	destroyShader();
-}
-
-bool Shadowshader::render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, const Matrix lightview, const Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor, Matrix Lightview2, Matrix Lightprojection2, ID3D11ShaderResourceView* Depthmap, Vector3 Lightposition2, Vector4 Diffusecolor2)
-{
-	bool result;
-
-	//レンダリングに関するシェーダーパラメータを設定
-	result = setShaderParameters(World, View, Projection, lightview, lightprojection, texture, Depthmaptexture, lightposition, Ambientcolor, Diffusecolor, Lightview2, Lightprojection2, Depthmap, Lightposition2, Diffusecolor2);
-
-	if (!result)
-	{
-		return false;
-	}
-
-	//準備したバッファをシェーダーでレンダリング
-	renderShader(Indexcound);
-
-	return true;
-}
-
-bool Shadowshader::initShader(const wchar_t* vsFileName, const wchar_t* psFileName)
-{
 	HRESULT hr;
-	ID3D10Blob* vertexshaderbuffer;
-	ID3D10Blob* pixelshaderbuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
 	unsigned int numelements;
 	D3D11_BUFFER_DESC lightbufferdesc;
@@ -65,30 +28,26 @@ bool Shadowshader::initShader(const wchar_t* vsFileName, const wchar_t* psFileNa
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
 
-	pixelshader_ = nullptr;
-	vertexshader_ = nullptr;
-
-	hr = D3DCompileFromFile(psFileName, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
-	if (FAILED(hr))
+	//Supportクラス生成
+	support_.reset(new Support);
+	if (!support_.get())
 	{
+		Error::showDialog("Supportクラスの生成に失敗");
 		return false;
 	}
 
-	hr = D3DCompileFromFile(vsFileName, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
+	//シェーダー読み込み
+	hr = support_.get()->createVertexData(L"bumpmapvs.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr =Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer->GetBufferPointer(), pixelshaderbuffer->GetBufferSize(), nullptr, &pixelshader_);
+	hr = support_.get()->createPixelData(L"bumpmapps.cso");
 	if (FAILED(hr))
 	{
-		return false;
-	}
-
-	hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), NULL, &vertexshader_);
-	if (FAILED(hr))
-	{
+		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
@@ -119,25 +78,23 @@ bool Shadowshader::initShader(const wchar_t* vsFileName, const wchar_t* psFileNa
 
 	//レイアウト内の要素の数を取得
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
-#ifdef  _DEBUG
-	if (!checkInputLayout(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), polygonlayout, numelements))
+
+#ifdef _DEBUG
+	//データが有効か確認
+	if (!Support::checkInputLayout(support_->getPixelBufferPtr(), support_->getPixelBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
-#endif //  _DEBUG
-
+#endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getPixelBufferPtr(), support_->getPixelBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	//不要になったので削除
-	vertexshaderbuffer->Release();
-	vertexshaderbuffer = nullptr;
-	pixelshaderbuffer->Release();
-	pixelshaderbuffer = nullptr;
+	//不要になったデータの削除
+	support_.get()->destroyBufferData();
 
 
 	//サンプラーの設定
@@ -216,7 +173,7 @@ bool Shadowshader::initShader(const wchar_t* vsFileName, const wchar_t* psFileNa
 	return true;
 }
 
-void Shadowshader::destroyShader()
+void Shadowshader::destroy()
 {
 	SAFE_RELEASE(samplestatewrap_);
 	SAFE_RELEASE(lightbuffer_);
@@ -228,7 +185,24 @@ void Shadowshader::destroyShader()
 	SAFE_RELEASE(vertexshader_);
 }
 
-bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Matrix Lightview, Matrix Lightprojection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 Lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor, Matrix Lightview2, Matrix LightProjection2, ID3D11ShaderResourceView* Depthmaptexture2, Vector3 Lightposition2, Vector4 Diffusecolor2)
+bool Shadowshader::render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, const Matrix lightview, const Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor)
+{	bool result;
+
+	//レンダリングに関するシェーダーパラメータを設定
+	result = setShaderParameters(World, View, Projection, lightview, lightprojection, texture, Depthmaptexture, lightposition, Ambientcolor, Diffusecolor);
+
+	if (!result)
+	{
+		return false;
+	}
+
+	//準備したバッファをシェーダーでレンダリング
+	renderShader(Indexcound);
+
+	return true;
+}
+
+bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Matrix Lightview, Matrix Lightprojection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 Lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresouce;
@@ -243,8 +217,6 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	Projection = XMMatrixTranspose(Projection);
 	Lightview = XMMatrixTranspose(Lightview);
 	Lightprojection = XMMatrixTranspose(Lightprojection);
-	Lightview2 = XMMatrixTranspose(Lightview2);
-	LightProjection2 = XMMatrixTranspose(LightProjection2);
 
 	//書き込み可能なように定数バッファをロック
 	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
@@ -262,8 +234,6 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	dataptr->projection = Projection;
 	dataptr->lightview = Lightview;
 	dataptr->lightprojection = Lightprojection;
-	dataptr->lightview2 = Lightview2;
-	dataptr->lightprojection2 = LightProjection2;
 
 	//定数バッファのロックを解除
 	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
@@ -277,7 +247,6 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	//シェーダーリソースを設定
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
 	Direct3D::getInstance()->getContext()->PSGetShaderResources(1, 1, &Depthmaptexture);
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(2, 1, &Depthmaptexture2);
 
 	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_, 0, D3D11_MAP_WRITE_DISCARD,0, & mappedresouce);
 	if (FAILED(hr))
@@ -289,7 +258,6 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 
 	dataptr2->AmbientColor = Ambientcolor;
 	dataptr2->DiffuseColor = Diffusecolor;
-	dataptr2->DiffuseColor2 = Diffusecolor2;
 
 	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_, 0);
 
@@ -306,9 +274,7 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 
 	dataptr3 = (LightBufferType2*)mappedresouce.pData;
 	dataptr3->lightposition = Lightposition;
-	dataptr3->lightposition2 = Lightposition2;
 	dataptr3->padding1 = 0.0F;
-	dataptr3->padding2 = 0.0F;
 
 	Direct3D::getInstance()->getContext()->Unmap(lightbuffer2_, 0);
 

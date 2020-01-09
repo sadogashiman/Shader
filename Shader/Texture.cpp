@@ -25,7 +25,7 @@ bool Texture::init(const wchar_t* TextureName)
 	if (TextureName)
 	{
 		//拡張子がテクスチャローダーに対応しているか確認
-		if (!checkExtension(TextureName))
+		if (checkExtension(TextureName))
 		{
 			Error::showDialog("テクスチャローダーが対応していない拡張子です");
 			return false;
@@ -71,7 +71,7 @@ bool Texture::checkExtension(const wchar_t* PathName)
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
 		//拡張子がローダーで使用できるものか確認
-		if (wcsstr(extensionarray[i],PathName))
+		if (wcsstr(extensionarray[i],PathName)==0)
 		{
 			return true;
 		}

@@ -21,17 +21,17 @@ void Light::setDirection(const float X, const float Y, const float Z)
     direction_ = Vector3(X, Y, Z);
 }
 
-void Light::SetAmbientColor(const float Red, const float Green, const float Blue, const float Alpha)
+void Light::setAmbientColor(const float Red, const float Green, const float Blue, const float Alpha)
 {
     ambientcolor_ = Vector4(Red, Green, Blue, Alpha);
 }
 
-void Light::SetSpecularColor(const float Red, const float Green, const float Blue, const float Alpha)
+void Light::setSpecularColor(const float Red, const float Green, const float Blue, const float Alpha)
 {
     specularcolor_ = Vector4(Red, Green, Blue, Alpha);
 }
 
-void Light::SetSpecularPower(const float SpecularPower)
+void Light::setSpecularPower(const float SpecularPower)
 {
     specularpower_ = SpecularPower;
 }
@@ -48,44 +48,34 @@ void Light::setPosition(float X, float Y, float Z)
     position_ = Vector3(X, Y, Z);
 }
 
-Vector4 Light::GetAmbientColor() const
+Vector4 Light::getAmbientColor() const
 {
     return ambientcolor_;
 }
 
-Vector4 Light::GetDiffuseColor() const
+Vector4 Light::getDiffuseColor() const
 {
     return diffusecolor_;
 }
 
-Vector3 Light::GetDirection() const
+Vector3 Light::getDirection() const
 {
     return direction_;
 }
 
-Vector3 Light::GetPosition() const
+Vector3 Light::getPosition() const
 {
     return position_;
 }
 
-Vector4 Light::GetSpecularColor() const
+Vector4 Light::getSpecularColor() const
 {
     return specularcolor_;
 }
 
-float Light::GetSpecularPower() const
+float Light::getSpecularPower() const
 {
     return specularpower_;
-}
-
-void Light::getViewMatrix(Matrix& View)
-{
-    View = view_;
-}
-
-void Light::getProjectionMatrix(Matrix& Projection)
-{
-    Projection = projection_;
 }
 
 void Light::generateView()

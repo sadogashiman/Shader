@@ -1,6 +1,7 @@
 #pragma once
-#include"error.h"
-#include"release.h"
+
+#include"Support.h"
+
 class LightShader
 {
 private:
@@ -26,6 +27,8 @@ private:
 	ID3D11Buffer* matrixbuff_;
 	ID3D11SamplerState* samplerstate_;
 	ID3D11Buffer* lightbuffer_;
+	std::unique_ptr<Support> support_;
+
 
 public:
 	LightShader();

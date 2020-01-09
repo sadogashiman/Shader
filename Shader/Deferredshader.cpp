@@ -1,103 +1,36 @@
 #include "stdafx.h"
 #include "Deferredshader.h"
 #include"Direct3D.h"
-#include"checkinputlayout.h"
 #include"release.h"
-
-
-bool Deferredshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
-{
-	HRESULT hr;
-	D3D11_MAPPED_SUBRESOURCE mappedresource;
-	unsigned int buffernumber;
-	MatrixBufferType* dataptr;
-
-	//行列を転置してシェーダーように準備
-	World = XMMatrixTranspose(World);
-	View = XMMatrixTranspose(View);
-	Projection = XMMatrixTranspose(Projection);
-
-	//定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
-	//定数バッファ内のデータへのポインタを取得
-	dataptr = (MatrixBufferType*)mappedresource.pData;
-
-	//行列を定数バッファにコピー
-	dataptr->world = World;
-	dataptr->view = View;
-	dataptr->projection = Projection;
-
-	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
-
-	//頂点シェーダーで定数バッファの位置を設定
-	buffernumber = 0;
-
-	//更新された値を使用して頂点シェーダーの定数バッファを設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, &matrixbuffer_);
-
-	//ピクセルシェーダーでシェーダーテクスチャリソースを設定
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
-
-	return true;
-}
-
-void Deferredshader::renderShader(const int Indexcount)
-{
-	//頂点入力レイアウトの設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
-
-	//レンダリングに使用される頂点シェーダーとピクセルシェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
-
-	//サンプラーの状態をピクセルシェーダーに設定
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplestatewrap_);
-
-	//ジオメトリをレンダリング
-	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
-}
 
 bool Deferredshader::init()
 {
 	HRESULT hr;
-	ID3D10Blob* pixelshaderbuffer_;
-	ID3D10Blob* vertexshaderbuffer_;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
 	unsigned int numelement;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 
-	vertexshaderbuffer_ = nullptr;
-	pixelshaderbuffer_ = nullptr;
-
-	//シェーダーコンパイル
-	hr = D3DCompileFromFile(L"deferredvs.hlsl", NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,  &vertexshaderbuffer_, NULL);
-	if (FAILED(hr))
+	//Supportクラス生成
+	support_.reset(new Support);
+	if (!support_.get())
 	{
+		Error::showDialog("Supportクラスの生成に失敗");
 		return false;
 	}
 
-	hr = D3DCompileFromFile(L"deferredps.hlsl", NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer_, NULL);
+	//シェーダー読み込み
+	hr = support_.get()->createVertexData(L"deferredvs.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer_->GetBufferPointer(), vertexshaderbuffer_->GetBufferSize(), NULL, &vertexshader_);
+	hr = support_.get()->createPixelData(L"deferredps.cso");
 	if (FAILED(hr))
 	{
-		return false;
-	}
-
-	hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer_->GetBufferPointer(), pixelshaderbuffer_->GetBufferSize(), NULL, &pixelshader_);
-	if (FAILED(hr))
-	{
+		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
@@ -131,22 +64,21 @@ bool Deferredshader::init()
 
 	//デバッグ時のみデータが使えるかチェック
 #ifdef _DEBUG
-	if(!( checkInputLayout(vertexshaderbuffer_->GetBufferPointer(), vertexshaderbuffer_->GetBufferSize(), polygonlayout, numelement)))
+	//データが有効か確認
+	if (!Support::checkInputLayout(support_->getPixelBufferPtr(), support_->getPixelBufferSize(), polygonlayout, numelement))
 	{
 		return false;
 	}
 #endif // _DEBUG
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, vertexshaderbuffer_->GetBufferPointer(), vertexshaderbuffer_->GetBufferSize(), &layout_);
+	//頂点入力レイアウトの作成
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_->getPixelBufferPtr(), support_->getPixelBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	//不要になったデータを削除
-	vertexshaderbuffer_->Release();
-	vertexshaderbuffer_ = nullptr;
-	pixelshaderbuffer_->Release();
-	pixelshaderbuffer_ = nullptr;
+	//不要になったデータの削除
+	support_.get()->destroyBufferData();
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -212,4 +144,62 @@ bool Deferredshader::render(const int Indexcount, Matrix World, Matrix View, Mat
 	renderShader(Indexcount);
 
 	return true;
+}
+
+bool Deferredshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
+{
+	HRESULT hr;
+	D3D11_MAPPED_SUBRESOURCE mappedresource;
+	unsigned int buffernumber;
+	MatrixBufferType* dataptr;
+
+	//行列を転置してシェーダーように準備
+	World = XMMatrixTranspose(World);
+	View = XMMatrixTranspose(View);
+	Projection = XMMatrixTranspose(Projection);
+
+	//定数バッファをロック
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	//定数バッファ内のデータへのポインタを取得
+	dataptr = (MatrixBufferType*)mappedresource.pData;
+
+	//行列を定数バッファにコピー
+	dataptr->world = World;
+	dataptr->view = View;
+	dataptr->projection = Projection;
+
+	//定数バッファのロックを解除
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
+
+	//頂点シェーダーで定数バッファの位置を設定
+	buffernumber = 0;
+
+	//更新された値を使用して頂点シェーダーの定数バッファを設定
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, &matrixbuffer_);
+
+	//ピクセルシェーダーでシェーダーテクスチャリソースを設定
+	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
+
+	return true;
+}
+
+void Deferredshader::renderShader(const int Indexcount)
+{
+	//頂点入力レイアウトの設定
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+
+	//レンダリングに使用される頂点シェーダーとピクセルシェーダーを設定
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+
+	//サンプラーの状態をピクセルシェーダーに設定
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplestatewrap_);
+
+	//ジオメトリをレンダリング
+	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
 }
