@@ -25,12 +25,12 @@
 #include<dinput.h>
 #include<d3dcompiler.h>
 #include<DirectXColors.h>
+#include<Shlwapi.h>
 
 //std
 #include<fstream>
 #include<vector>
 #include<map>
-#include<filesystem>
 #include<chrono>
 #include<iostream>
 
@@ -44,6 +44,7 @@
 #pragma comment(lib,"dsound.lib")
 #pragma comment(lib,"pdh.lib")
 #pragma comment(lib,"dinput8.lib")
+#pragma comment(lib,"shlwapi.lib")
 
 //******************************
 //@@		–¼‘O‹óŠÔ

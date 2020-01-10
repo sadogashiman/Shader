@@ -65,13 +65,13 @@ bool Deferredshader::init()
 	//デバッグ時のみデータが使えるかチェック
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support_->getPixelBufferPtr(), support_->getPixelBufferSize(), polygonlayout, numelement))
+	if (!Support::checkInputLayout(support_->getVertexBufferPtr(), support_->getVertexBufferSize(), polygonlayout, numelement))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_->getPixelBufferPtr(), support_->getPixelBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_->getVertexBufferPtr(), support_->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;

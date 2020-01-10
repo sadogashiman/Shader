@@ -13,6 +13,7 @@ bool Renderer::init()
 
 	if (!(lightshader_.get()->init()))
 	{
+		Error::showDialog("ライトシェーダーの初期化に失敗");
 		return false;
 	}
 
@@ -24,6 +25,8 @@ bool Renderer::init()
 
 	if (!(bumpshader_.get()->init()))
 	{
+		Error::showDialog("バンプシェーダーの初期化に失敗");
+
 		return false;
 	}
 
@@ -35,6 +38,8 @@ bool Renderer::init()
 
 	if (!(alphashader_.get()->init()))
 	{
+		Error::showDialog("アルファシェーダーの初期化に失敗");
+
 		return false;
 	}
 
@@ -46,6 +51,7 @@ bool Renderer::init()
 
 	if (!(shadowshader_.get()->init()))
 	{
+		Error::showDialog("シャドウシェーダーの初期化に失敗");
 		return false;
 	}
 
@@ -57,6 +63,7 @@ bool Renderer::init()
 
 	if (!(depthshader_.get()->init()))
 	{
+		Error::showDialog("デプスシェーダーの初期化に失敗");
 		return false;
 	}
 
@@ -68,6 +75,7 @@ bool Renderer::init()
 
 	if (!(textureshader_.get()->init()))
 	{
+		Error::showDialog("テクスチャシェーダーの初期化に失敗");
 		return false;
 	}
 
@@ -79,6 +87,8 @@ bool Renderer::init()
 
 	if (!(deferredbuffer_.get()->init(1280,720,100.F,1.0F)))
 	{
+
+		Error::showDialog("遅延バッファの初期化に失敗");
 		return false;
 	}
 

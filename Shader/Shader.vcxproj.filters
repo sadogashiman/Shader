@@ -235,7 +235,11 @@
     <FxCompile Include="deferredvs.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="texturevs.hlsl" />
-    <FxCompile Include="textureps.hlsl" />
+    <FxCompile Include="textureps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="texturevs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

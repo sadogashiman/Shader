@@ -37,14 +37,14 @@ bool Shadowshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"bumpmapvs.cso");
+	hr = support_.get()->createVertexData(L"shadowvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"bumpmapps.cso");
+	hr = support_.get()->createPixelData(L"shadowps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
@@ -81,17 +81,18 @@ bool Shadowshader::init()
 
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support_->getPixelBufferPtr(), support_->getPixelBufferSize(), polygonlayout, numelements))
+	if (!Support::checkInputLayout(support_->getVertexBufferPtr(), support_->getVertexBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getPixelBufferPtr(), support_->getPixelBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getVertexBufferPtr(), support_->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+
 
 	//不要になったデータの削除
 	support_.get()->destroyBufferData();

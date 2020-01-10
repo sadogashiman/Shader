@@ -6,74 +6,37 @@
 
 bool Textureshader::init()
 {
-	bool result;
-
-	result = initShader(L"texturevs.hlsl", L"textureps.hlsl");
-	if (!result)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool Textureshader::render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
-{
-	bool result;
-
-	result = setShaderParameters(World, View, Projection, Texture);
-	if (!result)
-	{
-		return false;
-	}
-
-	renderShader(Indexcount);
-
-	return true;
-}
-
-void Textureshader::destroy()
-{
-	destroyShader();
-}
-
-bool Textureshader::initShader(const wchar_t* vsFileName, const wchar_t* psFileName)
-{
 	HRESULT hr;
-	ID3D10Blob* vertexshaderbuffer;
-	ID3D10Blob* pixelshaderbuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
 	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbuffer;
 	D3D11_SAMPLER_DESC samplerdesc;
 
-	vertexshaderbuffer = nullptr;
-	pixelshaderbuffer = nullptr;
-
-	//シェーダーコンパイル
-	hr = D3DCompileFromFile(vsFileName, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
-	if (FAILED(hr))
+	//Supportクラス生成
+	support_.reset(new Support);
+	if (!support_.get())
 	{
 		return false;
 	}
 
-	hr = D3DCompileFromFile(psFileName, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
+	//シェーダー作成
+	hr = support_.get()->createVertexData(L"texturevs.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), nullptr, &vertexshader_);
+	hr = support_.get()->createPixelData(L"textureps.cso");
 	if (FAILED(hr))
 	{
+		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer->GetBufferPointer(), pixelshaderbuffer->GetBufferSize(), nullptr, &pixelshader_);
-	if (FAILED(hr))
-	{
-		return false;
-	}
+	//作成されたデータをコピー
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの作成
 	polygonlayout[0].SemanticName = "POSITION";
@@ -95,23 +58,21 @@ bool Textureshader::initShader(const wchar_t* vsFileName, const wchar_t* psFileN
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
 #ifdef _DEBUG
-	if (!Support::checkInputLayout(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), polygonlayout, numelements))
+	//データが有効か確認
+	if (!Support::checkInputLayout(support_->getVertexBufferPtr(), support_->getVertexBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
 #endif // _DEBUG
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), &layout_);
+	//頂点入力レイアウトの作成
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getVertexBufferPtr(), support_->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
 	//不要になったデータを削除
-	vertexshaderbuffer->Release();
-	vertexshaderbuffer = nullptr;
-
-	pixelshaderbuffer->Release();
-	pixelshaderbuffer = nullptr;
+	support_.get()->destroyBufferData();
 
 	//コンスタントバッファの設定
 	matrixbuffer.Usage = D3D11_USAGE_DYNAMIC;
@@ -150,7 +111,34 @@ bool Textureshader::initShader(const wchar_t* vsFileName, const wchar_t* psFileN
 
 
 	return true;
+
+	return true;
 }
+
+bool Textureshader::render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
+{
+	bool result;
+
+	result = setShaderParameters(World, View, Projection, Texture);
+	if (!result)
+	{
+		return false;
+	}
+
+	renderShader(Indexcount);
+
+	return true;
+}
+
+void Textureshader::destroy()
+{
+	SAFE_RELEASE(samplerstate_);
+	SAFE_RELEASE(matrixbuffer_);
+	SAFE_RELEASE(layout_);
+	SAFE_RELEASE(pixelshader_);
+	SAFE_RELEASE(vertexshader_);
+}
+
 
 bool Textureshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
 {
@@ -197,13 +185,4 @@ void Textureshader::renderShader(const int Indexcount)
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
 
 	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
-}
-
-void Textureshader::destroyShader()
-{
-	SAFE_RELEASE(samplerstate_);
-	SAFE_RELEASE(matrixbuffer_);
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(vertexshader_);
 }

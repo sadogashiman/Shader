@@ -5,7 +5,8 @@
 bool Support::checkInputLayout(const void* shadercode, size_t codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum)
 {
 	ID3D11ShaderReflection* vsref;
-	HRESULT hr = D3DReflect(shadercode, codesize, IID_ID3D11ShaderReflection, (void**)&vsref);
+	HRESULT hr;
+	hr = D3DReflect(shadercode, codesize, IID_ID3D11ShaderReflection, (void**)&vsref);
 	if (FAILED(hr))
 	{
 		return false;
@@ -40,10 +41,10 @@ bool Support::checkInputLayout(const void* shadercode, size_t codesize, const D3
 		}
 		if (j == layoutnum)
 		{
+			Error::showDialog("シェーダー側とセマンティクス名が一致しません");
 			vsref->Release();
 			return false;
 		}
-
 	}
 
 	vsref->Release();
@@ -54,68 +55,34 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 {
 	HRESULT hr;
 	std::ifstream fp;
-	std::vector<char> vertexdataarray;
-	vertexshaderbuffer = nullptr;
+	vertexshaderbuffer_ = nullptr;
 
-	//コンパイル済みシェーダーファイル展開
-	fp.open(VertexShaderFileName, std::ios::in | std::ios::binary);
+	//パスが有効か確認するために一度変換
+	char tmp[MAX_PATH];
+	wcstombs(tmp, VertexShaderFileName, MAX_PATH);
 
-	if (fp.fail())
+	//パスが有効か確認
+	if (PathFileExists(tmp))
 	{
-		char charfilename[MAX_PATH] = " ";
-		wchar_t wcharfilename[MAX_PATH] = L" ";
+		//ファイル展開
+		fp.open(tmp,std::ios::binary);
 
-		//wcharからcharに変換
-		wcstombs(charfilename, VertexShaderFileName,MAX_PATH);
-
-		const char* extension = ".hlsl";
-
-		//拡張子をhlslに変更
-		PathRenameExtension(charfilename, extension);
-
-		//再度wcharに変換
-		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
-
-		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer, NULL);
-		if (FAILED(hr))
-		{
-			return hr;
-		}
-
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer->GetBufferPointer(), vertexshaderbuffer->GetBufferSize(), NULL, &vertexshader_);
-		if (FAILED(hr))
-		{
-			return hr;
-		}
-
-		//バッファサイズとポインタをコピー
-		vertexblob_ = vertexshaderbuffer->GetBufferPointer();
-		vertexsize_ = vertexshaderbuffer->GetBufferSize();
-
-
-	}
-	else
-	{
-		//ポインタを末尾へ
-		fp.seekg(0, std::ios::end);
-
-		//サイズを取得
-		size_t size = static_cast<size_t>(fp.tellg());
-
-		//配列サイズを変更
-		vertexdataarray.resize(size);
+		//ファイルサイズ取得
+		size_t size = static_cast<size_t>(fp.seekg(0, std::ios::end).tellg());
 
 		//ポインタの位置を先頭に
 		fp.seekg(0, std::ios::beg);
 
+		//配列サイズを変更
+		vertexdataarray_.resize(size);
+
 		//読み込み
-		fp.read(&vertexdataarray[0], size);
+		fp.read(&vertexdataarray_[0], size);
 
 		//読み込み終了
 		fp.close();
 
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(&vertexdataarray, size, nullptr, &vertexshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(&vertexdataarray_[0],size, nullptr, &vertexshader_);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -123,7 +90,37 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 
 		//データをメンバにコピー
 		vertexsize_ = size;
-		vertexblob_ = &vertexdataarray[0];
+		vertexblob_ = &vertexdataarray_[0];
+	}
+	else
+	{
+		wchar_t wcharfilename[MAX_PATH] = L" ";
+
+		//wcharからcharに変換
+		wcstombs(tmp, VertexShaderFileName, MAX_PATH);
+
+		//拡張子をhlslに変更
+		PathRenameExtension(tmp, ".hlsl");
+
+		//再度wcharに変換
+		mbstowcs(wcharfilename, tmp, sizeof(tmp));
+
+		//シェーダーをコンパイルしてポインタを取得
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer_, NULL);
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer_->GetBufferPointer(), vertexshaderbuffer_->GetBufferSize(), nullptr, &vertexshader_);
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		//バッファサイズとポインタをコピー
+		vertexblob_ = vertexshaderbuffer_->GetBufferPointer();
+		vertexsize_ = vertexshaderbuffer_->GetBufferSize();
 	}
 
 	return S_OK;
@@ -133,66 +130,34 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 {
 	HRESULT hr;
 	std::ifstream fp;
-	std::vector<char> pixeldataarray;
-	pixelshaderbuffer = nullptr;
+	pixelshaderbuffer_ = nullptr;
 
-	//コンパイル済みシェーダーファイル展開
-	fp.open(PixelShaderFileName, std::ios::in | std::ios::binary);
+	//パスが有効か確認するために一度変換
+	char tmp[MAX_PATH];
+	wcstombs(tmp, PixelShaderFileName, MAX_PATH);
 
-	if (fp.fail())
+	//パスが有効か確認
+	if (PathFileExists(tmp))
 	{
-		char charfilename[MAX_PATH] = " ";
-		wchar_t wcharfilename[MAX_PATH] = L" ";
+		//ファイル展開
+		fp.open(PixelShaderFileName, std::ios::binary);
 
-		//wcharからcharに変換
-		wcstombs(charfilename, PixelShaderFileName,MAX_PATH);
-
-		const char* extension = ".hlsl";
-
-		//拡張子をhlslに変更
-		PathRenameExtension(charfilename, extension);
-
-		//再度wcharに変換
-		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
-
-		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer, NULL);
-		if (FAILED(hr))
-		{
-			return hr;
-		}
-
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(pixelshaderbuffer->GetBufferPointer(), pixelshaderbuffer->GetBufferSize(), NULL, &vertexshader_);
-		if (FAILED(hr))
-		{
-			return hr;
-		}
-
-		//バッファサイズとポインタをコピー
-		pixelblob_ = pixelshaderbuffer->GetBufferPointer();
-		pixelsize_ = pixelshaderbuffer->GetBufferSize();
-	}
-	else
-	{
-		//ポインタを末尾へ
-		fp.seekg(0, std::ios::end);
-
-		//サイズを取得
-		size_t size = static_cast<size_t>(fp.tellg());
-
-		//配列サイズを変更
-		pixeldataarray.resize(size);
+		//ファイルサイズ取得
+		size_t size = static_cast<size_t>(fp.seekg(0, std::ios::end).tellg());
 
 		//ポインタの位置を先頭に
 		fp.seekg(0, std::ios::beg);
 
+		//配列サイズを変更
+		pixeldataarray_.resize(size);
+
 		//読み込み
-		fp.read(&pixeldataarray[0], size);
+		fp.read(&pixeldataarray_[0], size);
 
 		//読み込み終了
 		fp.close();
 
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(&pixeldataarray, size, nullptr, &vertexshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(&pixeldataarray_[0], size, nullptr, &pixelshader_);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -200,7 +165,38 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 
 		//データをメンバにコピー
 		pixelsize_ = size;
-		pixelblob_ = &pixeldataarray[0];
+		pixelblob_ = &pixeldataarray_[0];
+	}
+	else
+	{
+		char charfilename[MAX_PATH] = " ";
+		wchar_t wcharfilename[MAX_PATH] = L" ";
+
+		//wcharからcharに変換
+		wcstombs(charfilename, PixelShaderFileName, MAX_PATH);
+
+		//拡張子をhlslに変更
+		PathRenameExtension(charfilename, ".hlsl");
+
+		//再度wcharに変換
+		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
+
+		//シェーダーをコンパイルしてポインタを取得
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer_, NULL);
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer_->GetBufferPointer(), pixelshaderbuffer_->GetBufferSize(), nullptr, &pixelshader_);
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		//バッファサイズとポインタをコピー
+		pixelblob_ = pixelshaderbuffer_->GetBufferPointer();
+		pixelsize_ = pixelshaderbuffer_->GetBufferSize();
 	}
 
 	return S_OK;
@@ -209,9 +205,6 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 void Support::destroyBufferData()
 {
 	//不要になったデータの削除
-	pixelshaderbuffer->Release();
-	pixelshaderbuffer = nullptr;
-
-	vertexshaderbuffer->Release();
-	vertexshaderbuffer = nullptr;
+	SAFE_RELEASE(vertexshaderbuffer_);
+	SAFE_RELEASE(pixelshaderbuffer_);
 }
