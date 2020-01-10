@@ -420,6 +420,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 
 void Direct3D::begin(XMVECTORF32 Color)
 {
+
 	//バックバッファクリア
 	cpdevicecontext_.Get()->ClearRenderTargetView(cprendertarget_.Get(), Color);
 

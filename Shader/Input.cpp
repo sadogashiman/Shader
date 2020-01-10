@@ -1,6 +1,16 @@
 #include "stdafx.h"
 #include "Input.h"
 
+Input::Input()
+{
+	ZeroMemory(Keyprevstate_, sizeof(Keyprevstate_));
+	ZeroMemory(Keystate_, sizeof(Keystate_));
+
+}
+
+Input::~Input()
+{
+}
 
 bool Input::init(HINSTANCE hInstance, HWND Hwnd)
 {

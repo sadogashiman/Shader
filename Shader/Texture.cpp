@@ -20,12 +20,16 @@ Texture::~Texture()
 bool Texture::init(const wchar_t* TextureName)
 {
 	HRESULT hr;
+	char tmp[MAX_PATH] = " ";
+
+	//文字列を型変換
+	wcstombs(tmp, TextureName, MAX_PATH);
 
 	//渡されたファイル名に拡張子が含まれているか確認
-	if (TextureName)
+	if (PathFileExists(tmp))
 	{
 		//拡張子がテクスチャローダーに対応しているか確認
-		if (checkExtension(TextureName))
+		if (!checkExtension(TextureName))
 		{
 			Error::showDialog("テクスチャローダーが対応していない拡張子です");
 			return false;
@@ -34,7 +38,7 @@ bool Texture::init(const wchar_t* TextureName)
 		//拡張子がdds又はDDSの場合DDSローダーを使用
 		if (wcsstr(extensionarray[kDds],TextureName))
 		{
-			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName, NULL, &texture_, NULL);
+			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName,&textureresource_, &texture_);
 			if (FAILED(hr))
 			{
 				Error::showDialog("DDSTextureLoaderでの読み込みに失敗しました");
@@ -71,7 +75,7 @@ bool Texture::checkExtension(const wchar_t* PathName)
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
 		//拡張子がローダーで使用できるものか確認
-		if (wcsstr(extensionarray[i],PathName)==0)
+		if (wcsstr(extensionarray[i],PathName))
 		{
 			return true;
 		}

@@ -2,6 +2,7 @@
 #include "TextureFactory.h"
 #include"release.h"
 #include"Texture.h"
+#include"error.h"
 
 TextureFactory::TextureFactory()
 {
@@ -51,7 +52,11 @@ ID3D11ShaderResourceView* TextureFactory::getTexture(const wchar_t* TextureName)
 	{
 		//テクスチャがマップ内に存在する場合
 		ID3D11ShaderResourceView* texture;
-		Texture::getInstance()->init(TextureName);
+		if (!Texture::getInstance()->init(TextureName))
+		{
+			Error::showDialog("テクスチャロードに失敗");
+			return false;
+		}
 		if (!(texture = Texture::getInstance()->getTexture()))
 		{
 			return nullptr;

@@ -8,12 +8,8 @@ struct ScreenSize
 class Input
 {
 private:
-	Input() = default;
-	~Input() = default;
-	Input(const Input&) = delete;
-	Input& operator = (const Input&) = delete;
-	Input(Input&&) = delete;
-	Input& operator = (Input&&) = delete;
+	Input();
+	~Input();
 
 	//“ü—Íî•ñ“Ç‚İæ‚è
 	void readKeyBoard();
@@ -48,7 +44,10 @@ private:
 	ComPtr<IDirectInput8A> didev_;
 	unsigned int currentactivecontroller_;
 public:
-
+	Input(const Input&) = delete;
+	Input& operator = (const Input&) = delete;
+	Input(Input&&) = delete;
+	Input& operator = (Input&&) = delete;
 
 
 	bool init(HINSTANCE hInstance, HWND Hwnd);

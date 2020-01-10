@@ -125,7 +125,10 @@ void Model::renderbuff()
 bool Model::Loadtexture(const wchar_t* FileName)
 {
 	texture_ = TextureFactory::getInstance()->getTexture(FileName);
-	//wcscpy(filename_, FileName);
+	if (!texture_)
+	{
+		return false;
+	}
 	return true;
 }
 
