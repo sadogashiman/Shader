@@ -4,68 +4,68 @@
 
 bool Renderer::init()
 {
-	//各シェーダーオブジェクトを生成・初期化
-	lightshader_.reset(new LightShader);
-	if (!lightshader_.get())
-	{
-		return false;
-	}
+	////各シェーダーオブジェクトを生成・初期化
+	//lightshader_.reset(new LightShader);
+	//if (!lightshader_.get())
+	//{
+	//	return false;
+	//}
 
-	if (!(lightshader_.get()->init()))
-	{
-		Error::showDialog("ライトシェーダーの初期化に失敗");
-		return false;
-	}
+	//if (!(lightshader_.get()->init()))
+	//{
+	//	Error::showDialog("ライトシェーダーの初期化に失敗");
+	//	return false;
+	//}
 
-	bumpshader_.reset(new Bumpmap);
-	if (!bumpshader_.get())
-	{
-		return false;
-	}
+	//bumpshader_.reset(new Bumpmap);
+	//if (!bumpshader_.get())
+	//{
+	//	return false;
+	//}
 
-	if (!(bumpshader_.get()->init()))
-	{
-		Error::showDialog("バンプシェーダーの初期化に失敗");
+	//if (!(bumpshader_.get()->init()))
+	//{
+	//	Error::showDialog("バンプシェーダーの初期化に失敗");
 
-		return false;
-	}
+	//	return false;
+	//}
 
-	alphashader_.reset(new Alphamapshader);
-	if (!alphashader_.get())
-	{
-		return false;
-	}
+	//alphashader_.reset(new Alphamapshader);
+	//if (!alphashader_.get())
+	//{
+	//	return false;
+	//}
 
-	if (!(alphashader_.get()->init()))
-	{
-		Error::showDialog("アルファシェーダーの初期化に失敗");
+	//if (!(alphashader_.get()->init()))
+	//{
+	//	Error::showDialog("アルファシェーダーの初期化に失敗");
 
-		return false;
-	}
+	//	return false;
+	//}
 
-	shadowshader_.reset(new Shadowshader);
-	if (!shadowshader_.get())
-	{
-		return false;
-	}
+	//shadowshader_.reset(new Shadowshader);
+	//if (!shadowshader_.get())
+	//{
+	//	return false;
+	//}
 
-	if (!(shadowshader_.get()->init()))
-	{
-		Error::showDialog("シャドウシェーダーの初期化に失敗");
-		return false;
-	}
+	//if (!(shadowshader_.get()->init()))
+	//{
+	//	Error::showDialog("シャドウシェーダーの初期化に失敗");
+	//	return false;
+	//}
 
-	depthshader_.reset(new Depthshader);
-	if (!depthshader_.get())
-	{
-		return false;
-	}
+	//depthshader_.reset(new Depthshader);
+	//if (!depthshader_.get())
+	//{
+	//	return false;
+	//}
 
-	if (!(depthshader_.get()->init()))
-	{
-		Error::showDialog("デプスシェーダーの初期化に失敗");
-		return false;
-	}
+	//if (!(depthshader_.get()->init()))
+	//{
+	//	Error::showDialog("デプスシェーダーの初期化に失敗");
+	//	return false;
+	//}
 
 	textureshader_.reset(new Textureshader);
 	if (!textureshader_.get())
@@ -79,30 +79,30 @@ bool Renderer::init()
 		return false;
 	}
 
-	deferredbuffer_.reset(new Deferredbuffers);
-	if (!deferredbuffer_.get())
-	{
-		return false;
-	}
+	//deferredbuffer_.reset(new Deferredbuffers);
+	//if (!deferredbuffer_.get())
+	//{
+	//	return false;
+	//}
 
-	if (!(deferredbuffer_.get()->init(1280,720,100.F,1.0F)))
-	{
+	//if (!(deferredbuffer_.get()->init(1280,720,100.F,1.0F)))
+	//{
 
-		Error::showDialog("遅延バッファの初期化に失敗");
-		return false;
-	}
+	//	Error::showDialog("遅延バッファの初期化に失敗");
+	//	return false;
+	//}
 
 	return true;
 }
 
 void Renderer::destroy()
 {
-	lightshader_.get()->destroy();
-	bumpshader_.get()->destroy();
-	alphashader_.get()->destroy();
-	shadowshader_.get()->destroy();
-	depthshader_.get()->destroy();
-	deferredbuffer_.get()->destroy();
+	//lightshader_.get()->destroy();
+	//bumpshader_.get()->destroy();
+	//alphashader_.get()->destroy();
+	//shadowshader_.get()->destroy();
+	//depthshader_.get()->destroy();
+	//deferredbuffer_.get()->destroy();
 	textureshader_.get()->destroy();
 }
 

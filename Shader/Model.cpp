@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "model.h"
 #include"Direct3D.h"
-#include"TextureFactory.h"
-bool Model::initbuff()
+bool Model::initBuffer()
 {
 	Vertextype* vertices;
 	unsigned long* indices;
@@ -103,7 +102,7 @@ void Model::destroybuff()
 	}
 }
 
-void Model::renderbuff()
+void Model::renderBuffer()
 {
 	unsigned int stride;
 	unsigned int offset;
@@ -122,22 +121,13 @@ void Model::renderbuff()
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-bool Model::Loadtexture(const wchar_t* FileName)
-{
-	texture_ = TextureFactory::getInstance()->getTexture(FileName);
-	if (!texture_)
-	{
-		return false;
-	}
-	return true;
-}
 
-void Model::Releasetexture()
+void Model::releaseTexture()
 {
 	TextureFactory::getInstance()->deleteTexture(filename_);
 }
 
-bool Model::LoadModel(const wchar_t* FileName)
+bool Model::loadModel(const wchar_t* FileName)
 {
 	std::ifstream fin;
 	char input;
@@ -193,11 +183,11 @@ bool Model::LoadModel(const wchar_t* FileName)
 	return true;
 }
 
-void Model::ReleaseModel()
+void Model::releaseModel()
 {
 	if (model_)
 	{
-		delete model_;
+		delete[] model_;
 		model_ = nullptr;
 	}
 }
@@ -207,6 +197,13 @@ Model::Model()
 	vertexbuff_ = nullptr;
 	indexbuff_ = nullptr;
 	model_ = nullptr;
+	ZeroMemory(filename_ ,sizeof(filename_));
+	vertexcount_ = 0;
+	indexcount_ = 0;
+	positionx = 0.0F;
+	positiony = 0.0F;
+	positionz = 0.0F;
+
 }
 
 Model::~Model()
@@ -217,14 +214,14 @@ bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName)
 {
 	bool result;
 	//モデルデータ読み込み
-	result = LoadModel(ModelFileName);
+	result = loadModel(ModelFileName);
 	if (!result)
 	{
 		return false;
 	}
 
 	//頂点及びインデックスバッファを初期化
-	result = initbuff();
+	result = initBuffer();
 
 	//頂点とインデックスバッファを初期化
 	if (!result)
@@ -232,12 +229,8 @@ bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName)
 		return false;
 	}
 
-	//このモデルで使用するテクスチャをロード
-	result = Loadtexture(TextureFileName);
-	if (!result)
-	{
-		return false;
-	}
+	//テクスチャファイル名をコピー
+	wcscpy(filename_, TextureFileName);
 
 	return true;
 }
@@ -245,19 +238,19 @@ bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName)
 void Model::destroy()
 {
 	//モデルテクスチャを解放
-	Releasetexture();
+	releaseTexture();
 
 	//頂点バッファとインデックスバッファを破棄
 	destroybuff();
 
 	//モデル解放
-	ReleaseModel();
+	releaseModel();
 }
 
 void Model::render()
 {
 	//グラフィックスパイプラインに頂点バッファをインデックスバッファを配置
-	renderbuff();
+	renderBuffer();
 }
 
 void Model::setPosition(const float X, const float Y, const float Z)

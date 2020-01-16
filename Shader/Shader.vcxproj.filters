@@ -43,6 +43,27 @@
     <Filter Include="MainSystem\2D">
       <UniqueIdentifier>{16fb15f2-c53e-44d8-b5cc-161e934915a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Shader\alphamap">
+      <UniqueIdentifier>{7e55873b-c889-4644-b447-e7b85a712120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader\bumpmap">
+      <UniqueIdentifier>{7461442a-12da-456d-ad76-06330930e4a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader\deferred">
+      <UniqueIdentifier>{14baf429-0741-439e-8863-d91e78900548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader\depth">
+      <UniqueIdentifier>{b3ce3ff7-8304-4db7-96b0-88ad47ca11f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader\light">
+      <UniqueIdentifier>{705da269-277b-40c9-864b-d76d709516cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader\shadow">
+      <UniqueIdentifier>{b5d7723a-37b4-4065-8255-170ea5370c26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader\texture">
+      <UniqueIdentifier>{cba017b6-e3b4-41be-8dfd-ba5d054262ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -53,21 +74,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>MainSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Alphamapshader.cpp">
-      <Filter>Renderer\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Depthshader.cpp">
-      <Filter>Renderer\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Bumpmap.cpp">
-      <Filter>Renderer\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="LightShader.cpp">
-      <Filter>Renderer\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Shadowshader.cpp">
-      <Filter>Renderer\Shader</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Light</Filter>
@@ -90,9 +96,6 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Deferredshader.cpp">
-      <Filter>Renderer\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -105,14 +108,32 @@
     <ClCompile Include="OrthoWindow.cpp">
       <Filter>MainSystem\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Deferredbuffers.cpp">
-      <Filter>Renderer\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureShader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Support.cpp">
       <Filter>support</Filter>
+    </ClCompile>
+    <ClCompile Include="Alphamapshader.cpp">
+      <Filter>Renderer\Shader\alphamap</Filter>
+    </ClCompile>
+    <ClCompile Include="Bumpmap.cpp">
+      <Filter>Renderer\Shader\bumpmap</Filter>
+    </ClCompile>
+    <ClCompile Include="Deferredbuffers.cpp">
+      <Filter>Renderer\Shader\deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="Deferredshader.cpp">
+      <Filter>Renderer\Shader\deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="Depthshader.cpp">
+      <Filter>Renderer\Shader\depth</Filter>
+    </ClCompile>
+    <ClCompile Include="LightShader.cpp">
+      <Filter>Renderer\Shader\light</Filter>
+    </ClCompile>
+    <ClCompile Include="Shadowshader.cpp">
+      <Filter>Renderer\Shader\shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureShader.cpp">
+      <Filter>Renderer\Shader\texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,21 +145,6 @@
     </ClInclude>
     <ClInclude Include="System.h">
       <Filter>MainSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Alphamapshader.h">
-      <Filter>Renderer\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Bumpmap.h">
-      <Filter>Renderer\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Depthshader.h">
-      <Filter>Renderer\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Lightshader.h">
-      <Filter>Renderer\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Shadowshader.h">
-      <Filter>Renderer\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Light</Filter>
@@ -167,9 +173,6 @@
     <ClInclude Include="Renderer.h">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Deferredshader.h">
-      <Filter>Renderer\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -182,14 +185,32 @@
     <ClInclude Include="OrthoWindow.h">
       <Filter>MainSystem\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Deferredbuffers.h">
-      <Filter>Renderer\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureShader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Support.h">
       <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="Alphamapshader.h">
+      <Filter>Renderer\Shader\alphamap</Filter>
+    </ClInclude>
+    <ClInclude Include="Bumpmap.h">
+      <Filter>Renderer\Shader\bumpmap</Filter>
+    </ClInclude>
+    <ClInclude Include="Deferredbuffers.h">
+      <Filter>Renderer\Shader\deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="Deferredshader.h">
+      <Filter>Renderer\Shader\deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="Depthshader.h">
+      <Filter>Renderer\Shader\depth</Filter>
+    </ClInclude>
+    <ClInclude Include="Lightshader.h">
+      <Filter>Renderer\Shader\light</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadowshader.h">
+      <Filter>Renderer\Shader\shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureShader.h">
+      <Filter>Renderer\Shader\texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

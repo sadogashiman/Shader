@@ -18,10 +18,10 @@ private:
 	//WICTextureLoader‚ª‘Î‰ž‚µ‚Ä‚¢‚éŠg’£Žq
 	const wchar_t* extensionarray[kExtensionTypeNum] =
 	{
-		L".dds",
-		L".png",
-		L".tiff",
-		L".gif"
+		L"dds",
+		L"png",
+		L"tiff",
+		L"gif"
 	};
 public:
 	Texture(const Texture&) = delete;

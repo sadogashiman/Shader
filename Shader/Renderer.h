@@ -7,6 +7,7 @@
 #include"Deferredbuffers.h"
 #include"Light.h"
 #include"TextureShader.h"
+#include"Deferredshader.h"
 
 class Renderer
 {
@@ -20,6 +21,7 @@ private:
 	std::unique_ptr<Depthshader> depthshader_;
 	std::unique_ptr<Deferredbuffers>deferredbuffer_;
 	std::unique_ptr<Textureshader>textureshader_;
+	std::unique_ptr<Deferredshader>deferredshader_;
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 	Renderer(Renderer&&) = delete;
@@ -56,5 +58,10 @@ public:
 
 	//遅延シェーディングを使用するときのレンダー
 	bool deferredRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
+
+	//Get
+	inline Deferredbuffers* getDeferredBuffer() { return deferredbuffer_.get(); }
+
+
 };
 

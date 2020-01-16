@@ -109,16 +109,12 @@ bool Textureshader::init()
 		return false;
 	}
 
-
-	return true;
-
 	return true;
 }
 
 bool Textureshader::render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
 {
 	bool result;
-
 	result = setShaderParameters(World, View, Projection, Texture);
 	if (!result)
 	{
@@ -183,6 +179,8 @@ void Textureshader::renderShader(const int Indexcount)
 
 	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplerstate_);
 
 	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
 }

@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Renderer.h"
 #include"Application.h"
+#include"TextureFactory.h"
 
 System::System()
 {
@@ -40,7 +41,7 @@ bool System::init()
 		return false;
 	}
 
-	////レンダラークラス初期化
+	//レンダラークラス初期化
 	if (!Renderer::getInstance()->init())
 	{
 		return false;
@@ -83,8 +84,10 @@ bool System::run()
 
 void System::destroy()
 {
-	Direct3D::getInstance()->destroy();
 	Application::getInstance()->destroy();
+	TextureFactory::getInstance()->allDeleteTexture();
+	Renderer::getInstance()->destroy();
+	Direct3D::getInstance()->destroy();
 	destroyWindows();
 }
 

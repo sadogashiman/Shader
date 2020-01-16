@@ -35,8 +35,10 @@ bool Texture::init(const wchar_t* TextureName)
 			return false;
 		}
 
+
+		const wchar_t* tmp = extensionarray[0];
 		//拡張子がdds又はDDSの場合DDSローダーを使用
-		if (wcsstr(extensionarray[kDds],TextureName))
+		if (wcscmp(tmp,TextureName))
 		{
 			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName,&textureresource_, &texture_);
 			if (FAILED(hr))
@@ -45,20 +47,24 @@ bool Texture::init(const wchar_t* TextureName)
 				return false;
 			}
 		}
-
-		//WICTextureLoaderで読めるものはWICを使用
-		for (int i = kPng; i < kEnd; i++)
+		else
 		{
-			if (wcsstr(extensionarray[i], TextureName))
+			//WICTextureLoaderで読めるものはWICを使用
+			for (int i = kPng; i < kEnd; i++)
 			{
-				hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
-				if (FAILED(hr))
+				if (wcscmp(extensionarray[i], TextureName))
 				{
-					Error::showDialog("WICTextureLoaderでの読み込みに失敗しました");
-					return false;
+					hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
+					if (FAILED(hr))
+					{
+						Error::showDialog("WICTextureLoaderでの読み込みに失敗しました");
+						return false;
+					}
 				}
 			}
 		}
+
+
 	}
 	else
 	{
@@ -75,7 +81,7 @@ bool Texture::checkExtension(const wchar_t* PathName)
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
 		//拡張子がローダーで使用できるものか確認
-		if (wcsstr(extensionarray[i],PathName))
+		if (wcscmp(extensionarray[i],PathName))
 		{
 			return true;
 		}

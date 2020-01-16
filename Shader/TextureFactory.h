@@ -16,7 +16,7 @@ public:
 
 	//delete
 	void deleteTexture(const wchar_t* TextureName);
-	void allDeleteTexture(const wchar_t* TextureName);
+	void allDeleteTexture();
 
 	//get
 	ID3D11ShaderResourceView* getTexture(const wchar_t* TextureName);

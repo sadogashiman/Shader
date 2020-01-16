@@ -3,8 +3,9 @@
 //		　　 マクロ
 //******************************
 #define _CRT_SECURE_NO_WARNINGS
-#define DINPUT_VERTION 0x80
-//#define WIN32_LEAN_AND_MEAN
+#define DINPUT_VERTION 0x80 //DirectInputのバージョンマクロ
+#define WIN32_LEAN_AND_MEAN //使われていないAPIの一部を除外するマクロ
+#define STRICT //型チェックを厳密にするマクロ
 
 //******************************
 //　　		include
@@ -19,7 +20,6 @@
 #include<math.h>
 #include<dxgidebug.h>
 #include<wrl/client.h>
-#include<dsound.h>
 #include<mmsystem.h>
 #include<Pdh.h>
 #include<dinput.h>
@@ -41,7 +41,6 @@
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
-#pragma comment(lib,"dsound.lib")
 #pragma comment(lib,"pdh.lib")
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"shlwapi.lib")

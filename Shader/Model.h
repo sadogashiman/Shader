@@ -1,4 +1,5 @@
 #pragma once
+#include"TextureFactory.h"
 class Model
 {
 private:
@@ -35,19 +36,17 @@ private:
 	int vertexcount_;
 	int indexcount_;
 
-	bool initbuff();
+	bool initBuffer();
 	void destroybuff();
-	void renderbuff();
+	void renderBuffer();
 
-	bool Loadtexture(const wchar_t* FileName);
-	void Releasetexture();
+	void releaseTexture();
 
-	bool LoadModel(const wchar_t* FileName);
-	void ReleaseModel();
-	ID3D11ShaderResourceView* texture_;
+	bool loadModel(const wchar_t* FileName);
+	void releaseModel();
 	ModelType* model_;
 	float positionx, positiony, positionz;
-	wchar_t* filename_;
+	wchar_t filename_[MAX_PATH];
 public:
 	Model();
 	~Model();
@@ -61,7 +60,7 @@ public:
 	//get
 	void getPosition(float& X, float& Y, float& Z);
 	inline const int getIndexCount()const {return indexcount_;}
-	inline ID3D11ShaderResourceView* getTexture()const { return texture_; }
+	inline ID3D11ShaderResourceView* getTexture()const { return TextureFactory::getInstance()->getTexture(filename_); }
 
 };
 

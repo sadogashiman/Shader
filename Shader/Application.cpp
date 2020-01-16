@@ -70,46 +70,12 @@ bool Application::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 	{
 		return false;
 	}
-
-	//遅延バッファオブジェクトを生成
-	defbuffer_ = new Deferredbuffers;
-	if (!defbuffer_)
-	{
-		return false;
-	}
-
-	//遅延バッファオブジェクトを初期化
-	result = defbuffer_->init(ScreenWidth, ScreenHeight, kScreen_depth, kScreen_near);
-	if (!result)
-	{
-		return false;
-	}
-	defshader_ = new Deferredshader;
-	if (!defshader_)
-	{
-		return false;
-	}
-
-	//遅延シェーダーオブジェクトを生成
-	result = defshader_->init();
-	if (!result)
-	{
-		return false;
-	}
-
-	result = Renderer::getInstance()->init();
-	if (!result)
-	{
-		Error::showDialog("Rendererの初期化に失敗");
-		return false;
-	}
 	return true;
 }
 
 bool Application::update()
 {
 	bool result;
-
 	result = render();
 	if (!result)
 	{
@@ -122,33 +88,43 @@ bool Application::update()
 bool Application::render()
 {
 	bool result;
-	Matrix world, baseview, ortho;
+	Matrix world, baseview, projection;
 
-	//シーンをレンダーバッファーにレンダリング
-	result = renderSceneToTexture();
-	if (!result)
-	{
-		return false;
-	}
+	////シーンをレンダーバッファーにレンダリング
+	//result = renderSceneToTexture();
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::Black);
 
+	camera_->render();
+
 	//行列を取得
 	Direct3D::getInstance()->getWorld(world);
-	Direct3D::getInstance()->getOrtho(ortho);
+	Direct3D::getInstance()->getProjection(projection);
+	//Direct3D::getInstance()->getOrtho(ortho);
 	baseview = camera_->getBaseViewMatrix();
 
-	//2Dレンダリング開始
-	Direct3D::getInstance()->turnZbufferOff();
+	model_->render();
 
-	ortho_->render();
+	result = Renderer::getInstance()->textureRender(model_->getIndexCount(), world, baseview, projection, model_->getTexture());
+	if (!result)
+	{
+		return false;
+	}
+	////2Dレンダリング開始
+	//Direct3D::getInstance()->turnZbufferOff();
 
-	//フルスクリーンの2Dウィンドウを作成
-	Renderer::getInstance()->lightRender(ortho_->getIndexCount(), world, baseview, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_);
+	//ortho_->render();
 
-	//すべての2Dレンダリングが終了したのでZバッファを有効にする
-	Direct3D::getInstance()->turnZbufferOn();
+	////フルスクリーンの2Dウィンドウを作成
+	//Renderer::getInstance()->lightRender(ortho_->getIndexCount(), world, baseview, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_);
+
+	////すべての2Dレンダリングが終了したのでZバッファを有効にする
+	//Direct3D::getInstance()->turnZbufferOn();
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -158,8 +134,6 @@ bool Application::render()
 
 void Application::destroy()
 {
-	SAFE_DELETE_DESTROY(defshader_);
-	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(model_);
 	SAFE_DELETE(light_);

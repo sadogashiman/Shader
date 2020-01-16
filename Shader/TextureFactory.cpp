@@ -27,15 +27,21 @@ void TextureFactory::deleteTexture(const wchar_t* TextureName)
 	}
 }
 
-void TextureFactory::allDeleteTexture(const wchar_t* TextureName)
+void TextureFactory::allDeleteTexture()
 {
-
 	auto end = texmap_.end();
 
 	for (auto itr = texmap_.begin(); itr != end;)
 	{
 		SAFE_RELEASE(itr->second);
 		itr = texmap_.erase(itr);
+	}
+	auto end2 = resourcemap_.end();
+
+	for (auto itr = resourcemap_.begin(); itr != end2;)
+	{
+		SAFE_RELEASE(itr->second);
+		itr = resourcemap_.erase(itr);
 	}
 }
 
@@ -50,7 +56,6 @@ ID3D11ShaderResourceView* TextureFactory::getTexture(const wchar_t* TextureName)
 	}
 	else
 	{
-		//テクスチャがマップ内に存在する場合
 		ID3D11ShaderResourceView* texture;
 		if (!Texture::getInstance()->init(TextureName))
 		{
@@ -64,6 +69,7 @@ ID3D11ShaderResourceView* TextureFactory::getTexture(const wchar_t* TextureName)
 
 		cntmap_[TextureName] = 1;
 		texmap_[TextureName] = texture;
+		resourcemap_[TextureName] = Texture::getInstance()->getTextureResource();
 		return texture;
 	}
 }
@@ -79,7 +85,6 @@ ID3D11Resource* TextureFactory::getTextureParameter(const wchar_t* TextureName)
 	}
 	else
 	{
-		//テクスチャがマップ内に存在する場合
 		ID3D11Resource* resource;
 		Texture::getInstance()->init(TextureName);
 		if (!(resource = Texture::getInstance()->getTextureResource()))

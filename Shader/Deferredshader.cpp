@@ -45,7 +45,7 @@ bool Deferredshader::init()
 
 	polygonlayout[1].SemanticName = "TEXCOORD";
 	polygonlayout[1].SemanticIndex = 0;
-	polygonlayout[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonlayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	polygonlayout[1].InputSlot = 0;
 	polygonlayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -65,13 +65,13 @@ bool Deferredshader::init()
 	//デバッグ時のみデータが使えるかチェック
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support_->getVertexBufferPtr(), support_->getVertexBufferSize(), polygonlayout, numelement))
+	if (!Support::checkInputLayout(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelement))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_->getVertexBufferPtr(), support_->getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
