@@ -106,7 +106,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 		mbstowcs(wcharfilename, tmp, sizeof(tmp));
 
 		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer_, NULL);
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer_, NULL);
 		if (FAILED(hr))
 		{
 			return hr;

@@ -13,7 +13,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	DXGI_ADAPTER_DESC adapterdesc;
 	DXGI_SWAP_CHAIN_DESC swapchaindesc;
 	D3D_FEATURE_LEVEL featurelebel[] = {
-		D3D_FEATURE_LEVEL_10_0,
+		D3D_FEATURE_LEVEL_11_0,
 		D3D_FEATURE_LEVEL_10_1,
 		D3D_FEATURE_LEVEL_10_0
 	};

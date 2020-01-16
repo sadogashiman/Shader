@@ -91,26 +91,11 @@ bool LightShader::init()
 	//不要になったデータの削除
 	support_.get()->destroyBufferData();
 
-	//動的マトリックス定数バッファの設定
-	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixbufferdesc.ByteWidth = sizeof(MatrixBufferType);
-	matrixbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	matrixbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	matrixbufferdesc.MiscFlags = 0;
-	matrixbufferdesc.StructureByteStride = 0;
-
-	//このクラスから頂点シェーダの定数バッファにアクセスできるようにポインタを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuff_);
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerdesc.MipLODBias = 0.0F;
 	samplerdesc.MaxAnisotropy = 1;
 	samplerdesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
@@ -123,6 +108,21 @@ bool LightShader::init()
 
 	//テクスチャのサンプラー状態を設定
 	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, &samplerstate_);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	//動的マトリックス定数バッファの設定
+	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixbufferdesc.ByteWidth = sizeof(MatrixBufferType);
+	matrixbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixbufferdesc.MiscFlags = 0;
+	matrixbufferdesc.StructureByteStride = 0;
+
+	//このクラスから頂点シェーダの定数バッファにアクセスできるようにポインタを作成
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuff_);
 	if (FAILED(hr))
 	{
 		return false;

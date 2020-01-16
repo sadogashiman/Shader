@@ -4,18 +4,18 @@
 
 bool Renderer::init()
 {
-	////各シェーダーオブジェクトを生成・初期化
-	//lightshader_.reset(new LightShader);
-	//if (!lightshader_.get())
-	//{
-	//	return false;
-	//}
+	//各シェーダーオブジェクトを生成・初期化
+	lightshader_.reset(new LightShader);
+	if (!lightshader_.get())
+	{
+		return false;
+	}
 
-	//if (!(lightshader_.get()->init()))
-	//{
-	//	Error::showDialog("ライトシェーダーの初期化に失敗");
-	//	return false;
-	//}
+	if (!(lightshader_.get()->init()))
+	{
+		Error::showDialog("ライトシェーダーの初期化に失敗");
+		return false;
+	}
 
 	//bumpshader_.reset(new Bumpmap);
 	//if (!bumpshader_.get())
@@ -55,17 +55,17 @@ bool Renderer::init()
 	//	return false;
 	//}
 
-	//depthshader_.reset(new Depthshader);
-	//if (!depthshader_.get())
-	//{
-	//	return false;
-	//}
+	depthshader_.reset(new Depthshader);
+	if (!depthshader_.get())
+	{
+		return false;
+	}
 
-	//if (!(depthshader_.get()->init()))
-	//{
-	//	Error::showDialog("デプスシェーダーの初期化に失敗");
-	//	return false;
-	//}
+	if (!(depthshader_.get()->init()))
+	{
+		Error::showDialog("デプスシェーダーの初期化に失敗");
+		return false;
+	}
 
 	textureshader_.reset(new Textureshader);
 	if (!textureshader_.get())
@@ -97,11 +97,11 @@ bool Renderer::init()
 
 void Renderer::destroy()
 {
-	//lightshader_.get()->destroy();
+	lightshader_.get()->destroy();
 	//bumpshader_.get()->destroy();
 	//alphashader_.get()->destroy();
 	//shadowshader_.get()->destroy();
-	//depthshader_.get()->destroy();
+	depthshader_.get()->destroy();
 	//deferredbuffer_.get()->destroy();
 	textureshader_.get()->destroy();
 }

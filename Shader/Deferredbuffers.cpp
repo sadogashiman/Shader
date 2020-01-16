@@ -41,7 +41,6 @@ bool Deferredbuffers::init(const int TextureWidth, const int TextureHeight, cons
 	texturedesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	texturedesc.SampleDesc.Count = 1;
 	texturedesc.SampleDesc.Quality = 0;
-
 	texturedesc.Usage = D3D11_USAGE_DEFAULT;
 	texturedesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 	texturedesc.CPUAccessFlags = 0;
