@@ -132,10 +132,15 @@ bool Application::render()
 	Direct3D::getInstance()->getOrtho(ortho);
 	baseview = camera_->getBaseViewMatrix();
 
+	Direct3D::getInstance()->turnZbufferOff();
+
 	ortho_->render();
 
 	//フルスクリーンの2Dウィンドウを作成
-	Renderer::getInstance()->lightRender(ortho_->getIndexCount(), world, baseview, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_);
+	if (!(Renderer::getInstance()->lightRender(ortho_->getIndexCount(), world, baseview, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_)))
+	{
+		return false;
+	}
 
 	//すべての2Dレンダリングが終了したのでZバッファを有効にする
 	Direct3D::getInstance()->turnZbufferOn();
@@ -173,16 +178,21 @@ bool Application::renderSceneToTexture()
 
 	//モデルを回転
 	static float rotation = 0.0F;
-	rotation += static_cast<float>(XM_PI * 0.01F);
+	rotation += static_cast<float>(XM_PI * 0.005F);
 	if (rotation > 360.0F)
 	{
 		rotation -= 360;
 	}
 
+	world = XMMatrixRotationY(rotation);
+
 	//モデルをレンダリング
 	model_->render();
 
-	defshader_->render(model_->getIndexCount(), world, view, projection, model_->getTexture());
+	if (!(Renderer::getInstance()->deferredRender(model_->getIndexCount(), world, view, projection, model_->getTexture())))
+	{
+		return false;
+	}
 
 	//バックバッファにレンダリングターゲットを移す
 	Direct3D::getInstance()->setBackBufferRenderTarget();

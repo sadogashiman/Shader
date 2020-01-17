@@ -10,7 +10,7 @@ LightShader::LightShader()
 	pixelshader_ = 0;
 	layout_ = 0;
 	samplerstate_ = 0;
-	matrixbuff_ = 0;
+	matrixbuffer_ = 0;
 	lightbuffer_ = 0;
 }
 
@@ -122,7 +122,7 @@ bool LightShader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//このクラスから頂点シェーダの定数バッファにアクセスできるようにポインタを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuff_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuffer_);
 	if (FAILED(hr))
 	{
 		return false;
@@ -150,7 +150,7 @@ void LightShader::destroy()
 {
 	//各オブジェクトの破棄
 	SAFE_RELEASE(lightbuffer_);
-	SAFE_RELEASE(matrixbuff_);
+	SAFE_RELEASE(matrixbuffer_);
 	SAFE_RELEASE(samplerstate_);
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
@@ -189,7 +189,7 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	Projection = XMMatrixTranspose(Projection);
 
 	//書き込み可能なように定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuff_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -204,13 +204,13 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	dataptr->projection = Projection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuff_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
 
 	//頂点シェーダで定数バッファの位置を設定
 	buffnumber = 0;
 
 	//更新された値で頂点シェーダの定数バッファを最後に設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, &matrixbuff_);
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, &matrixbuffer_);
 
 	//ピクセルシェーダーでテクスチャリソースを設定
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &texture);
@@ -245,6 +245,7 @@ void LightShader::renderShader(const int Indexcount)
 {
 	//頂点入力レイアウトを設定
 	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+
 	//この三角形のレンダリングに使用される頂点シェーダとピクセルシェーダを設定
 	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);

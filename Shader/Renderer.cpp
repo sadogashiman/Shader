@@ -79,18 +79,17 @@ bool Renderer::init()
 		return false;
 	}
 
-	//deferredbuffer_.reset(new Deferredbuffers);
-	//if (!deferredbuffer_.get())
-	//{
-	//	return false;
-	//}
+	deferredshader_.reset(new Deferredshader);
+	if (!deferredshader_.get())
+	{
+		return false;
+	}
 
-	//if (!(deferredbuffer_.get()->init(1280,720,100.F,1.0F)))
-	//{
-
-	//	Error::showDialog("遅延バッファの初期化に失敗");
-	//	return false;
-	//}
+	if (!(deferredshader_.get()->init()))
+	{
+		Error::showDialog("ディファードシェーダーの初期化に失敗");
+		return false;
+	}
 
 	return true;
 }
@@ -102,7 +101,6 @@ void Renderer::destroy()
 	//alphashader_.get()->destroy();
 	//shadowshader_.get()->destroy();
 	depthshader_.get()->destroy();
-	//deferredbuffer_.get()->destroy();
 	textureshader_.get()->destroy();
 }
 
@@ -110,9 +108,10 @@ bool Renderer::maskRender(const int Indexcount, Matrix World, Matrix View, Matri
 {
 	bool result;
 
-	result = alphashader_.get()->render(Indexcount, World, View, Projection, TextureArray);
+	result = maskshader_.get()->render(Indexcount, World, View, Projection, TextureArray);
 	if (!result)
 	{
+		Error::showDialog("レンダリングに失敗(マスクシェーダー)");
 		return false;
 	}
 
@@ -126,6 +125,7 @@ bool Renderer::bumpRender(const int Indexcount, Matrix World, Matrix View, Matri
 	result = bumpshader_.get()->render(Indexcount, World, View, Projection, TextureArray,Lightdata->getDirection(),Lightdata->getDiffuseColor());
 	if (!result)
 	{
+		Error::showDialog("レンダリングに失敗(バンプシェーダー)");
 		return false;
 	}
 
@@ -139,6 +139,7 @@ bool Renderer::depthRender(const int Indexcount, Matrix World, Matrix View, Matr
 	result = depthshader_.get()->render(Indexcount, World, View, Projection);
 	if (!result)
 	{
+		Error::showDialog("レンダリングに失敗(デプスシェーダー)");
 		return false;
 	}
 	return true;
@@ -151,6 +152,7 @@ bool Renderer::lightRender(const int Indexcount, Matrix World, Matrix View, Matr
 	result = lightshader_.get()->render(Indexcount, World, View, Projection,Texture1,Texture2, Lightdata->getDirection());
 	if (!result)
 	{
+		Error::showDialog("レンダリングに失敗(ライトシェーダー)");
 		return false;
 	}
 
@@ -164,6 +166,7 @@ bool Renderer::shadowRender(const int Indexcount, Matrix World, Matrix View, Mat
 	result = shadowshader_.get()->render(Indexcount, World, View, Projection, Lightdata->getViewMatrix(), Lightdata->getProjection(), Texture, Depthmaptexture, Lightdata->getPosition(), Lightdata->getAmbientColor(), Lightdata->getDiffuseColor());
 	if (!result)
 	{
+		Error::showDialog("レンダリングに失敗(シャドウシェーダー)");
 		return false;
 	}
 
@@ -177,6 +180,7 @@ bool Renderer::textureRender(const int Indexcount, Matrix World, Matrix View, Ma
 	result = textureshader_.get()->render(Indexcount, World, View, Projection, Texture);
 	if (!result)
 	{
+		Error::showDialog("レンダリングに失敗(テクスチャシェーダー)");
 		return false;
 	}
 
@@ -185,5 +189,13 @@ bool Renderer::textureRender(const int Indexcount, Matrix World, Matrix View, Ma
 
 bool Renderer::deferredRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
 {
+	bool result;
+
+	result = deferredshader_.get()->render(Indexcount, World, View, Projection, Texture);
+	if (!result)
+	{
+		Error::showDialog("レンダリングに失敗(ディファードシェーダー)");
+		return false;
+	}
 	return true;
 }

@@ -34,6 +34,9 @@ bool Deferredshader::init()
 		return false;
 	}
 
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
+
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
 	polygonlayout[0].SemanticIndex = 0;

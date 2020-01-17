@@ -1,6 +1,6 @@
 #pragma once
 #include"Support.h"
-class Alphamapshader
+class Maskshader
 {
 private:
 	struct MatrixBufferType
@@ -19,8 +19,8 @@ private:
 	ID3D11SamplerState* samplestate_;
 	std::unique_ptr<Support> support_;
 public:
-	Alphamapshader();
-	~Alphamapshader();
+	Maskshader();
+	~Maskshader();
 	bool init();
 	void destroy();
 	bool render(int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView**TextureArray);

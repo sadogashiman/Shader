@@ -146,7 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Alphamapshader.cpp" />
+    <ClCompile Include="Maskshader.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Bumpmap.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -176,7 +176,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Alphamapshader.h" />
+    <ClInclude Include="Maskshader.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Bumpmap.h" />
     <ClInclude Include="Camera.h" />

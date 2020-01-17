@@ -5,7 +5,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define DINPUT_VERTION 0x80 //DirectInputのバージョンマクロ
 #define WIN32_LEAN_AND_MEAN //使われていないAPIの一部を除外するマクロ
-#define STRICT //型チェックを厳密にするマクロ
+#define STRICT				//型チェックを厳密にするマクロ
 
 //******************************
 //　　		include

@@ -8,7 +8,7 @@ Deferredbuffers::Deferredbuffers()
 	depthstencilbuffer_ = nullptr;
 	depthstencilview_ = nullptr;
 
-	for (int i = 0; i < kBuffer_cnt;i++)
+	for (int i = 0; i < kBuffer_cnt; i++)
 	{
 		rendertargettexturearray_[i] = nullptr;
 		rendertargetviewarray_[i] = nullptr;
@@ -154,6 +154,7 @@ void Deferredbuffers::setRenderTargets()
 
 	//ビューポートを設定
 	Direct3D::getInstance()->getContext()->RSSetViewports(1, &viewport_);
+
 }
 
 void Deferredbuffers::clearRenderTargets(XMVECTORF32 Color)

@@ -1,10 +1,9 @@
 #pragma once
 #include"Shadowshader.h"
-#include"Alphamapshader.h"
+#include"Maskshader.h"
 #include"Bumpmap.h"
 #include"Depthshader.h"
 #include"Lightshader.h"
-#include"Deferredbuffers.h"
 #include"Light.h"
 #include"TextureShader.h"
 #include"Deferredshader.h"
@@ -16,10 +15,9 @@ private:
 	~Renderer() = default;
 	std::unique_ptr<LightShader> lightshader_;
 	std::unique_ptr<Bumpmap> bumpshader_;
-	std::unique_ptr<Alphamapshader> alphashader_;
+	std::unique_ptr<Maskshader> maskshader_;
 	std::unique_ptr<Shadowshader> shadowshader_;
 	std::unique_ptr<Depthshader> depthshader_;
-	std::unique_ptr<Deferredbuffers>deferredbuffer_;
 	std::unique_ptr<Textureshader>textureshader_;
 	std::unique_ptr<Deferredshader>deferredshader_;
 	Renderer(const Renderer&) = delete;
@@ -58,10 +56,6 @@ public:
 
 	//遅延シェーディングを使用するときのレンダー
 	bool deferredRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
-
-	//Get
-	inline Deferredbuffers* getDeferredBuffer() { return deferredbuffer_.get(); }
-
 
 };
 

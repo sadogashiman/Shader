@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "Alphamapshader.h"
+#include "Maskshader.h"
 #include"Direct3D.h"
 
-Alphamapshader::Alphamapshader()
+Maskshader::Maskshader()
 {
 	vertexshader_ = nullptr;
 	pixelshader_ = nullptr;
@@ -11,11 +11,11 @@ Alphamapshader::Alphamapshader()
 	samplestate_ = nullptr;
 }
 
-Alphamapshader::~Alphamapshader()
+Maskshader::~Maskshader()
 {
 }
 
-bool Alphamapshader::init()
+bool Maskshader::init()
 {
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
@@ -128,12 +128,12 @@ bool Alphamapshader::init()
 	return true;
 }
 
-void Alphamapshader::destroy()
+void Maskshader::destroy()
 {
 	destroyshader();
 }
 
-bool Alphamapshader::render(int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)
+bool Maskshader::render(int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)
 {
 	bool result;
 
@@ -149,7 +149,7 @@ bool Alphamapshader::render(int Indexcount, Matrix World, Matrix View, Matrix Pr
 	return false;
 }
 
-void Alphamapshader::destroyshader()
+void Maskshader::destroyshader()
 {
 	//破棄
 	if (samplestate_)
@@ -183,7 +183,7 @@ void Alphamapshader::destroyshader()
 	}
 }
 
-bool Alphamapshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)
+bool Maskshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresouce;
@@ -225,7 +225,7 @@ bool Alphamapshader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 	return true;
 }
 
-void Alphamapshader::rendershader(int Indexcount)
+void Maskshader::rendershader(int Indexcount)
 {
 	//頂点入力レイアウトを設定
 	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);

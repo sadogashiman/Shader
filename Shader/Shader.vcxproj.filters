@@ -111,9 +111,6 @@
     <ClCompile Include="Support.cpp">
       <Filter>support</Filter>
     </ClCompile>
-    <ClCompile Include="Alphamapshader.cpp">
-      <Filter>Renderer\Shader\alphamap</Filter>
-    </ClCompile>
     <ClCompile Include="Bumpmap.cpp">
       <Filter>Renderer\Shader\bumpmap</Filter>
     </ClCompile>
@@ -134,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="TextureShader.cpp">
       <Filter>Renderer\Shader\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Maskshader.cpp">
+      <Filter>Renderer\Shader\alphamap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,9 +188,6 @@
     <ClInclude Include="Support.h">
       <Filter>support</Filter>
     </ClInclude>
-    <ClInclude Include="Alphamapshader.h">
-      <Filter>Renderer\Shader\alphamap</Filter>
-    </ClInclude>
     <ClInclude Include="Bumpmap.h">
       <Filter>Renderer\Shader\bumpmap</Filter>
     </ClInclude>
@@ -211,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="TextureShader.h">
       <Filter>Renderer\Shader\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Maskshader.h">
+      <Filter>Renderer\Shader\alphamap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
