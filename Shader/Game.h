@@ -7,11 +7,11 @@
 #include"Camera.h"
 #include"Light.h"
 
-class Application
+class Game
 {
 private:
-	Application();
-	~Application();
+	Game();
+	~Game();
 	bool renderSceneToTexture();
 	Light* light_;
 	Model* model_;
@@ -22,19 +22,19 @@ private:
 	LightShader* lightshader_;
 
 public:
-	Application(const Application&) = delete;
-	Application& operator = (const Application&) = delete;
-	Application(Application&&) = delete;
-	Application& operator = (Application&&) = delete;
+	Game(const Game&) = delete;
+	Game& operator = (const Game&) = delete;
+	Game(Game&&) = delete;
+	Game& operator = (Game&&) = delete;
 
 	bool init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight);
 	bool update();
 	bool render();
 	void destroy();
 
-	static inline Application* getInstance()
+	static inline Game* getInstance()
 	{
-		static Application instance;
+		static Game instance;
 		return &instance;
 	}
 };

@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "Application.h"
+#include "Game.h"
 #include"Direct3D.h"
 #include"release.h"
 #include"Input.h"
 #include"Renderer.h"
 
-Application::Application()
+Game::Game()
 {
 	light_ = nullptr;
 	lightshader_ = nullptr;
@@ -16,11 +16,11 @@ Application::Application()
 	defshader_ = nullptr;
 }
 
-Application::~Application()
+Game::~Game()
 {
 }
 
-bool Application::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
+bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 {
 	bool result;
 
@@ -99,7 +99,7 @@ bool Application::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 	return true;
 }
 
-bool Application::update()
+bool Game::update()
 {
 	bool result;
 	result = render();
@@ -111,7 +111,7 @@ bool Application::update()
 	return true;
 }
 
-bool Application::render()
+bool Game::render()
 {
 	bool result;
 	Matrix world, baseview, projection,ortho;
@@ -151,7 +151,7 @@ bool Application::render()
 	return true;
 }
 
-void Application::destroy()
+void Game::destroy()
 {
 	SAFE_DELETE_DESTROY(defshader_);
 	SAFE_DELETE_DESTROY(defbuffer_);
@@ -161,7 +161,7 @@ void Application::destroy()
 	SAFE_DELETE(camera_);
 }
 
-bool Application::renderSceneToTexture()
+bool Game::renderSceneToTexture()
 {
 	Matrix world, view, projection;
 

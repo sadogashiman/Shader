@@ -3,7 +3,7 @@
 #include "Direct3D.h"
 #include "Input.h"
 #include "Renderer.h"
-#include"Application.h"
+#include"Game.h"
 #include"TextureFactory.h"
 
 System::System()
@@ -30,7 +30,7 @@ bool System::init()
 		return false;
 	}
 
-	if (!Application::getInstance()->init(hwnd_, screenwidth, screenheight))
+	if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
 	{
 		return false;
 	}
@@ -84,7 +84,7 @@ bool System::run()
 
 void System::destroy()
 {
-	Application::getInstance()->destroy();
+	Game::getInstance()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
 	Renderer::getInstance()->destroy();
 	Direct3D::getInstance()->destroy();
@@ -102,7 +102,7 @@ bool System::update()
 		return false;
 	}
 
-	result = Application::getInstance()->update();
+	result = Game::getInstance()->update();
 	if (!result)
 	{
 		return false;
