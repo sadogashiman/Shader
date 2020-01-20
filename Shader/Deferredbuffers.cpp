@@ -144,7 +144,7 @@ void Deferredbuffers::destroy()
 	{
 		SAFE_RELEASE(shaderresourceviewarray_[i]);
 		SAFE_RELEASE(rendertargetviewarray_[i]);
-		SAFE_RELEASE(rendertargetviewarray_[i]);
+		SAFE_RELEASE(rendertargettexturearray_[i]);
 	}
 }
 

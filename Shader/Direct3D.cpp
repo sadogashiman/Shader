@@ -183,7 +183,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 
 	hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
-		D3D_DRIVER_TYPE_REFERENCE,
+		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		D3D11_CREATE_DEVICE_DEBUG,
 		featurelebel,
@@ -413,7 +413,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	world_ = XMMatrixIdentity();
 
 	//2Dレンダリング用の正投影行列を作成
-	ortho_ = XMMatrixOrthographicLH(static_cast<float>(ScreenWidth), static_cast<float>(ScreenWidth), ScreenNear, ScreenDepth);
+	ortho_ = XMMatrixOrthographicLH(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight), ScreenNear, ScreenDepth);
 
 	return true;
 }

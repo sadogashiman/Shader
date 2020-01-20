@@ -56,7 +56,7 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 	vertices[4].position = Vector3(right, top, 0.0F);
 	vertices[4].texture = Vector2(1.0F, 0.0F);
 
-	vertices[5].position = Vector3(right, top, 0.0F);
+	vertices[5].position = Vector3(right, bottom, 0.0F);
 	vertices[5].texture = Vector2(1.0F, 1.0F);
 
 	for (int i = 0; i < indexcnt_; i++)
@@ -66,7 +66,7 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 
 	//頂点バッファを設定
 	vertexbufferdesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexbufferdesc.ByteWidth = sizeof(VertexType)*vertexcnt_;
+	vertexbufferdesc.ByteWidth = sizeof(VertexType) * vertexcnt_;
 	vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexbufferdesc.CPUAccessFlags = 0;
 	vertexbufferdesc.MiscFlags = 0;
@@ -86,7 +86,7 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 
 	//インデックスバッファを設定
 	indexbufferdesc.Usage = D3D11_USAGE_DEFAULT;
-	indexbufferdesc.ByteWidth = sizeof(unsigned long)*indexcnt_;
+	indexbufferdesc.ByteWidth = sizeof(unsigned long) * indexcnt_;
 	indexbufferdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexbufferdesc.CPUAccessFlags = 0;
 	indexbufferdesc.MiscFlags = 0;
