@@ -26,7 +26,6 @@ private:
 	Renderer& operator=(Renderer&&) = delete;
 public:
 
-
 	bool init();
 	void destroy();
 

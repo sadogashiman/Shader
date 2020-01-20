@@ -46,11 +46,12 @@ private:
 	void releaseModel();
 	ModelType* model_;
 	float positionx, positiony, positionz;
-	wchar_t filename_[MAX_PATH];
+	wchar_t texturefilename_[MAX_PATH];
+	wchar_t normalfilename_[MAX_PATH];
 public:
 	Model();
 	~Model();
-	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName);
+	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName,const wchar_t* NormalFileName=nullptr);
 	void destroy();
 	void render();
 
@@ -60,7 +61,8 @@ public:
 	//get
 	void getPosition(float& X, float& Y, float& Z);
 	inline const int getIndexCount()const {return indexcount_;}
-	inline ID3D11ShaderResourceView* getTexture()const { return TextureFactory::getInstance()->getTexture(filename_); }
+	inline ID3D11ShaderResourceView* getTexture()const { return TextureFactory::getInstance()->getTexture(texturefilename_); }
+	inline ID3D11ShaderResourceView* getNormalTexture()const { return TextureFactory::getInstance()->getTexture(normalfilename_); }
 
 };
 

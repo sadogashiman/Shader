@@ -17,18 +17,18 @@ bool Renderer::init()
 		return false;
 	}
 
-	//bumpshader_.reset(new Bumpmap);
-	//if (!bumpshader_.get())
-	//{
-	//	return false;
-	//}
+	bumpshader_.reset(new Bumpmap);
+	if (!bumpshader_.get())
+	{
+		return false;
+	}
 
-	//if (!(bumpshader_.get()->init()))
-	//{
-	//	Error::showDialog("バンプシェーダーの初期化に失敗");
+	if (!(bumpshader_.get()->init()))
+	{
+		Error::showDialog("バンプシェーダーの初期化に失敗");
 
-	//	return false;
-	//}
+		return false;
+	}
 
 	//alphashader_.reset(new Alphamapshader);
 	//if (!alphashader_.get())
@@ -97,7 +97,7 @@ bool Renderer::init()
 void Renderer::destroy()
 {
 	lightshader_.get()->destroy();
-	//bumpshader_.get()->destroy();
+	bumpshader_.get()->destroy();
 	//alphashader_.get()->destroy();
 	//shadowshader_.get()->destroy();
 	depthshader_.get()->destroy();

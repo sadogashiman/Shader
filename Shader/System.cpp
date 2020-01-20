@@ -30,11 +30,6 @@ bool System::init()
 		return false;
 	}
 
-	if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
-	{
-		return false;
-	}
-
 	//インプットクラス初期化
 	if (!Input::getInstance()->init(instance_, hwnd_))
 	{
@@ -43,6 +38,11 @@ bool System::init()
 
 	//レンダラークラス初期化
 	if (!Renderer::getInstance()->init())
+	{
+		return false;
+	}
+	//ゲームクラス初期化
+	if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
 	{
 		return false;
 	}

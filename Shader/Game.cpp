@@ -13,7 +13,6 @@ Game::Game()
 	camera_ = nullptr;
 	ortho_ = nullptr;
 	defbuffer_ = nullptr;
-	defshader_ = nullptr;
 }
 
 Game::~Game()
@@ -52,12 +51,11 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	result = model_->init(L"Resource/seafloor.dds",L"Resource/cube.txt");
+	result = model_->init(L"Resource/stone.dds",L"Resource/cube.txt",L"Resource/bump01.dds");
 	if (!result)
 	{
 		return false;
 	}
-
 	//全画面の2Dウィンドウを生成
 	ortho_ = new OrthoWindow;
 	if (!ortho_)
@@ -83,19 +81,6 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	defshader_ = new Deferredshader;
-	if (!defshader_)
-	{
-		return false;
-	}
-
-	if (!defshader_->init())
-	{
-		return false;
-	}
-
-
-
 	return true;
 }
 
@@ -114,7 +99,7 @@ bool Game::update()
 bool Game::render()
 {
 	bool result;
-	Matrix world, baseview, projection,ortho;
+	Matrix world, view, projection,ortho;
 
 	//シーンをレンダーバッファーにレンダリング
 	result = renderSceneToTexture();
@@ -130,14 +115,14 @@ bool Game::render()
 	Direct3D::getInstance()->getWorld(world);
 	Direct3D::getInstance()->getProjection(projection);
 	Direct3D::getInstance()->getOrtho(ortho);
-	baseview = camera_->getBaseViewMatrix();
+	view = camera_->getBaseViewMatrix();
 
 	Direct3D::getInstance()->turnZbufferOff();
 
+	//フルスクリーンの2Dウィンドウを作成
 	ortho_->render();
 
-	//フルスクリーンの2Dウィンドウを作成
-	if (!(Renderer::getInstance()->lightRender(ortho_->getIndexCount(), world, baseview, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_)))
+	if (!(Renderer::getInstance()->lightRender(ortho_->getIndexCount(), world, view, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_)))
 	{
 		return false;
 	}
@@ -153,7 +138,6 @@ bool Game::render()
 
 void Game::destroy()
 {
-	SAFE_DELETE_DESTROY(defshader_);
 	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(model_);

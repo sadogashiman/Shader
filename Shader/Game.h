@@ -18,7 +18,6 @@ private:
 	Camera* camera_;
 	OrthoWindow* ortho_;
 	Deferredbuffers* defbuffer_;
-	Deferredshader* defshader_;
 	LightShader* lightshader_;
 
 public:

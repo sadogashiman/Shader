@@ -124,7 +124,7 @@ void Model::renderBuffer()
 
 void Model::releaseTexture()
 {
-	TextureFactory::getInstance()->deleteTexture(filename_);
+	TextureFactory::getInstance()->deleteTexture(texturefilename_);
 }
 
 bool Model::loadModel(const wchar_t* FileName)
@@ -197,22 +197,22 @@ Model::Model()
 	vertexbuff_ = nullptr;
 	indexbuff_ = nullptr;
 	model_ = nullptr;
-	ZeroMemory(filename_ ,sizeof(filename_));
+	ZeroMemory(texturefilename_ ,sizeof(texturefilename_));
 	vertexcount_ = 0;
 	indexcount_ = 0;
 	positionx = 0.0F;
 	positiony = 0.0F;
 	positionz = 0.0F;
-
 }
 
 Model::~Model()
 {
 }
 
-bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName)
+bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName, const wchar_t* NormalFileName)
 {
 	bool result;
+
 	//モデルデータ読み込み
 	result = loadModel(ModelFileName);
 	if (!result)
@@ -230,10 +230,17 @@ bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName)
 	}
 
 	//テクスチャファイル名をコピー
-	wcscpy(filename_, TextureFileName);
+	wcscpy(texturefilename_, TextureFileName);
+
+	if (NormalFileName != nullptr)
+	{
+		wcscpy(normalfilename_, NormalFileName);
+
+	}
 
 	return true;
 }
+
 
 void Model::destroy()
 {
