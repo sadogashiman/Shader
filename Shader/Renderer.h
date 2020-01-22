@@ -7,6 +7,7 @@
 #include"Light.h"
 #include"TextureShader.h"
 #include"Deferredshader.h"
+#include"Multitexture.h"
 
 class Renderer
 {
@@ -20,6 +21,7 @@ private:
 	std::unique_ptr<Depthshader> depthshader_;
 	std::unique_ptr<Textureshader>textureshader_;
 	std::unique_ptr<Deferredshader>deferredshader_;
+	std::unique_ptr<Multitexture>multitexshader_;
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 	Renderer(Renderer&&) = delete;
@@ -56,5 +58,7 @@ public:
 	//遅延シェーディングを使用するときのレンダー
 	bool deferredRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 
+	//マルチテクスチャリングを使用するときのレンダー
+	bool multiTextureRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, const int Texturenum);
 };
 

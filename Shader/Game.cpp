@@ -51,7 +51,7 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	result = model_->init(L"Resource/seafloor.dds",L"Resource/cube.txt");
+	result = model_->init(L"Resource/stone01.dds",L"Resource/cube.txt");
 	if (!result)
 	{
 		return false;
@@ -123,12 +123,11 @@ bool Game::render()
 	//ortho_->render();
 
 	model_->render();
-	ID3D11ShaderResourceView* texarray[3];
-	texarray[0] = TextureFactory::getInstance()->getTexture(L"Resource/seafloor.dds");
-	texarray[1] = TextureFactory::getInstance()->getTexture(L"Resource/alpha01.dds");
-	texarray[2] = TextureFactory::getInstance()->getTexture(L"Resource/stone01.dds");
+	ID3D11ShaderResourceView* texarray[2];
+	texarray[0] = TextureFactory::getInstance()->getTexture(L"Resource/stone01.dds");
+	texarray[1] = TextureFactory::getInstance()->getTexture(L"Resource/dirt01.dds");
 
-	if (!(Renderer::getInstance()->maskRender(model_->getIndexCount(),world,view,projection,texarray)))
+	if (!(Renderer::getInstance()->multiTextureRender(model_->getIndexCount(),world,view,projection,texarray,2)))
 	{
 		return false;
 	}

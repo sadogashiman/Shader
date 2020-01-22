@@ -64,6 +64,9 @@
     <Filter Include="MainSystem\Game">
       <UniqueIdentifier>{abc67d18-bb03-4a05-9da7-1874dfaccbf4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Shader\Multi">
+      <UniqueIdentifier>{e4a434c4-9579-4560-8721-3ab8e2e932bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -134,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>MainSystem\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Multitexture.cpp">
+      <Filter>Renderer\Shader\Multi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +218,9 @@
     <ClInclude Include="Game.h">
       <Filter>MainSystem\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Multitexture.h">
+      <Filter>Renderer\Shader\Multi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="bumpmapps.hlsl">
@@ -260,6 +269,12 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="maskvs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="multitextureps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="multitexturevs.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
