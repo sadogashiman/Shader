@@ -30,18 +30,18 @@ bool Renderer::init()
 		return false;
 	}
 
-	//alphashader_.reset(new Alphamapshader);
-	//if (!alphashader_.get())
-	//{
-	//	return false;
-	//}
+	maskshader_.reset(new Maskshader);
+	if (!maskshader_.get())
+	{
+		return false;
+	}
 
-	//if (!(alphashader_.get()->init()))
-	//{
-	//	Error::showDialog("アルファシェーダーの初期化に失敗");
+	if (!(maskshader_.get()->init()))
+	{
+		Error::showDialog("アルファシェーダーの初期化に失敗");
 
-	//	return false;
-	//}
+		return false;
+	}
 
 	//shadowshader_.reset(new Shadowshader);
 	//if (!shadowshader_.get())
@@ -98,7 +98,7 @@ void Renderer::destroy()
 {
 	lightshader_.get()->destroy();
 	bumpshader_.get()->destroy();
-	//alphashader_.get()->destroy();
+	maskshader_.get()->destroy();
 	//shadowshader_.get()->destroy();
 	depthshader_.get()->destroy();
 	textureshader_.get()->destroy();

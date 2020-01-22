@@ -32,14 +32,14 @@ bool Maskshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"alphamapvs.cso");
+	hr = support_.get()->createVertexData(L"maskvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"alphamapps.cso");
+	hr = support_.get()->createPixelData(L"maskps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
@@ -146,7 +146,7 @@ bool Maskshader::render(int Indexcount, Matrix World, Matrix View, Matrix Projec
 	//シェーダーレンダリング
 	rendershader(Indexcount);
 
-	return false;
+	return true;
 }
 
 void Maskshader::destroyshader()

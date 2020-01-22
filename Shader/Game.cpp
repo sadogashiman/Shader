@@ -101,12 +101,12 @@ bool Game::render()
 	bool result;
 	Matrix world, view, projection,ortho;
 
-	//シーンをレンダーバッファーにレンダリング
-	result = renderSceneToTexture();
-	if (!result)
-	{
-		return false;
-	}
+	////シーンをレンダーバッファーにレンダリング
+	//result = renderSceneToTexture();
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::Black);
@@ -117,18 +117,24 @@ bool Game::render()
 	Direct3D::getInstance()->getOrtho(ortho);
 	view = camera_->getBaseViewMatrix();
 
-	Direct3D::getInstance()->turnZbufferOff();
+	//Direct3D::getInstance()->turnZbufferOff();
 
 	//フルスクリーンの2Dウィンドウを作成
-	ortho_->render();
+	//ortho_->render();
 
-	if (!(Renderer::getInstance()->lightRender(ortho_->getIndexCount(), world, view, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_)))
+	model_->render();
+	ID3D11ShaderResourceView* texarray[3];
+	texarray[0] = TextureFactory::getInstance()->getTexture(L"Resource/seafloor.dds");
+	texarray[1] = TextureFactory::getInstance()->getTexture(L"Resource/alpha01.dds");
+	texarray[2] = TextureFactory::getInstance()->getTexture(L"Resource/stone01.dds");
+
+	if (!(Renderer::getInstance()->maskRender(model_->getIndexCount(),world,view,projection,texarray)))
 	{
 		return false;
 	}
 
 	//すべての2Dレンダリングが終了したのでZバッファを有効にする
-	Direct3D::getInstance()->turnZbufferOn();
+	//Direct3D::getInstance()->turnZbufferOn();
 
 	//描画終了
 	Direct3D::getInstance()->end();

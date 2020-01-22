@@ -214,12 +214,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="alphamapps.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="alphamapvs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="bumpmapps.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
@@ -260,6 +254,12 @@
       <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="texturevs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="maskps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="maskvs.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
