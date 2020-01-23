@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "model.h"
 #include"Direct3D.h"
+#include"Support.h"
 bool Model::initBuffer()
 {
 	Vertextype* vertices;
@@ -43,7 +44,6 @@ bool Model::initBuffer()
 	vertexbuffdesc.StructureByteStride = 0;
 
 	//サブリソースに頂点データへのポインターを与える
-	//ZeroMemory(&vertexdata, sizeof(vertexdata));
 	vertexdata.pSysMem = vertices;
 	vertexdata.SysMemPitch = 0;
 	vertexdata.SysMemSlicePitch = 0;
@@ -200,16 +200,16 @@ Model::Model()
 	ZeroMemory(texturefilename_ ,sizeof(texturefilename_));
 	vertexcount_ = 0;
 	indexcount_ = 0;
-	positionx = 0.0F;
-	positiony = 0.0F;
-	positionz = 0.0F;
+	positionx_ = 0.0F;
+	positiony_ = 0.0F;
+	positionz_ = 0.0F;
 }
 
 Model::~Model()
 {
 }
 
-bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName, const wchar_t* NormalFileName)
+bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName, MappingType Type,const wchar_t* TextureFileName2)
 {
 	bool result;
 
@@ -230,17 +230,32 @@ bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName, c
 	}
 
 	//テクスチャファイル名をコピー
-	wcscpy(texturefilename_, TextureFileName);
-
-	if (NormalFileName != nullptr)
+	if (TextureFileName)
 	{
-		wcscpy(normalfilename_, NormalFileName);
+		texturearray_[0] = TextureFactory::getInstance()->getTexture(TextureFileName);
+		wcscpy(texturefilename_, TextureFileName);
 
+		char tmp[MAX_PATH];
+		wcstombs(tmp, texturefilename_, MAX_PATH);
+		PathRemoveExtension(tmp);
+		switch (Type)
+		{
+		case kMaskMap:
+			strcat(tmp, "_m.dds");
+			break;
+		case kBumpMap:
+			strcat(tmp, "_n.dds");
+			break;
+		default:
+			break;
+		}
+		mbstowcs(mapfilename_, tmp, MAX_PATH);
+
+		texturearray_[1] = TextureFactory::getInstance()->getTexture(mapfilename_);
 	}
 
 	return true;
 }
-
 
 void Model::destroy()
 {
@@ -262,14 +277,14 @@ void Model::render()
 
 void Model::setPosition(const float X, const float Y, const float Z)
 {
-	positionx = X;
-	positiony = Y;
-	positionz = Z;
+	positionx_ = X;
+	positiony_ = Y;
+	positionz_ = Z;
 }
 
 void Model::getPosition(float& X, float& Y, float& Z)
 {
-	X = positionx;
-	Y = positiony;
-	Z = positionz;
+	X = positionx_;
+	Y = positiony_;
+	Z = positionz_;
 }

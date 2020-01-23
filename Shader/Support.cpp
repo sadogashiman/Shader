@@ -51,21 +51,54 @@ bool Support::checkInputLayout(const void* shadercode, size_t codesize, const D3
 	return true;
 }
 
+bool Support::searchFile(const wchar_t* FileName)
+{
+	char tmp[MAX_PATH];
+
+	//wchar_tからcharに変換
+	wcstombs(tmp, FileName, MAX_PATH);
+
+	//パスが有効か確認
+	if (PathFileExists(tmp))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Support::searchFile(const char* FileName)
+{
+	//パスが有効か確認
+	if (PathFileExists(FileName))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Support::searchFile(const std::string FileName)
+{
+	if (PathFileExists(FileName.c_str()))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 {
 	HRESULT hr;
 	std::ifstream fp;
 	vertexshaderbuffer_ = nullptr;
 
-	//パスが有効か確認するために一度変換
-	char tmp[MAX_PATH];
-	wcstombs(tmp, VertexShaderFileName, MAX_PATH);
-
 	//パスが有効か確認
-	if (PathFileExists(tmp))
+	if (searchFile(VertexShaderFileName))
 	{
 		//ファイル展開
-		fp.open(tmp,std::ios::binary);
+		fp.open(VertexShaderFileName,std::ios::binary);
 
 		//ファイルサイズ取得
 		size_t size = static_cast<size_t>(fp.seekg(0, std::ios::end).tellg());
@@ -94,16 +127,17 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 	}
 	else
 	{
+		char charfilename[MAX_PATH] = " ";
 		wchar_t wcharfilename[MAX_PATH] = L" ";
 
 		//wcharからcharに変換
-		wcstombs(tmp, VertexShaderFileName, MAX_PATH);
+		wcstombs(charfilename, VertexShaderFileName, MAX_PATH);
 
 		//拡張子をhlslに変更
-		PathRenameExtension(tmp, ".hlsl");
+		PathRenameExtension(charfilename, ".hlsl");
 
 		//再度wcharに変換
-		mbstowcs(wcharfilename, tmp, sizeof(tmp));
+		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
 
 		//シェーダーをコンパイルしてポインタを取得
 		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer_, NULL);
@@ -132,12 +166,8 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 	std::ifstream fp;
 	pixelshaderbuffer_ = nullptr;
 
-	//パスが有効か確認するために一度変換
-	char tmp[MAX_PATH];
-	wcstombs(tmp, PixelShaderFileName, MAX_PATH);
-
 	//パスが有効か確認
-	if (PathFileExists(tmp))
+	if (searchFile(PixelShaderFileName))
 	{
 		//ファイル展開
 		fp.open(PixelShaderFileName, std::ios::binary);

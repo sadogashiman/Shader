@@ -1,5 +1,10 @@
 #pragma once
 #include"TextureFactory.h"
+enum MappingType
+{
+	kMaskMap,
+	kBumpMap,
+};
 class Model
 {
 private:
@@ -40,18 +45,20 @@ private:
 	void destroybuff();
 	void renderBuffer();
 
-	void releaseTexture();
-
 	bool loadModel(const wchar_t* FileName);
+
+	void releaseTexture();
 	void releaseModel();
+
 	ModelType* model_;
-	float positionx, positiony, positionz;
+	float positionx_, positiony_, positionz_;
 	wchar_t texturefilename_[MAX_PATH];
-	wchar_t normalfilename_[MAX_PATH];
+	wchar_t mapfilename_[MAX_PATH];
+	ID3D11ShaderResourceView* texturearray_[3];
 public:
 	Model();
 	~Model();
-	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName,const wchar_t* NormalFileName=nullptr);
+	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName,MappingType Type,const wchar_t* TextureFileName2 = nullptr);
 	void destroy();
 	void render();
 
@@ -60,9 +67,9 @@ public:
 
 	//get
 	void getPosition(float& X, float& Y, float& Z);
-	inline const int getIndexCount()const {return indexcount_;}
+	inline const int getIndexCount()const { return indexcount_; }
 	inline ID3D11ShaderResourceView* getTexture()const { return TextureFactory::getInstance()->getTexture(texturefilename_); }
-	inline ID3D11ShaderResourceView* getNormalTexture()const { return TextureFactory::getInstance()->getTexture(normalfilename_); }
-
+	inline ID3D11ShaderResourceView* getNormalTexture()const { return TextureFactory::getInstance()->getTexture(mapfilename_); }
+	inline ID3D11ShaderResourceView** getTextureMapArray() { return texturearray_; }
 };
 

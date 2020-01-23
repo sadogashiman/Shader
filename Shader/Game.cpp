@@ -51,35 +51,36 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	result = model_->init(L"Resource/stone01.dds",L"Resource/cube.txt");
+	result = model_->init(L"Resource/stone01.dds",L"Resource/cube.txt",kBumpMap);
 	if (!result)
-	{
-		return false;
-	}
-	//全画面の2Dウィンドウを生成
-	ortho_ = new OrthoWindow;
-	if (!ortho_)
 	{
 		return false;
 	}
 
-	result = ortho_->init(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight));
-	if (!result)
-	{
-		return false;
-	}
+	//全画面の2Dウィンドウを生成
+	//ortho_ = new OrthoWindow;
+	//if (!ortho_)
+	//{
+	//	return false;
+	//}
+
+	//result = ortho_->init(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight));
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	//バッファを作成
-	defbuffer_ = new Deferredbuffers;
-	if (!defbuffer_)
-	{
-		return false;
-	}
+	//defbuffer_ = new Deferredbuffers;
+	//if (!defbuffer_)
+	//{
+	//	return false;
+	//}
 
-	if (!defbuffer_->init(ScreenWidth, ScreenHeight, kScreen_depth, kScreen_near))
-	{
-		return false;
-	}
+	//if (!defbuffer_->init(ScreenWidth, ScreenHeight, kScreen_depth, kScreen_near))
+	//{
+	//	return false;
+	//}
 
 	return true;
 }
@@ -122,12 +123,22 @@ bool Game::render()
 	//フルスクリーンの2Dウィンドウを作成
 	//ortho_->render();
 
-	model_->render();
-	ID3D11ShaderResourceView* texarray[2];
-	texarray[0] = TextureFactory::getInstance()->getTexture(L"Resource/stone01.dds");
-	texarray[1] = TextureFactory::getInstance()->getTexture(L"Resource/dirt01.dds");
+		//モデルを回転
+	static float rotation = 0.0F;
+	rotation += static_cast<float>(XM_PI * 0.005F);
+	if (rotation > 360.0F)
+	{
+		rotation -= 360;
+	}
 
-	if (!(Renderer::getInstance()->multiTextureRender(model_->getIndexCount(),world,view,projection,texarray,2)))
+	world = XMMatrixRotationY(rotation);
+
+	model_->render();
+	ID3D11ShaderResourceView* tex[2];
+	tex[0] = model_->getTexture();
+	tex[1] = model_->getNormalTexture();
+
+	if (!(Renderer::getInstance()->bumpRender(model_->getIndexCount(),world,view,projection,tex,light_)))
 	{
 		return false;
 	}
@@ -143,8 +154,8 @@ bool Game::render()
 
 void Game::destroy()
 {
-	SAFE_DELETE_DESTROY(defbuffer_);
-	SAFE_DELETE_DESTROY(ortho_);
+	//SAFE_DELETE_DESTROY(defbuffer_);
+	//SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(model_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
@@ -165,15 +176,7 @@ bool Game::renderSceneToTexture()
 	Direct3D::getInstance()->getProjection(projection);
 	view = camera_->getViewMatrix();
 
-	//モデルを回転
-	static float rotation = 0.0F;
-	rotation += static_cast<float>(XM_PI * 0.005F);
-	if (rotation > 360.0F)
-	{
-		rotation -= 360;
-	}
 
-	world = XMMatrixRotationY(rotation);
 
 	//モデルをレンダリング
 	model_->render();

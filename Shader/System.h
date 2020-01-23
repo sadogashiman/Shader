@@ -1,7 +1,4 @@
 #pragma once
-//g‚í‚ê‚Ä‚¢‚È‚¢ˆê•”‚ÌAPI‚ğœŠO
-#define WIN32_LEAN_AND_MEAN
-
 
 class System
 {
