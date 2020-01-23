@@ -40,17 +40,18 @@ private:
 
 	int vertexcount_;
 	int indexcount_;
+	int facecount_;
 
 	bool initBuffer();
-	void destroybuff();
 	void renderBuffer();
-
-	bool loadModel(const wchar_t* FileName);
-
+	void loadTexture(const wchar_t* FileName);
 	void releaseTexture();
 	void releaseModel();
 
 	ModelType* model_;
+	std::vector<Vector3> vertexvec_;
+	std::vector<Vector2> texturevec_;
+	std::vector<Vector3> normalvec_;
 	float positionx_, positiony_, positionz_;
 	wchar_t texturefilename_[MAX_PATH];
 	wchar_t mapfilename_[MAX_PATH];

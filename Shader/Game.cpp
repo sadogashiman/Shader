@@ -50,8 +50,8 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 	{
 		return false;
 	}
-
-	result = model_->init(L"Resource/stone01.dds",L"Resource/cube.txt",kBumpMap);
+	
+	result = model_->init(L"Resource/stone01.dds",L"Resource/logo.obj",kBumpMap);
 	if (!result)
 	{
 		return false;
@@ -134,11 +134,8 @@ bool Game::render()
 	world = XMMatrixRotationY(rotation);
 
 	model_->render();
-	ID3D11ShaderResourceView* tex[2];
-	tex[0] = model_->getTexture();
-	tex[1] = model_->getNormalTexture();
 
-	if (!(Renderer::getInstance()->bumpRender(model_->getIndexCount(),world,view,projection,tex,light_)))
+	if (!(Renderer::getInstance()->textureRender(model_->getIndexCount(),world,view,projection,model_->getTexture())))
 	{
 		return false;
 	}
