@@ -45,13 +45,11 @@ private:
 	bool initBuffer();
 	void renderBuffer();
 	void loadTexture(const wchar_t* FileName);
+	bool loadModel(const wchar_t* ModelFileName);
 	void releaseTexture();
 	void releaseModel();
 
 	ModelType* model_;
-	std::vector<Vector3> vertexvec_;
-	std::vector<Vector2> texturevec_;
-	std::vector<Vector3> normalvec_;
 	float positionx_, positiony_, positionz_;
 	wchar_t texturefilename_[MAX_PATH];
 	wchar_t mapfilename_[MAX_PATH];

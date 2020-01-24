@@ -19,13 +19,20 @@ private:
 	std::vector<char> vertexdataarray_;
 	std::vector<char> pixeldataarray_;
 
+	enum Estate
+	{
+		kStateInit,
+		kStateUpdate,
+		kStateDelete,
+		kStateMax,
+	};
+
 
 public:
 
 	//Check
 	static bool checkInputLayout(const void* shadercode, size_t codesize,
 								 const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum); //頂点入力レイアウトを作成するデータが有効か確認する関数
-
 	//Search
 	static bool searchFile(const wchar_t* FileName);
 	static bool searchFile(const char* FileName);

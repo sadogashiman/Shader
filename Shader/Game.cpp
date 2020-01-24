@@ -50,8 +50,8 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 	{
 		return false;
 	}
-	
-	result = model_->init(L"Resource/stone01.dds",L"Resource/logo.obj",kBumpMap);
+
+	result = model_->init(L"Resource/stone01.dds",L"Resource/model.txt",kBumpMap);
 	if (!result)
 	{
 		return false;

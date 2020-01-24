@@ -30,9 +30,9 @@ bool Model::initBuffer()
 	//頂点配列にデータをロード
 	for (int i = 0; i < vertexcount_; i++)
 	{
-		vertices[i].position = Vector3(vertexvec_[i].x, vertexvec_[i].y, vertexvec_[i].z);
-		vertices[i].texture = Vector2(texturevec_[i].x,texturevec_[i].y);
-		vertices[i].normal = Vector3(normalvec_[i].x, normalvec_[i].y, normalvec_[i].z);
+		vertices[i].position = Vector3(model_[i].x, model_[i].y, model_[i].z);
+		vertices[i].texture = Vector2(model_[i].tu, model_[i].tv);
+		vertices[i].normal = Vector3(model_[i].nx, model_[i].ny, model_[i].nz);
 
 		indices[i] = i;
 	}
@@ -115,6 +115,69 @@ void Model::loadTexture(const wchar_t* FileName)
 	TextureFactory::getInstance()->getTexture(FileName);
 }
 
+bool Model::loadModel(const wchar_t* ModelFileName)
+{
+	std::fstream fp;
+	char input;
+
+	//ファイルパスが有効か確認
+	if (!Support::searchFile(ModelFileName))
+	{
+		return false;
+	}
+
+	//ファイルパスが有効なのを確認したので展開
+	fp.open(ModelFileName,std::ios::beg|std::ios::in);
+
+	if (fp.fail())
+	{
+		return false;
+	}
+
+	//頂点の数を取得
+	fp.get(input);
+	while (input != ':')
+	{
+		fp.get(input);
+	}
+
+	//頂点カウントを読み取り
+	fp >> vertexcount_;
+
+	//インデックスの数を頂点の数と同じに設定
+	indexcount_ = vertexcount_;
+
+	//読み込まれた頂点数を使用してもでるを描画
+	model_ = new ModelType[vertexcount_];
+	if (!model_)
+	{
+		return false;
+	}
+
+	//データを先頭まで読み取る
+	fp.get(input);
+	while (input != ':')
+	{
+		fp.get(input);
+	}
+
+	//改行を飛ばす
+	fp.get(input);
+	fp.get(input);
+
+	//頂点データを読み込み
+	for (int i = 0; i < vertexcount_; i++)
+	{
+		fp >> model_[i].x >> model_[i].y >> model_[i].z;
+		fp >> model_[i].tu >> model_[i].tv;
+		fp >> model_[i].nx >> model_[i].ny >> model_[i].nz;
+	}
+
+	fp.close();
+
+	return true;
+}
+
 void Model::releaseTexture()
 {
 	TextureFactory::getInstance()->deleteTexture(texturefilename_);
@@ -134,7 +197,6 @@ Model::Model()
 	vertexbuff_ = nullptr;
 	indexbuff_ = nullptr;
 	model_ = nullptr;
-	ZeroMemory(texturefilename_ ,sizeof(texturefilename_));
 	vertexcount_ = 0;
 	indexcount_ = 0;
 	positionx_ = 0.0F;
@@ -148,80 +210,13 @@ Model::~Model()
 
 bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName, MappingType Type,const wchar_t* TextureFileName2)
 {
-	bool result;
-	//ファイルパスが有効か確認
-	if (!Support::searchFile(ModelFileName))
+	//モデルデータ読み込み
+	if (!loadModel(ModelFileName))
 	{
 		return false;
 	}
 
-	if (!Support::searchFile(TextureFileName))
-	{
-		Error::showDialog("モデルテクスチャファイル名が無効です");
-		return false;
-	}
-	else
-	{
-		loadTexture(TextureFileName);
-	}
-	std::fstream fp;
-
-	//ファイル展開
-	fp.open(ModelFileName, std::ios::in|std::ios::beg);
-
-	std::string tmp;
-	//データの読み込み
-	while (!fp.eof())
-	{
-		fp >> tmp;
-		if (tmp=="#")
-		{
-			//コメントは無視
-			continue;
-		}
-		else if (tmp=="vn")
-		{
-			Vector3 npos;
-			fp >> npos.x >> npos.y >> npos.z;
-			npos.z *= -1.0F;
-			normalvec_.push_back(npos);
-		}
-		else if (tmp == "vt")
-		{
-			Vector2 texpos;
-			fp >> texpos.x >> texpos.y;
-			texpos.y *= -1.0F;
-			texturevec_.push_back(texpos);
-		}
-		else if (tmp == "v")
-		{
-			Vector3 vpos = Vector3::Zero;
-			fp >> vpos.x >> vpos.y >> vpos.z;
-			vpos.z *= -1.0F; //座標系を反転
-			vertexvec_.push_back(vpos);
-			vertexcount_++;
-		}
-		else if (tmp == "f")
-		{
-			unsigned int value;
-			Vertextype vertex;
-			
-			for (int i = 0; i < 3; i++)
-			{
-				fp >> value;
-				vertex.position = vertexvec_[value - 1];
-				fp.ignore();
-
-				fp >> value;
-				vertex.texture = texturevec_[value - 1];
-				fp.ignore();
-
-				fp >> value;
-			}
-		}
-	}
-
-	indexcount_ = vertexcount_;
+	loadTexture(TextureFileName);
 
 	if (!initBuffer())
 	{
