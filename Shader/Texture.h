@@ -15,7 +15,7 @@ private:
 	bool checkExtension(const wchar_t* PathName);
 	Texture();
 	~Texture();
-	//WICTextureLoader‚ª‘Î‰ž‚µ‚Ä‚¢‚éŠg’£Žq
+	//TextureLoader‚ª‘Î‰ž‚µ‚Ä‚¢‚éŠg’£Žq
 	const wchar_t* extensionarray[kExtensionTypeNum] =
 	{
 		L"dds",

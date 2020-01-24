@@ -35,10 +35,8 @@ bool Texture::init(const wchar_t* TextureName)
 			return false;
 		}
 
-
-		const wchar_t* tmp = extensionarray[0];
 		//拡張子がdds又はDDSの場合DDSローダーを使用
-		if (wcscmp(tmp,TextureName))
+		if (wcscmp(extensionarray[kDds], TextureName)==0)
 		{
 			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName,&textureresource_, &texture_);
 			if (FAILED(hr))
