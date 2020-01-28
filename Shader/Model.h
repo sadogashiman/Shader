@@ -2,6 +2,7 @@
 #include"TextureFactory.h"
 enum MappingType
 {
+	kNone,
 	kMaskMap,
 	kBumpMap,
 };
@@ -57,7 +58,7 @@ private:
 public:
 	Model();
 	~Model();
-	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName,MappingType Type,const wchar_t* TextureFileName2 = nullptr);
+	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName,MappingType Type = kNone,const wchar_t* TextureFileName2 = nullptr);
 	void destroy();
 	void render();
 

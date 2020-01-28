@@ -10,7 +10,9 @@ Shadowshader::Shadowshader()
 	pixelshader_ = nullptr;
 	layout_ = nullptr;
 	samplestateclamp_ = nullptr;
+	samplestatewrap_ = nullptr;
 	matrixbuffer_ = nullptr;
+	lightbuffer_ = nullptr;
 	lightbuffer2_ = nullptr;
 }
 
@@ -50,6 +52,10 @@ bool Shadowshader::init()
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
+
+	//コンパイル済みシェーダーを取得
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -96,7 +102,6 @@ bool Shadowshader::init()
 
 	//不要になったデータの削除
 	support_.get()->destroyBufferData();
-
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;

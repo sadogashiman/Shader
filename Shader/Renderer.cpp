@@ -30,6 +30,7 @@ bool Renderer::init()
 		return false;
 	}
 
+
 	maskshader_.reset(new Maskshader);
 	if (!maskshader_.get())
 	{
@@ -43,17 +44,20 @@ bool Renderer::init()
 		return false;
 	}
 
-	//shadowshader_.reset(new Shadowshader);
-	//if (!shadowshader_.get())
-	//{
-	//	return false;
-	//}
 
-	//if (!(shadowshader_.get()->init()))
-	//{
-	//	Error::showDialog("シャドウシェーダーの初期化に失敗");
-	//	return false;
-	//}
+
+	shadowshader_.reset(new Shadowshader);
+	if (!shadowshader_.get())
+	{
+		return false;
+	}
+
+	if (!(shadowshader_.get()->init()))
+	{
+		Error::showDialog("シャドウシェーダーの初期化に失敗");
+		return false;
+	}
+
 
 	depthshader_.reset(new Depthshader);
 	if (!depthshader_.get())
@@ -67,6 +71,8 @@ bool Renderer::init()
 		return false;
 	}
 
+
+
 	textureshader_.reset(new Textureshader);
 	if (!textureshader_.get())
 	{
@@ -79,6 +85,8 @@ bool Renderer::init()
 		return false;
 	}
 
+
+
 	deferredshader_.reset(new Deferredshader);
 	if (!deferredshader_.get())
 	{
@@ -90,6 +98,8 @@ bool Renderer::init()
 		Error::showDialog("ディファードシェーダーの初期化に失敗");
 		return false;
 	}
+
+
 
 	multitexshader_.reset(new Multitexture);
 	if (!multitexshader_.get())
@@ -108,13 +118,15 @@ bool Renderer::init()
 
 void Renderer::destroy()
 {
-	lightshader_.get()->destroy();
-	bumpshader_.get()->destroy();
-	maskshader_.get()->destroy();
-	//shadowshader_.get()->destroy();
-	depthshader_.get()->destroy();
-	textureshader_.get()->destroy();
 	multitexshader_.get()->destroy();
+	deferredshader_.get()->destroy();
+	textureshader_.get()->destroy();
+	depthshader_.get()->destroy();
+	shadowshader_.get()->destroy();
+	maskshader_.get()->destroy();
+	bumpshader_.get()->destroy();
+	lightshader_.get()->destroy();
+
 }
 
 bool Renderer::maskRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)

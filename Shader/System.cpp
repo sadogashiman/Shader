@@ -41,6 +41,8 @@ bool System::init()
 	{
 		return false;
 	}
+
+
 	//ƒQ[ƒ€ƒNƒ‰ƒX‰Šú‰»
 	if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
 	{
@@ -87,6 +89,7 @@ void System::destroy()
 	Game::getInstance()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
 	Renderer::getInstance()->destroy();
+	Input::getInstance()->destroy();
 	Direct3D::getInstance()->destroy();
 	destroyWindows();
 }

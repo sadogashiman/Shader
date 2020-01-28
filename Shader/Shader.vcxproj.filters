@@ -81,9 +81,6 @@
     <ClCompile Include="Light.cpp">
       <Filter>Light</Filter>
     </ClCompile>
-    <ClCompile Include="Rendertexture.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Texture</Filter>
     </ClCompile>
@@ -154,9 +151,6 @@
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendertexture.h">
-      <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Texture</Filter>

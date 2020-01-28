@@ -51,36 +51,36 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	result = model_->init(L"Resource/chest.png",L"Resource/model.txt",kBumpMap);
+	result = model_->init(L"Resource/seafloor.dds",L"Resource/model.txt");
 	if (!result)
 	{
 		return false;
 	}
 
 	//全画面の2Dウィンドウを生成
-	//ortho_ = new OrthoWindow;
-	//if (!ortho_)
-	//{
-	//	return false;
-	//}
+	ortho_ = new OrthoWindow;
+	if (!ortho_)
+	{
+		return false;
+	}
 
-	//result = ortho_->init(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight));
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	result = ortho_->init(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight));
+	if (!result)
+	{
+		return false;
+	}
 
 	//バッファを作成
-	//defbuffer_ = new Deferredbuffers;
-	//if (!defbuffer_)
-	//{
-	//	return false;
-	//}
+	defbuffer_ = new Deferredbuffers;
+	if (!defbuffer_)
+	{
+		return false;
+	}
 
-	//if (!defbuffer_->init(ScreenWidth, ScreenHeight, kScreen_depth, kScreen_near))
-	//{
-	//	return false;
-	//}
+	if (!defbuffer_->init(ScreenWidth, ScreenHeight, kScreen_depth, kScreen_near))
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -102,12 +102,12 @@ bool Game::render()
 	bool result;
 	Matrix world, view, projection,ortho;
 
-	////シーンをレンダーバッファーにレンダリング
-	//result = renderSceneToTexture();
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	//シーンをレンダーバッファーにレンダリング
+	result = renderSceneToTexture();
+	if (!result)
+	{
+		return false;
+	}
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::Black);
@@ -118,30 +118,18 @@ bool Game::render()
 	Direct3D::getInstance()->getOrtho(ortho);
 	view = camera_->getBaseViewMatrix();
 
-	//Direct3D::getInstance()->turnZbufferOff();
+	Direct3D::getInstance()->turnZbufferOff();
 
 	//フルスクリーンの2Dウィンドウを作成
-	//ortho_->render();
+	ortho_->render();
 
-		//モデルを回転
-	static float rotation = 0.0F;
-	rotation += static_cast<float>(XM_PI * 0.005F);
-	if (rotation > 360.0F)
-	{
-		rotation -= 360;
-	}
-
-	world = XMMatrixRotationY(rotation);
-
-	model_->render();
-
-	if (!(Renderer::getInstance()->textureRender(model_->getIndexCount(),world,view,projection,model_->getTexture())))
+	if (!(Renderer::getInstance()->lightRender(ortho_->getIndexCount(),world,view,ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_)))
 	{
 		return false;
 	}
 
 	//すべての2Dレンダリングが終了したのでZバッファを有効にする
-	//Direct3D::getInstance()->turnZbufferOn();
+	Direct3D::getInstance()->turnZbufferOn();
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -151,8 +139,8 @@ bool Game::render()
 
 void Game::destroy()
 {
-	//SAFE_DELETE_DESTROY(defbuffer_);
-	//SAFE_DELETE_DESTROY(ortho_);
+	SAFE_DELETE_DESTROY(defbuffer_);
+	SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(model_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
@@ -173,7 +161,15 @@ bool Game::renderSceneToTexture()
 	Direct3D::getInstance()->getProjection(projection);
 	view = camera_->getViewMatrix();
 
+	//モデルを回転
+	static float rotation = 0.0F;
+	rotation += static_cast<float>(XM_PI * 0.005F);
+	if (rotation > 360.0F)
+	{
+		rotation -= 360;
+	}
 
+	world = XMMatrixRotationY(rotation);
 
 	//モデルをレンダリング
 	model_->render();
