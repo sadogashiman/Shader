@@ -2,6 +2,16 @@
 #include "Direct3D.h"
 
 
+Direct3D::Direct3D()
+{
+	videocardmemory_ = 0;
+	vsync_ = false;
+}
+
+Direct3D::~Direct3D()
+{
+}
+
 bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vsync, HWND Hwnd, const bool FullScreen, const float ScreenDepth, const float ScreenNear)
 {
 	HRESULT hr;
@@ -101,7 +111,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	videocardmemory_ = static_cast<int>(adapterdesc.DedicatedVideoMemory / 1024 / 1024);
 
 	//ビデオカードの名前を文字列に変換して保存
-	error = wcstombs_s(&stringlength, videocarddescription, 128, adapterdesc.Description, 128);
+	error = wcstombs_s(&stringlength, videocarddescription_, 128, adapterdesc.Description, 128);
 	if (error != 0)
 	{
 		return false;
@@ -464,7 +474,7 @@ void Direct3D::destroy()
 void Direct3D::setVideoCardInfo(char* CardName, int& Memory)
 {
 	//ビデオカードの名前とメモリ容量を取得
-	strcpy_s(CardName, 128, videocarddescription);
+	strcpy_s(CardName, 128, videocarddescription_);
 	Memory = videocardmemory_;
 }
 

@@ -66,13 +66,17 @@ const int kWindow_Height = 720;
 const int kWindow_Width = 1280;
 const int kExtensionTypeNum = 4;
 
-
-
+const char* kExtension[kExtensionTypeNum] =
+{
+	"dds",
+	"png",
+	"tiff",
+	"gif"
+};
 
 //******************************
 //Å@Å@		  óÒãìë‡
 //******************************
-
 
 
 

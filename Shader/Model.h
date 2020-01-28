@@ -43,12 +43,19 @@ private:
 	int indexcount_;
 	int facecount_;
 
+	//init
 	bool initBuffer();
-	void renderBuffer();
+
+	//load
 	void loadTexture(const wchar_t* FileName);
 	bool loadModel(const wchar_t* ModelFileName);
+
+	//release
 	void releaseTexture();
 	void releaseModel();
+
+	//render
+	void renderBuffer();
 
 	ModelType* model_;
 	float positionx_, positiony_, positionz_;
@@ -58,7 +65,7 @@ private:
 public:
 	Model();
 	~Model();
-	bool init(const wchar_t* TextureFileName, const wchar_t* ModelFileName,MappingType Type = kNone,const wchar_t* TextureFileName2 = nullptr);
+	bool init(const wchar_t* ModelFileName,MappingType Type = kNone,const wchar_t* TextureFileName2 = nullptr);
 	void destroy();
 	void render();
 

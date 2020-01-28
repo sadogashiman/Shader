@@ -5,7 +5,6 @@ Input::Input()
 {
 	ZeroMemory(Keyprevstate_, sizeof(Keyprevstate_));
 	ZeroMemory(Keystate_, sizeof(Keystate_));
-
 }
 
 Input::~Input()
@@ -28,7 +27,7 @@ bool Input::init(HINSTANCE hInstance, HWND Hwnd)
 		return false;
 	}
 
-	if(FAILED(hr))
+	if (FAILED(hr))
 	{
 		return false;
 	}
@@ -59,7 +58,7 @@ void Input::update()
 {
 	//前フレームの情報として保存
 	Padprevstate_ = Padstate_;
-	memcpy(Keyprevstate_,Keyprevstate_,sizeof(unsigned char));
+	memcpy(Keyprevstate_, Keyprevstate_, sizeof(unsigned char));
 
 	//各デバイスの入力情報を取得
 	readControllers();
@@ -175,12 +174,11 @@ bool Input::isPressed(const unsigned int KeyCode) const
 
 bool Input::isReleased(const unsigned int KeyCode) const
 {
-	return false;
+	return !(Keystate_[KeyCode] & DINPUT_VERTION) && Keyprevstate_[KeyCode] & DINPUT_VERTION;
 }
 
 void Input::readKeyBoard()
 {
-
 	keyboarddev_->GetDeviceState(sizeof(Keystate_), &Keystate_);
 }
 
@@ -191,7 +189,6 @@ void Input::readMouse()
 
 void Input::readControllers()
 {
-
 	//すべてのコントローラーデバイスを稼働状態に
 	for (auto controller : gamecontrollers_)
 	{
@@ -268,7 +265,7 @@ bool Input::initMouse()
 	}
 
 	//エラーが起きたら解消する
-	HRESULT hr =mousedevice_->Acquire();
+	HRESULT hr = mousedevice_->Acquire();
 	recovery(mousedevice_, hr);
 
 	return true;
@@ -306,7 +303,7 @@ bool Input::initControllers()
 	return true;
 }
 
-void Input::recovery(LPDIRECTINPUTDEVICE8& Dev,HRESULT Hr)
+void Input::recovery(LPDIRECTINPUTDEVICE8& Dev, HRESULT Hr)
 {
 	//エラーがなくなるまでリカバリー
 	while (Hr == DIERR_INPUTLOST || Hr == DIERR_INVALIDPARAM || Hr == DIERR_NOTACQUIRED || Hr == DIERR_NOTINITIALIZED || Hr == E_PENDING)

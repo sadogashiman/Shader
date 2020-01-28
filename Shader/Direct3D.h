@@ -2,12 +2,11 @@
 class Direct3D
 {
 private:
-	Direct3D() = default;
-	~Direct3D() = default;
-
+	Direct3D();
+	~Direct3D();
 	bool vsync_;
 	int videocardmemory_;
-	char videocarddescription[128];
+	char videocarddescription_[128];
 	Matrix projection_;
 	Matrix world_;
 	Matrix ortho_;
@@ -28,8 +27,6 @@ private:
 	ComPtr<IDXGISwapChain> cpswapchain_;
 	ComPtr<IDXGIDebug> cpdxgidebug_;
 	D3D11_VIEWPORT viewport_;
-
-
 public:
 	Direct3D(const Direct3D&) = delete;
 	Direct3D& operator = (const Direct3D&) = delete;
@@ -64,7 +61,6 @@ public:
 	//CullingØ‚è‘Ö‚¦ŠÖ”
 	inline void turnCullingOn() { cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get()); }
 	inline void turnCullingOff() { cpdevicecontext_.Get()->RSSetState(cprasterstatenoculling_.Get()); }
-
 
 	//static
 	static inline Direct3D* getInstance()

@@ -184,7 +184,7 @@ bool Renderer::lightRender(const int Indexcount, Matrix World, Matrix View, Matr
 	return true;
 }
 
-bool Renderer::shadowRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, ID3D11ShaderResourceView* Depthmaptexture2, Light* Lightdata, Light* Lightdata2)
+bool Renderer::shadowRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture,Light* Lightdata)
 {
 	bool result;
 

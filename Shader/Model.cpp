@@ -2,10 +2,10 @@
 #include "model.h"
 #include"Direct3D.h"
 #include"Support.h"
+#include"Texture.h"
 
 bool Model::initBuffer()
 {
-
 	Vertextype* vertices;
 	unsigned long* indices;
 	D3D11_BUFFER_DESC vertexbuffdesc;
@@ -46,7 +46,6 @@ bool Model::initBuffer()
 	vertexbuffdesc.StructureByteStride = 0;
 
 	//サブリソースに頂点データへのポインターを与える
-	//ZeroMemory(&vertexdata, sizeof(vertexdata));
 	vertexdata.pSysMem = vertices;
 	vertexdata.SysMemPitch = 0;
 	vertexdata.SysMemSlicePitch = 0;
@@ -109,8 +108,6 @@ void Model::renderBuffer()
 
 void Model::loadTexture(const wchar_t* FileName)
 {
-	//メンバに文字列を保存
-	wcscpy(texturefilename_, FileName);
 
 	TextureFactory::getInstance()->getTexture(FileName);
 }
@@ -202,13 +199,15 @@ Model::Model()
 	positionx_ = 0.0F;
 	positiony_ = 0.0F;
 	positionz_ = 0.0F;
+	facecount_ = 0;
+
 }
 
 Model::~Model()
 {
 }
 
-bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName, MappingType Type,const wchar_t* TextureFileName2)
+bool Model::init(const wchar_t* ModelFileName, MappingType Type,const wchar_t* TextureFileName2)
 {
 	//モデルデータ読み込み
 	if (!loadModel(ModelFileName))
@@ -216,7 +215,7 @@ bool Model::init(const wchar_t* TextureFileName, const wchar_t* ModelFileName, M
 		return false;
 	}
 
-	loadTexture(TextureFileName);
+	loadTexture(Support::renameToImageFileName(ModelFileName));
 
 	if (!initBuffer())
 	{

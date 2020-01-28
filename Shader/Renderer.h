@@ -50,7 +50,7 @@ public:
 	bool lightRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2, Light* Lightdata);
 
 	//シャドウシェーダーを使用するときのレンダー(モデルのインデックスカウント、、各行列、テクスチャ、デプスマップのテクスチャ)
-	bool shadowRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture,ID3D11ShaderResourceView* Depthmaptexture2, Light* Lightdata,Light* Lightdata2);
+	bool shadowRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata);
 
 	//テクスチャシェーダーを使用するときのレンダー(モデルのインデックスカウント、、各行列、テクスチャ)
 	bool textureRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);

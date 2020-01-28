@@ -51,7 +51,7 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	result = model_->init(L"Resource/seafloor.dds",L"Resource/model.txt");
+	result = model_->init(L"Resource/model.txt");
 	if (!result)
 	{
 		return false;

@@ -3,7 +3,6 @@
 #include"error.h"
 #include"release.h"
 
-//変換する拡張子
 
 class Support
 {
@@ -18,14 +17,7 @@ private:
 	ID3D10Blob* vertexshaderbuffer_;
 	std::vector<char> vertexdataarray_;
 	std::vector<char> pixeldataarray_;
-
-	enum Estate
-	{
-		kStateInit,
-		kStateUpdate,
-		kStateDelete,
-		kStateMax,
-	};
+	static wchar_t filename_[MAX_PATH];
 
 
 public:
@@ -38,6 +30,7 @@ public:
 	static bool searchFile(const char* FileName);
 	static bool searchFile(const std::string FileName);
 
+	static wchar_t* renameToImageFileName(const wchar_t* ModelFileName);
 	//Create
 	HRESULT createVertexData(const wchar_t* VertexShaderFileName);					//渡されたファイル名で頂点シェーダーを作成
 	HRESULT createPixelData(const wchar_t* PixelShaderFileName);					//渡されたファイル名でピクセルシェーダーを作成
