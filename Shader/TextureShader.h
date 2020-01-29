@@ -21,6 +21,8 @@ private:
 	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 	void renderShader(const int Indexcount);
 public:
+	Textureshader();
+	~Textureshader();
 	bool init();
 	bool render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 	void destroy();

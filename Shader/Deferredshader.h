@@ -22,6 +22,8 @@ private:
 
 
 public:
+	Deferredshader();
+	~Deferredshader();
 	bool init();
 	void destroy();
 	bool render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);

@@ -67,6 +67,9 @@
     <Filter Include="Renderer\Shader\Multi">
       <UniqueIdentifier>{e4a434c4-9579-4560-8721-3ab8e2e932bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Namespace">
+      <UniqueIdentifier>{1739837b-8a35-4866-85a3-4e1b8cab3f77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -216,7 +219,7 @@
       <Filter>Renderer\Shader\Multi</Filter>
     </ClInclude>
     <ClInclude Include="namespace.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Namespace</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

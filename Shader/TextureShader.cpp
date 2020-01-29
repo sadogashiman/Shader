@@ -4,6 +4,20 @@
 #include"error.h"
 #include"release.h"
 
+Textureshader::Textureshader()
+{
+	vertexshader_ = nullptr;
+	pixelshader_ = nullptr;
+	layout_ = nullptr;
+	matrixbuffer_ = nullptr;
+	samplerstate_ = nullptr;
+}
+
+Textureshader::~Textureshader()
+{
+}
+
+
 bool Textureshader::init()
 {
 	HRESULT hr;

@@ -4,6 +4,22 @@
 #include"namespace.h"
 wchar_t Support::filename_[MAX_PATH];
 
+Support::Support()
+{
+	vertexblob_ = nullptr;
+	pixelblob_ = nullptr;
+	vertexsize_ = 0;
+	pixelsize_ = 0;
+	vertexshaderbuffer_ = nullptr;
+	pixelshaderbuffer_ = nullptr;
+	vertexshader_ = nullptr;
+	pixelshader_ = nullptr;
+}
+
+Support::~Support()
+{
+}
+
 bool Support::checkInputLayout(const void* shadercode, size_t codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum)
 {
 	ID3D11ShaderReflection* vsref;

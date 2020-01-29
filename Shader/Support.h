@@ -19,8 +19,9 @@ private:
 	std::vector<char> pixeldataarray_;
 	static wchar_t filename_[MAX_PATH];
 
-
 public:
+	Support();
+	~Support();
 
 	//Check
 	static bool checkInputLayout(const void* shadercode, size_t codesize,
@@ -30,13 +31,14 @@ public:
 	static bool searchFile(const char* FileName);
 	static bool searchFile(const std::string FileName);
 
+	//Rename
 	static wchar_t* renameToImageFileName(const wchar_t* ModelFileName);
+
 	//Create
 	HRESULT createVertexData(const wchar_t* VertexShaderFileName);					//渡されたファイル名で頂点シェーダーを作成
 	HRESULT createPixelData(const wchar_t* PixelShaderFileName);					//渡されたファイル名でピクセルシェーダーを作成
 
 	//Get
-	inline auto get() { return vertexblob_; }
 	inline const LPVOID getVertexBufferPtr()const { return vertexblob_; }			//頂点シェーダーのバッファポインタを返す
 	inline const LPVOID getPixelBufferPtr()const { return pixelblob_; }			//ピクセルシェーダーのバッファポインタを返す
 	inline const size_t getVertexBufferSize()const { return vertexsize_; }			//頂点シェーダーのバッファサイズを返す

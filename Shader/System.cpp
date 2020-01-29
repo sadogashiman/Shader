@@ -8,6 +8,8 @@
 
 System::System()
 {
+	instance_ = 0;
+	hwnd_ = 0;
 }
 
 System::~System()

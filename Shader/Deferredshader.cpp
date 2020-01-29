@@ -3,6 +3,19 @@
 #include"Direct3D.h"
 #include"release.h"
 
+Deferredshader::Deferredshader()
+{
+	layout_ = nullptr;
+	vertexshader_ = nullptr;
+	pixelshader_ = nullptr;
+	matrixbuffer_ = nullptr;
+	samplestatewrap_ = nullptr;
+}
+
+Deferredshader::~Deferredshader()
+{
+}
+
 bool Deferredshader::init()
 {
 	HRESULT hr;
