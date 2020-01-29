@@ -215,6 +215,9 @@
     <ClInclude Include="Multitexture.h">
       <Filter>Renderer\Shader\Multi</Filter>
     </ClInclude>
+    <ClInclude Include="namespace.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="bumpmapps.hlsl">

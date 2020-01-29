@@ -190,6 +190,7 @@
     <ClInclude Include="Lightshader.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Multitexture.h" />
+    <ClInclude Include="namespace.h" />
     <ClInclude Include="OrthoWindow.h" />
     <ClInclude Include="release.h" />
     <ClInclude Include="Renderer.h" />

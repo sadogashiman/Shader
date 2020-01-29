@@ -215,7 +215,9 @@ bool Model::init(const wchar_t* ModelFileName, MappingType Type,const wchar_t* T
 		return false;
 	}
 
-	loadTexture(Support::renameToImageFileName(ModelFileName));
+	wcscpy(texturefilename_, Support::renameToImageFileName(ModelFileName));
+
+	loadTexture(texturefilename_);
 
 	if (!initBuffer())
 	{

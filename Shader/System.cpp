@@ -27,18 +27,21 @@ bool System::init()
 	//DirectX初期化
 	if (!Direct3D::getInstance()->init(screenwidth, screenheight, kvsync, hwnd_, kFullScreen, kScreen_depth, kScreen_near))
 	{
+		Error::showDialog("DirectXの初期化に失敗");
 		return false;
 	}
 
 	//インプットクラス初期化
 	if (!Input::getInstance()->init(instance_, hwnd_))
 	{
+		Error::showDialog("DirectInputの初期化に失敗");
 		return false;
 	}
 
 	//レンダラークラス初期化
 	if (!Renderer::getInstance()->init())
 	{
+		Error::showDialog("レンダラークラスの初期化に失敗");
 		return false;
 	}
 
@@ -46,6 +49,7 @@ bool System::init()
 	//ゲームクラス初期化
 	if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
 	{
+		Error::showDialog("ゲームクラスの初期化に失敗");
 		return false;
 	}
 

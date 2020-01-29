@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Support.h"
 #include"Direct3D.h"
+#include"namespace.h"
 wchar_t Support::filename_[MAX_PATH];
 
 bool Support::checkInputLayout(const void* shadercode, size_t codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum)
@@ -99,7 +100,7 @@ wchar_t* Support::renameToImageFileName(const wchar_t* ModelFileName)
 
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
-		PathRenameExtension(tmp, kExtension[i]);
+		PathRenameExtension(tmp,Extension::kExtension[i]);
 
 		//有効なファイルパスを見つけた場合ループを抜ける
 		if (PathFileExists(tmp))

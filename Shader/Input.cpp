@@ -21,11 +21,11 @@ bool Input::init(HINSTANCE hInstance, HWND Hwnd)
 	hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)didev_.GetAddressOf(), NULL);
 
 	//入力デバイスの列挙
-	hr = didev_.Get()->EnumDevices(DI8DEVCLASS_GAMECTRL, &staticEnumGameControllers, this, DIEDFL_ATTACHEDONLY);
-	if (FAILED(hr))
-	{
-		return false;
-	}
+	//hr = didev_.Get()->EnumDevices(DI8DEVCLASS_GAMECTRL, &staticEnumGameControllers, this, DIEDFL_ATTACHEDONLY);
+	//if (FAILED(hr))
+	//{
+	//	return false;
+	//}
 
 	if (FAILED(hr))
 	{
@@ -43,10 +43,10 @@ bool Input::init(HINSTANCE hInstance, HWND Hwnd)
 		return false;
 	}
 
-	if (!initControllers())
+	/*if (!initControllers())
 	{
 		return false;
-	}
+	}*/
 
 	screen.Height = GetSystemMetrics(SM_CYSCREEN);
 	screen.Width = GetSystemMetrics(SM_CXSCREEN);
@@ -61,7 +61,7 @@ void Input::update()
 	memcpy(Keyprevstate_, Keyprevstate_, sizeof(unsigned char));
 
 	//各デバイスの入力情報を取得
-	readControllers();
+	//readControllers();
 	readKeyBoard();
 	readMouse();
 	processInput();
@@ -70,10 +70,10 @@ void Input::update()
 void Input::destroy()
 {
 	//破棄
-	for (auto& controller : gamecontrollers_)
-	{
-		controller.Get()->Unacquire();
-	}
+	//for (auto& controller : gamecontrollers_)
+	//{
+	//	controller.Get()->Unacquire();
+	//}
 
 	mousedevice_->Unacquire();
 	mousedevice_->Release();
