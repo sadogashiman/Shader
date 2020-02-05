@@ -25,8 +25,8 @@ bool Texture::init(const wchar_t* TextureName)
 	//文字列を型変換
 	wcstombs(tmp, TextureName, MAX_PATH);
 
-	//渡されたファイル名に拡張子が含まれているか確認
-	if (PathFileExists(tmp))
+	//ファイルパスが有効か確認
+	if (PathFindExtension(tmp))
 	{
 		//拡張子がテクスチャローダーに対応しているか確認
 		if (!checkExtension(TextureName))
@@ -34,7 +34,7 @@ bool Texture::init(const wchar_t* TextureName)
 			Error::showDialog("テクスチャローダーが対応していない拡張子です");
 			return false;
 		}
-		if(PathFindExtension(tmp))
+		if(PathFileExists(tmp))
 		{
 			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName,&textureresource_, &texture_);
 			if (FAILED(hr))
@@ -52,7 +52,7 @@ bool Texture::init(const wchar_t* TextureName)
 	}
 	else
 	{
-		Error::showDialog("テクスチャファイル文字列に拡張子が含まれていません");
+		Error::showDialog("ファイル名に拡張子がありません");
 		return false;
 	}
 

@@ -171,6 +171,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureFactory.cpp" />
     <ClCompile Include="TextureShader.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureFactory.h" />
     <ClInclude Include="TextureShader.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="maskps.hlsl">
