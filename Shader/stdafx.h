@@ -33,6 +33,9 @@
 #include<map>
 #include<chrono>
 #include<iostream>
+#include<list>
+#include<random>
+#include<algorithm>
 
 //******************************
 //@@		ƒŠƒ“ƒN

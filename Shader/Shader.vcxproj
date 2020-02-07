@@ -161,6 +161,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Multitexture.cpp" />
     <ClCompile Include="OrthoWindow.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shadowshader.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -193,6 +194,7 @@
     <ClInclude Include="Multitexture.h" />
     <ClInclude Include="namespace.h" />
     <ClInclude Include="OrthoWindow.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="release.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shadowshader.h" />

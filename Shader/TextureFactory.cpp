@@ -60,7 +60,7 @@ ID3D11ShaderResourceView* TextureFactory::getTexture(const wchar_t* TextureName)
 		if (!Texture::getInstance()->init(TextureName))
 		{
 			Error::showDialog("テクスチャロードに失敗");
-			return false;
+			return nullptr;
 		}
 		if (!(texture = Texture::getInstance()->getTexture()))
 		{
