@@ -155,7 +155,7 @@ bool ParticleSystem::initbuffer()
 	}
 
 	//配列を初期化
-	for (int i = 0; i < indices.size(); i++)
+	for (unsigned int i = 0; i < indices.size(); i++)
 	{
 		indices[i] = i;
 	}
@@ -208,26 +208,105 @@ bool ParticleSystem::initbuffer()
 
 bool ParticleSystem::updateBuffer()
 {
+	HRESULT hr;
+	D3D11_MAPPED_SUBRESOURCE mappedresource;
+	VertexType* verticesptr;
+	int index;
+
+	//インデックスを初期化
+	index = 0;
+
+	std::list<std::unique_ptr<ParticleType>>::iterator itr;
+
+	for (itr = particlelist_.begin();itr!=particlelist_.end();itr++)
+	{
+		//左下
+		vertices_[index].position = Vector3(itr->get()->position.x - data_.size, itr->get()->position.y - data_.size, itr->get()->position.z);
+		vertices_[index].texture = Vector2(0.0F, 1.0F);
+		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		index++;
+
+		//左上
+		vertices_[index].position = Vector3(itr->get()->position.x - data_.size, itr->get()->position.y + data_.size, itr->get()->position.z);
+		vertices_[index].texture = Vector2(0.0F, 0.0F);
+		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		index++;
+
+		//右下
+		vertices_[index].position = Vector3(itr->get()->position.x + data_.size, itr->get()->position.y - data_.size, itr->get()->position.z);
+		vertices_[index].texture = Vector2(1.0F, 1.0F);
+		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		index++;
+
+		//右下
+		vertices_[index].position = Vector3(itr->get()->position.x + data_.size, itr->get()->position.y - data_.size, itr->get()->position.z);
+		vertices_[index].texture = Vector2(1.0F, 1.0F);
+		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		index++;
+
+		//左上
+		vertices_[index].position = Vector3(itr->get()->position.x - data_.size, itr->get()->position.y + data_.size, itr->get()->position.z);
+		vertices_[index].texture = Vector2(0.0F, 0.0F);
+		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		index++;
+
+		vertices_[index].position = Vector3(itr->get()->position.x + data_.size, itr->get()->position.y + data_.size, itr->get()->position.z);
+		vertices_[index].texture = Vector2(1.0F, 0.0F);
+		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		index++;
+
+		itr++;
+	}
+
+	//頂点バッファをロック
+	hr = Direct3D::getInstance()->getContext()->Map(vertexbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	if (FAILED(hr))
+	{
+		Error::showDialog("頂点バッファのロックに失敗");
+		return false;
+	}
+
+	//シェーダーへのポインタを作成
+	verticesptr = (VertexType*)mappedresource.pData;
+
+	//頂点バッファをコピー
+	memcpy(verticesptr, (void*)&vertices_, sizeof(VertexType*) * vertexcnt_);
+
+	//頂点バッファのロックを解除
+	Direct3D::getInstance()->getContext()->Unmap(vertexbuffer_, 0);
 
 	return true;
 }
 
 void ParticleSystem::renderBuffer()
 {
+	unsigned int stride;
+	unsigned int offset;
+
+	//幅とオフセットを設定
+	stride = sizeof(VertexType);
+	offset = 0;
+
+	//頂点バッファを入力アセンブラでアクティブに設定
+	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, &vertexbuffer_, &stride, &offset);
+
+	//インデックスバッファを入力アセンブラでアクティブに設定
+	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_, DXGI_FORMAT_R32_UINT, 0);
+
+	//頂点のプリミティブタイプを設定
+	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void ParticleSystem::destroyBuffer()
 {
+
 }
 
 void ParticleSystem::emitParticle(const float FrameTime)
 {
 	bool emit;
-	bool found;
 	Vector3 position;
-	float velocity;
 	Vector3 color;
-	int index;
 	std::random_device seed;
 	std::mt19937 engine(seed());
 	std::normal_distribution<> dist(1.0, 0.5);
