@@ -181,21 +181,21 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
 
 		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexshaderbuffer_, NULL);
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, vertexshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
 			return hr;
 		}
 
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer_->GetBufferPointer(), vertexshaderbuffer_->GetBufferSize(), nullptr, &vertexshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer_.Get()->GetBufferPointer(), vertexshaderbuffer_.Get()->GetBufferSize(), nullptr, &vertexshader_);
 		if (FAILED(hr))
 		{
 			return hr;
 		}
 
 		//バッファサイズとポインタをコピー
-		vertexblob_ = vertexshaderbuffer_->GetBufferPointer();
-		vertexsize_ = vertexshaderbuffer_->GetBufferSize();
+		vertexblob_ = vertexshaderbuffer_.Get()->GetBufferPointer();
+		vertexsize_ = vertexshaderbuffer_.Get()->GetBufferSize();
 	}
 
 	return S_OK;
@@ -253,29 +253,22 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
 
 		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelshaderbuffer_, NULL);
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, pixelshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
 			return hr;
 		}
 
-		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer_->GetBufferPointer(), pixelshaderbuffer_->GetBufferSize(), nullptr, &pixelshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer_.Get()->GetBufferPointer(), pixelshaderbuffer_.Get()->GetBufferSize(), nullptr, &pixelshader_);
 		if (FAILED(hr))
 		{
 			return hr;
 		}
 
 		//バッファサイズとポインタをコピー
-		pixelblob_ = pixelshaderbuffer_->GetBufferPointer();
-		pixelsize_ = pixelshaderbuffer_->GetBufferSize();
+		pixelblob_ = pixelshaderbuffer_.Get()->GetBufferPointer();
+		pixelsize_ = pixelshaderbuffer_.Get()->GetBufferSize();
 	}
 
 	return S_OK;
-}
-
-void Support::destroyBufferData()
-{
-	//不要になったデータの削除
-	SAFE_RELEASE(vertexshaderbuffer_);
-	SAFE_RELEASE(pixelshaderbuffer_);
 }

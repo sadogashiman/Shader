@@ -3,7 +3,7 @@
 #include"Direct3D.h"
 #include"release.h"
 #include"Input.h"
-#include"Renderer.h"
+#include"ShaderManager.h"
 
 Game::Game()
 {
@@ -102,12 +102,12 @@ bool Game::render()
 	bool result;
 	Matrix world, view, projection,ortho;
 
-	//シーンをレンダーバッファーにレンダリング
-	result = renderSceneToTexture();
-	if (!result)
-	{
-		return false;
-	}
+	////シーンをレンダーバッファーにレンダリング
+	//result = renderSceneToTexture();
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::Black);
@@ -118,18 +118,23 @@ bool Game::render()
 	Direct3D::getInstance()->getOrtho(ortho);
 	view = camera_->getBaseViewMatrix();
 
-	Direct3D::getInstance()->turnZbufferOff();
+	//Direct3D::getInstance()->turnZbufferOff();
 
 	//フルスクリーンの2Dウィンドウを作成
-	ortho_->render();
-
-	if (!(Renderer::getInstance()->lightRender(ortho_->getIndexCount(),world,view,ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_)))
+	//ortho_->render();
+	model_->render();
+	if (!(ShaderManager::getInstance()->textureRender(model_->getIndexCount(), world, view, projection,model_->getTexture())))
 	{
 		return false;
 	}
 
-	//すべての2Dレンダリングが終了したのでZバッファを有効にする
-	Direct3D::getInstance()->turnZbufferOn();
+	//if (!(ShaderManager::getInstance()->lightRender(ortho_->getIndexCount(),world,view,ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_)))
+	//{
+	//	return false;
+	//}
+
+	////すべての2Dレンダリングが終了したのでZバッファを有効にする
+	//Direct3D::getInstance()->turnZbufferOn();
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -174,7 +179,7 @@ bool Game::renderSceneToTexture()
 	//モデルをレンダリング
 	model_->render();
 
-	if (!(Renderer::getInstance()->deferredRender(model_->getIndexCount(), world, view, projection, model_->getTexture())))
+	if (!(ShaderManager::getInstance()->deferredRender(model_->getIndexCount(), world, view, projection, model_->getTexture())))
 	{
 		return false;
 	}

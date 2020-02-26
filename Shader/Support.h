@@ -13,8 +13,8 @@ private:
 	LPVOID pixelblob_;
 	size_t vertexsize_;
 	size_t pixelsize_;
-	ID3D10Blob* pixelshaderbuffer_;
-	ID3D10Blob* vertexshaderbuffer_;
+	ComPtr<ID3D10Blob> pixelshaderbuffer_;
+	ComPtr<ID3D10Blob> vertexshaderbuffer_;
 	std::vector<char> vertexdataarray_;
 	std::vector<char> pixeldataarray_;
 	static wchar_t filename_[MAX_PATH];
@@ -46,7 +46,5 @@ public:
 	inline ID3D11VertexShader* getVertexShader()const { return vertexshader_; }		//作成された頂点シェーダーのポインターを返す
 	inline ID3D11PixelShader* getPixelShader()const { return pixelshader_; }		//作成したピクセルシェーダーのポインターを返す
 
-	//destroy
-	void destroyBufferData();	//不要になったバッファデータを削除
 };
 

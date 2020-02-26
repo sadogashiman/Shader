@@ -9,11 +9,11 @@
 #include"Deferredshader.h"
 #include"Multitexture.h"
 
-class Renderer
+class ShaderManager
 {
 private:
-	Renderer() = default;
-	~Renderer() = default;
+	ShaderManager() = default;
+	~ShaderManager() = default;
 	std::unique_ptr<LightShader> lightshader_;
 	std::unique_ptr<Bumpmap> bumpshader_;
 	std::unique_ptr<Maskshader> maskshader_;
@@ -22,18 +22,18 @@ private:
 	std::unique_ptr<Textureshader>textureshader_;
 	std::unique_ptr<Deferredshader>deferredshader_;
 	std::unique_ptr<Multitexture>multitexshader_;
-	Renderer(const Renderer&) = delete;
-	Renderer& operator=(const Renderer&) = delete;
-	Renderer(Renderer&&) = delete;
-	Renderer& operator=(Renderer&&) = delete;
+	ShaderManager(const ShaderManager&) = delete;
+	ShaderManager& operator=(const ShaderManager&) = delete;
+	ShaderManager(ShaderManager&&) = delete;
+	ShaderManager& operator=(ShaderManager&&) = delete;
 public:
 
 	bool init();
 	void destroy();
 
-	static inline Renderer* getInstance()
+	static inline ShaderManager* getInstance()
 	{
-		static Renderer instance;
+		static ShaderManager instance;
 		return &instance;
 	}
 

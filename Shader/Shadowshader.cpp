@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Shadowshader.h"
 #include"Direct3D.h"
-#include"release.h"
+#include"Support.h"
 
 
 Shadowshader::Shadowshader()
@@ -29,24 +29,17 @@ bool Shadowshader::init()
 	D3D11_BUFFER_DESC lightbufferdesc2;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
-
-	//Supportクラス生成
-	support_.reset(new Support);
-	if (!support_.get())
-	{
-		Error::showDialog("Supportクラスの生成に失敗");
-		return false;
-	}
+	Support support;
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"shadowvs.cso");
+	hr = support.createVertexData(L"shadowvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"shadowps.cso");
+	hr = support.createPixelData(L"shadowps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
@@ -54,8 +47,8 @@ bool Shadowshader::init()
 	}
 
 	//コンパイル済みシェーダーを取得
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
+	vertexshader_ = support.getVertexShader();
+	pixelshader_ = support.getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -87,21 +80,17 @@ bool Shadowshader::init()
 
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support_->getVertexBufferPtr(), support_->getVertexBufferSize(), polygonlayout, numelements))
+	if (!Support::checkInputLayout(support.getVertexBufferPtr(), support.getVertexBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getVertexBufferPtr(), support_->getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support.getVertexBufferPtr(), support.getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
-
-
-	//不要になったデータの削除
-	support_.get()->destroyBufferData();
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;

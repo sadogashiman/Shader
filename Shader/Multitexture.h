@@ -1,5 +1,4 @@
 #pragma once
-#include"Support.h"
 class Multitexture
 {
 private:
@@ -18,7 +17,6 @@ private:
 	ID3D11InputLayout* layout_;
 	ID3D11SamplerState* samplerstate_;
 	ID3D11Buffer* matrixbuffer_;
-	std::unique_ptr<Support> support_;
 public:
 	Multitexture();
 	~Multitexture();

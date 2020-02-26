@@ -1,5 +1,4 @@
 #pragma once
-#include"Support.h"
 
 class Deferredshader
 {
@@ -18,7 +17,6 @@ private:
 	ID3D11InputLayout* layout_;
 	ID3D11SamplerState* samplestatewrap_;
 	ID3D11Buffer* matrixbuffer_;
-	std::unique_ptr<Support> support_;
 
 
 public:

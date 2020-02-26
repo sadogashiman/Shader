@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FontShader.cpp" />
     <ClCompile Include="Maskshader.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Bumpmap.cpp" />
@@ -163,7 +164,7 @@
     <ClCompile Include="OrthoWindow.cpp" />
     <ClCompile Include="ParticleShader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Shadowshader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -179,6 +180,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FontShader.h" />
     <ClInclude Include="Maskshader.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Bumpmap.h" />
@@ -198,7 +200,7 @@
     <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="release.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Shadowshader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Support.h" />

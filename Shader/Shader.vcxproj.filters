@@ -70,6 +70,12 @@
     <Filter Include="Namespace">
       <UniqueIdentifier>{1739837b-8a35-4866-85a3-4e1b8cab3f77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{6fd6c1e0-0e83-438e-8c8d-73be4ef3ca9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderer\Shader\Font">
+      <UniqueIdentifier>{9bee993e-cf7a-482e-b0ed-0c081e013f0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -95,9 +101,6 @@
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル</Filter>
@@ -150,6 +153,12 @@
     <ClCompile Include="ParticleShader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="FontShader.cpp">
+      <Filter>Renderer\Shader\Font</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -181,9 +190,6 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -238,6 +244,12 @@
     </ClInclude>
     <ClInclude Include="ParticleShader.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="FontShader.h">
+      <Filter>Renderer\Shader\Font</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

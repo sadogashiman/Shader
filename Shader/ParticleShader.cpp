@@ -89,8 +89,6 @@ bool ParticleShader::init()
 		return false;
 	}
 
-	//不要なデータの削除
-	support_.get()->destroyBufferData();
 
 	//動的定数バッファの設定
 	matrixbufferdesc.Usage = D3D11_USAGE_DEFAULT;

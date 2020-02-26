@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Multitexture.h"
 #include"Direct3D.h"
+#include"Support.h"
 
 Multitexture::Multitexture()
 {
@@ -24,30 +25,26 @@ bool Multitexture::init()
 	unsigned int numelement;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
+	Support support;
 
 	vertexshaderbuffer_ = nullptr;
 	pixelshaderbuffer_ = nullptr;
 
-	support_.reset(new Support);
-	if (!support_.get())
-	{
-		return false;
-	}
-
-	hr = support_.get()->createVertexData(L"multitexturevs.cso");
+	hr = support.createVertexData(L"multitexturevs.cso");
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"multitextureps.cso");
+	hr = support.createPixelData(L"multitextureps.cso");
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
+	//作成したデータをコピー
+	vertexshader_ = support.getVertexShader();
+	pixelshader_ = support.getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -70,19 +67,18 @@ bool Multitexture::init()
 
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelement))
+	if (!Support::checkInputLayout(support.getVertexBufferPtr(), support.getVertexBufferSize(), polygonlayout, numelement))
 	{
 		return false;
 	}
 #endif
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support.getVertexBufferPtr(), support.getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	support_.get()->destroyBufferData();
 
 	//動的マトリックス定数バッファの設定
 	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;

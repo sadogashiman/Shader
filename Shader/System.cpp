@@ -2,7 +2,7 @@
 #include "System.h"
 #include "Direct3D.h"
 #include "Input.h"
-#include "Renderer.h"
+#include "ShaderManager.h"
 #include"Game.h"
 #include"TextureFactory.h"
 
@@ -40,8 +40,8 @@ bool System::init()
 		return false;
 	}
 
-	//レンダラークラス初期化
-	if (!Renderer::getInstance()->init())
+	//シェーダーマネージャー初期化
+	if (!ShaderManager::getInstance()->init())
 	{
 		Error::showDialog("レンダラークラスの初期化に失敗");
 		return false;
@@ -94,7 +94,7 @@ void System::destroy()
 {
 	Game::getInstance()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
-	Renderer::getInstance()->destroy();
+	ShaderManager::getInstance()->destroy();
 	Input::getInstance()->destroy();
 	Direct3D::getInstance()->destroy();
 	destroyWindows();

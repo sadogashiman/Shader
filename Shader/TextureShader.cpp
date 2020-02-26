@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "TextureShader.h"
 #include"Direct3D.h"
-#include"error.h"
-#include"release.h"
+#include"Support.h"
 
 Textureshader::Textureshader()
 {
@@ -25,23 +24,17 @@ bool Textureshader::init()
 	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbuffer;
 	D3D11_SAMPLER_DESC samplerdesc;
-
-	//Supportクラス生成
-	support_.reset(new Support);
-	if (!support_.get())
-	{
-		return false;
-	}
+	Support support;
 
 	//シェーダー作成
-	hr = support_.get()->createVertexData(L"texturevs.cso");
+	hr = support.createVertexData(L"texturevs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"textureps.cso");
+	hr = support.createPixelData(L"textureps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
@@ -49,8 +42,8 @@ bool Textureshader::init()
 	}
 
 	//作成されたデータをコピー
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
+	vertexshader_= support.getVertexShader();
+	pixelshader_ = support.getPixelShader();
 
 	//頂点入力レイアウトの作成
 	polygonlayout[0].SemanticName = "POSITION";
@@ -73,20 +66,17 @@ bool Textureshader::init()
 
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support_->getVertexBufferPtr(), support_->getVertexBufferSize(), polygonlayout, numelements))
+	if (!Support::checkInputLayout(support.getVertexBufferPtr(), support.getVertexBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getVertexBufferPtr(), support_->getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support.getVertexBufferPtr(), support.getVertexBufferSize(), layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
-
-	//不要になったデータを削除
-	support_.get()->destroyBufferData();
 
 	//コンスタントバッファの設定
 	matrixbuffer.Usage = D3D11_USAGE_DYNAMIC;
@@ -97,7 +87,7 @@ bool Textureshader::init()
 	matrixbuffer.StructureByteStride = 0;
 
 	//コンスタントバッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbuffer, NULL, &matrixbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbuffer, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -117,7 +107,7 @@ bool Textureshader::init()
 	samplerdesc.MinLOD = 0;
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, &samplerstate_);
+	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplerstate_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -140,16 +130,6 @@ bool Textureshader::render(const int Indexcount, Matrix World, Matrix View, Matr
 	return true;
 }
 
-void Textureshader::destroy()
-{
-	SAFE_RELEASE(samplerstate_);
-	SAFE_RELEASE(matrixbuffer_);
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(vertexshader_);
-}
-
-
 bool Textureshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
 {
 	HRESULT hr;
@@ -162,7 +142,7 @@ bool Textureshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 	Projection = XMMatrixTranspose(Projection);
 
 	//定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		return false;
@@ -176,7 +156,7 @@ bool Textureshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 	dataptr->projection = Projection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	buffernumber = 0;
 
@@ -189,12 +169,12 @@ bool Textureshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 
 void Textureshader::renderShader(const int Indexcount)
 {
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
 
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplerstate_);
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());
 
 	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
 }

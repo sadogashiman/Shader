@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Deferredshader.h"
 #include"Direct3D.h"
-#include"release.h"
+#include"Support.h"
 
 Deferredshader::Deferredshader()
 {
@@ -23,32 +23,25 @@ bool Deferredshader::init()
 	unsigned int numelement;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
-
-	//Supportクラス生成
-	support_.reset(new Support);
-	if (!support_.get())
-	{
-		Error::showDialog("Supportクラスの生成に失敗");
-		return false;
-	}
+	Support support;
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"deferredvs.cso");
+	hr = support.createVertexData(L"deferredvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"deferredps.cso");
+	hr = support.createPixelData(L"deferredps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
+	vertexshader_ = support.getVertexShader();
+	pixelshader_ = support.getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -81,20 +74,17 @@ bool Deferredshader::init()
 	//デバッグ時のみデータが使えるかチェック
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelement))
+	if (!Support::checkInputLayout(support.getVertexBufferPtr(), support.getVertexBufferSize(), polygonlayout, numelement))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support.getVertexBufferPtr(), support.getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
-
-	//不要になったデータの削除
-	support_.get()->destroyBufferData();
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
