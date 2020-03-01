@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Shadowshader.h"
 #include"Direct3D.h"
-#include"Support.h"
 
 
 Shadowshader::Shadowshader()
@@ -29,17 +28,23 @@ bool Shadowshader::init()
 	D3D11_BUFFER_DESC lightbufferdesc2;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
-	Support support;
+
+	support_.reset(new Support);
+	if (!support_.get())
+	{
+		Error::showDialog("サポートクラスのメモリ確保に失敗");
+		return false;
+	}
 
 	//シェーダー読み込み
-	hr = support.createVertexData(L"shadowvs.cso");
+	hr = support_.get()->createVertexData(L"shadowvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support.createPixelData(L"shadowps.cso");
+	hr = support_.get()->createPixelData(L"shadowps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
@@ -47,8 +52,8 @@ bool Shadowshader::init()
 	}
 
 	//コンパイル済みシェーダーを取得
-	vertexshader_ = support.getVertexShader();
-	pixelshader_ = support.getPixelShader();
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -80,13 +85,13 @@ bool Shadowshader::init()
 
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support.getVertexBufferPtr(), support.getVertexBufferSize(), polygonlayout, numelements))
+	if (!Support::checkInputLayoutData(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support.getVertexBufferPtr(), support.getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;
@@ -206,7 +211,7 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	LightBufferType2* dataptr3;
 	unsigned int buffnumber;
 
-	//マトリックスを転置してシェーダー用に準備
+	//シェーダーように行列を転置
 	World = XMMatrixTranspose(World);
 	View = XMMatrixTranspose(View);
 	Projection = XMMatrixTranspose(Projection);
@@ -267,14 +272,18 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 		return false;
 	}
 
+	//シェーダー内のデータを更新
 	dataptr3 = (LightBufferType2*)mappedresouce.pData;
 	dataptr3->lightposition = Lightposition;
 	dataptr3->padding1 = 0.0F;
 
+	//ロックを解除
 	Direct3D::getInstance()->getContext()->Unmap(lightbuffer2_, 0);
 
+	//バッファ番号を設定
 	buffnumber = 1;
 
+	//頂点シェーダーに定数バッファをセット
 	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, &lightbuffer2_);
 
 	return true;

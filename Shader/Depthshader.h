@@ -1,4 +1,5 @@
 #pragma once
+#include"Support.h"
 
 class Depthshader
 {
@@ -16,7 +17,7 @@ private:
 	ID3D11PixelShader* pixelshader_;
 	ID3D11InputLayout* layout_;
 	ID3D11Buffer* matrixbuffer_;
-
+	std::unique_ptr<Support> support_;
 
 public:
 	Depthshader();

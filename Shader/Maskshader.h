@@ -1,4 +1,6 @@
 #pragma once
+#include"Support.h"
+
 class Maskshader
 {
 private:
@@ -16,6 +18,7 @@ private:
 	ID3D11InputLayout* layout_;
 	ID3D11Buffer* matrixbuffer_;
 	ID3D11SamplerState* samplestate_;
+	std::unique_ptr<Support> support_;
 public:
 	Maskshader();
 	~Maskshader();

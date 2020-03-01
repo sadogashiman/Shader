@@ -1,4 +1,5 @@
 #pragma once
+#include"Support.h"
 
 class Shadowshader
 {
@@ -34,6 +35,7 @@ private:
 	ID3D11Buffer* matrixbuffer_;
 	ID3D11Buffer* lightbuffer_;
 	ID3D11Buffer* lightbuffer2_;
+	std::unique_ptr<Support> support_;
 
 public:
 	Shadowshader();

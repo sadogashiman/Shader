@@ -76,6 +76,12 @@
     <Filter Include="Renderer\Shader\Font">
       <UniqueIdentifier>{9bee993e-cf7a-482e-b0ed-0c081e013f0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Renderer\Shader\Particle">
+      <UniqueIdentifier>{e0984b7c-7540-489a-9ccd-4248a68d9ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ParticleSystem">
+      <UniqueIdentifier>{2957ac51-fe1a-44eb-8ba4-112e6639966c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -147,17 +153,17 @@
     <ClCompile Include="Timer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleSystem.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleShader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderManager.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="FontShader.cpp">
       <Filter>Renderer\Shader\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleShader.cpp">
+      <Filter>Renderer\Shader\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>ParticleSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,17 +245,17 @@
     <ClInclude Include="Timer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleSystem.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleShader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="FontShader.h">
       <Filter>Renderer\Shader\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleShader.h">
+      <Filter>Renderer\Shader\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>ParticleSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -310,6 +316,8 @@
     <FxCompile Include="particlevs.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="particleps.hlsl" />
+    <FxCompile Include="particleps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

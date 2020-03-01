@@ -1,4 +1,5 @@
 #pragma once
+#include "Support.h"
 
 class FontShader
 {
@@ -15,13 +16,14 @@ private:
 		Vector4 pixelcolor;
 	};
 
-	ComPtr<ID3D11VertexShader> vertexshader_;
-	ComPtr<ID3D11PixelShader> pixelshader_;
-	ComPtr<ID3D11InputLayout> layout_;
-	ComPtr<ID3D11Buffer> matrixbuffer_;
-	ComPtr<ID3D11Buffer> pixelbuffer_;
-	ComPtr<ID3D11SamplerState> samplestate_;
-	
+	ID3D11VertexShader* vertexshader_;
+	ID3D11PixelShader* pixelshader_;
+	ID3D11InputLayout* layout_;
+	ID3D11Buffer* matrixbuffer_;
+	ID3D11Buffer* pixelbuffer_;
+	ID3D11SamplerState* samplestate_;
+	std::unique_ptr<Support> support_;
+
 	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, Vector4 Color);
 	void renderShader(const int IndexCount);
 public:

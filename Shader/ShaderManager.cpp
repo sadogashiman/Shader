@@ -108,12 +108,14 @@ bool ShaderManager::init()
 
 void ShaderManager::destroy()
 {
+	textureshader_.get()->destroy();
 	multitexshader_.get()->destroy();
 	deferredshader_.get()->destroy();
 	depthshader_.get()->destroy();
 	shadowshader_.get()->destroy();
 	maskshader_.get()->destroy();
 	bumpshader_.get()->destroy();
+	lightshader_.get()->destroy();
 }
 
 bool ShaderManager::maskRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)

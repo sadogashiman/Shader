@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Depthshader.h"
 #include"Direct3D.h"
-#include"Support.h"
 
 Depthshader::Depthshader()
 {
@@ -22,17 +21,23 @@ bool Depthshader::init()
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[1];
 	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
-	Support support;
+
+	support_.reset(new Support);
+	if (!support_.get())
+	{
+		Error::showDialog("サポートクラスのメモリ確保に失敗");
+		return false;
+	}
 
 	//シェーダー読み込み
-	hr = support.createVertexData(L"depthvs.cso");
+	hr = support_.get()->createVertexData(L"depthvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support.createPixelData(L"depthps.cso");
+	hr = support_.get()->createPixelData(L"depthps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
@@ -40,8 +45,8 @@ bool Depthshader::init()
 	}
 
 	//作成されたデータをコピー
-	vertexshader_ = support.getVertexShader();
-	pixelshader_ = support.getPixelShader();
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -57,13 +62,13 @@ bool Depthshader::init()
 
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support.getVertexBufferPtr(), support.getVertexBufferSize(), polygonlayout, numelements))
+	if (!Support::checkInputLayoutData(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelements))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support.getVertexBufferPtr(), support.getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;

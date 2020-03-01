@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "FontShader.h"
 #include"Direct3D.h"
-#include "Support.h"
 
 FontShader::FontShader()
 {
@@ -18,17 +17,23 @@ bool FontShader::init()
 	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
-	Support support;
+
+	support_.reset(new Support);
+	if (!support_.get())
+	{
+		Error::showDialog("サポートクラスのメモリ確保に失敗");
+		return false;
+	}
 
 	//シェーダー読み込み
-	hr = support.createVertexData(L"fontvs.cso");
+	hr = support_.get()->createVertexData(L"fontvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support.createPixelData(L"fontps.cso");
+	hr = support_.get()->createPixelData(L"fontps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
@@ -36,8 +41,8 @@ bool FontShader::init()
 	}
 
 	//作成されたデータをコピー
-	vertexshader_ = support.getVertexShader();
-	pixelshader_ = support.getPixelShader();
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 
 	
@@ -69,12 +74,13 @@ bool FontShader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 	PixelBufferType* dataptr2;
 	unsigned int buffernumber;
 
+	//シェーダーように行列を転置
 	World = XMMatrixTranspose(World);
 	View = XMMatrixTranspose(View);
 	Projection = XMMatrixTranspose(Projection);
 
 	//バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("バッファのロックに失敗");
@@ -89,17 +95,17 @@ bool FontShader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 	dataptr->projection = Projection;
 
 	//ロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
 
 	//バッファをセットする場所を設定
 	buffernumber = 0;
 
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, &matrixbuffer_);
 
 	//テクスチャをシェーダーにセット
 	Direct3D::getInstance()->getContext()->PSGetShaderResources(0, 1, &Texture);
 
-	hr = Direct3D::getInstance()->getContext()->Map(pixelbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = Direct3D::getInstance()->getContext()->Map(pixelbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("バッファのロックに失敗");
@@ -112,11 +118,11 @@ bool FontShader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 	dataptr2->pixelcolor = Color;
 
 	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(pixelbuffer_.Get(), 0);
+	Direct3D::getInstance()->getContext()->Unmap(pixelbuffer_, 0);
 
 	buffernumber = 0;
 
-	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffernumber, 1, pixelbuffer_.GetAddressOf());
+	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffernumber, 1, &pixelbuffer_);
 
 	return true;
 }
@@ -124,14 +130,14 @@ bool FontShader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 void FontShader::renderShader(const int IndexCount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
 
 	//レンダリングするシェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
 
 	//ピクセルシェーダーにサンプラーを設定
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplestate_.GetAddressOf());
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplestate_);
 
 	//フォントデータをレンダリング
 	Direct3D::getInstance()->getContext()->DrawIndexed(IndexCount, 0, 0);

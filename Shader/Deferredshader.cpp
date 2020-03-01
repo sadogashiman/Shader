@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Deferredshader.h"
 #include"Direct3D.h"
-#include"Support.h"
+
 
 Deferredshader::Deferredshader()
 {
@@ -23,25 +23,31 @@ bool Deferredshader::init()
 	unsigned int numelement;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
-	Support support;
+
+	support_.reset(new Support);
+	if (!support_.get())
+	{
+		Error::showDialog("サポートクラスのメモリ確保に失敗");
+		return false;
+	}
 
 	//シェーダー読み込み
-	hr = support.createVertexData(L"deferredvs.cso");
+	hr = support_.get()->createVertexData(L"deferredvs.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support.createPixelData(L"deferredps.cso");
+	hr = support_.get()->createPixelData(L"deferredps.cso");
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
-	vertexshader_ = support.getVertexShader();
-	pixelshader_ = support.getPixelShader();
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -74,13 +80,13 @@ bool Deferredshader::init()
 	//デバッグ時のみデータが使えるかチェック
 #ifdef _DEBUG
 	//データが有効か確認
-	if (!Support::checkInputLayout(support.getVertexBufferPtr(), support.getVertexBufferSize(), polygonlayout, numelement))
+	if (!Support::checkInputLayoutData(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelement))
 	{
 		return false;
 	}
 #endif // _DEBUG
 	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support.getVertexBufferPtr(), support.getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		return false;

@@ -20,7 +20,7 @@ Support::~Support()
 {
 }
 
-bool Support::checkInputLayout(const void* shadercode, size_t codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum)
+bool Support::checkInputLayoutData(const void* shadercode, size_t codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum)
 {
 	ID3D11ShaderReflection* vsref;
 	HRESULT hr;

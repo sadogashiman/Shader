@@ -13,20 +13,17 @@ ParticleShader::~ParticleShader()
 bool ParticleShader::init()
 {
 	HRESULT hr;
-
-
-	//サポートクラスの作成
-	support_.reset(new Support);
-	if (!support_.get())
-	{
-		Error::showDialog("サポートクラスの生成に失敗");
-		return false;
-	}
-
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
 	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
+
+	support_.reset(new Support);
+	if (!support_.get())
+	{
+		Error::showDialog("サポートクラスのメモリ確保に失敗");
+		return false;
+	}
 
 	//シェーダーコンパイル
 	hr = support_.get()->createVertexData(L"particlevs.cso");
@@ -36,7 +33,7 @@ bool ParticleShader::init()
 		return false;
 	}
 
-	hr = support_.get()->createVertexData(L"particleps.cso");
+	hr = support_.get()->createPixelData(L"particleps.cso");
 	if (FAILED(hr))
 	{
 		return false;
@@ -76,13 +73,13 @@ bool ParticleShader::init()
 
 	//頂点入力レイアウトの作成
 #ifdef _DEBUG
-	if (!Support::checkInputLayout(support_->getVertexBufferPtr(), support_->getVertexBufferSize(), polygonlayout, numelements))
+	if (!Support::checkInputLayoutData(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelements))
 	{
 		Error::showDialog("頂点入力レイアウトの情報が無効です");
 		return false;
 	}
 #endif // _DEBUG
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_->getVertexBufferPtr(), support_->getVertexBufferSize(), &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");
