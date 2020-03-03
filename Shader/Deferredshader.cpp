@@ -20,7 +20,7 @@ bool Deferredshader::init()
 {
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
-	unsigned int numelement;
+	unsigned int numelements;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 
@@ -75,22 +75,18 @@ bool Deferredshader::init()
 	polygonlayout[2].InstanceDataStepRate = 0;
 
 	//入力レイアウト内の要素数を取得
-	numelement = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
+	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
-	//デバッグ時のみデータが使えるかチェック
-#ifdef _DEBUG
-	//データが有効か確認
-	if (!Support::checkInputLayoutData(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelement))
-	{
-		return false;
-	}
-#endif // _DEBUG
-	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
+	//頂点入力レイアウトを作成
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
+
+	//作成した頂点入力レイアウトを取得
+	layout_ = support_.get()->getInputLayout();
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;

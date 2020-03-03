@@ -16,14 +16,8 @@
     <Filter Include="MainSystem">
       <UniqueIdentifier>{db67da5c-a3d6-42e7-85c2-6b834d15d00c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer">
-      <UniqueIdentifier>{6c33b3cb-d1a6-46aa-960c-8a8193b1fc54}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Light">
       <UniqueIdentifier>{16dd9396-fd93-4f78-a150-17fc59810042}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader">
-      <UniqueIdentifier>{905a3028-c829-4ca5-8cf3-591eac907a2b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Texture">
       <UniqueIdentifier>{70ce20b9-6b0b-423e-bcfe-83d36920e68b}</UniqueIdentifier>
@@ -40,32 +34,8 @@
     <Filter Include="MainSystem\2D">
       <UniqueIdentifier>{16fb15f2-c53e-44d8-b5cc-161e934915a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer\Shader\alphamap">
-      <UniqueIdentifier>{7e55873b-c889-4644-b447-e7b85a712120}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\bumpmap">
-      <UniqueIdentifier>{7461442a-12da-456d-ad76-06330930e4a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\deferred">
-      <UniqueIdentifier>{14baf429-0741-439e-8863-d91e78900548}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\depth">
-      <UniqueIdentifier>{b3ce3ff7-8304-4db7-96b0-88ad47ca11f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\light">
-      <UniqueIdentifier>{705da269-277b-40c9-864b-d76d709516cd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\shadow">
-      <UniqueIdentifier>{b5d7723a-37b4-4065-8255-170ea5370c26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\texture">
-      <UniqueIdentifier>{cba017b6-e3b4-41be-8dfd-ba5d054262ba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MainSystem\Game">
       <UniqueIdentifier>{abc67d18-bb03-4a05-9da7-1874dfaccbf4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\Multi">
-      <UniqueIdentifier>{e4a434c4-9579-4560-8721-3ab8e2e932bd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Namespace">
       <UniqueIdentifier>{1739837b-8a35-4866-85a3-4e1b8cab3f77}</UniqueIdentifier>
@@ -73,14 +43,47 @@
     <Filter Include="UI">
       <UniqueIdentifier>{6fd6c1e0-0e83-438e-8c8d-73be4ef3ca9e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer\Shader\Font">
-      <UniqueIdentifier>{9bee993e-cf7a-482e-b0ed-0c081e013f0e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Renderer\Shader\Particle">
-      <UniqueIdentifier>{e0984b7c-7540-489a-9ccd-4248a68d9ce4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ParticleSystem">
       <UniqueIdentifier>{2957ac51-fe1a-44eb-8ba4-112e6639966c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{5bb2d030-beb2-4bc5-94bb-cf329f3e9dcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager">
+      <UniqueIdentifier>{6c33b3cb-d1a6-46aa-960c-8a8193b1fc54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader">
+      <UniqueIdentifier>{905a3028-c829-4ca5-8cf3-591eac907a2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\alphamap">
+      <UniqueIdentifier>{7e55873b-c889-4644-b447-e7b85a712120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\bumpmap">
+      <UniqueIdentifier>{7461442a-12da-456d-ad76-06330930e4a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\deferred">
+      <UniqueIdentifier>{14baf429-0741-439e-8863-d91e78900548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\depth">
+      <UniqueIdentifier>{b3ce3ff7-8304-4db7-96b0-88ad47ca11f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\light">
+      <UniqueIdentifier>{705da269-277b-40c9-864b-d76d709516cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\shadow">
+      <UniqueIdentifier>{b5d7723a-37b4-4065-8255-170ea5370c26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\texture">
+      <UniqueIdentifier>{cba017b6-e3b4-41be-8dfd-ba5d054262ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\Multi">
+      <UniqueIdentifier>{e4a434c4-9579-4560-8721-3ab8e2e932bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\Font">
+      <UniqueIdentifier>{9bee993e-cf7a-482e-b0ed-0c081e013f0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\Particle">
+      <UniqueIdentifier>{e0984b7c-7540-489a-9ccd-4248a68d9ce4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,49 +124,52 @@
       <Filter>support</Filter>
     </ClCompile>
     <ClCompile Include="Bumpmap.cpp">
-      <Filter>Renderer\Shader\bumpmap</Filter>
+      <Filter>ShaderManager\Shader\bumpmap</Filter>
     </ClCompile>
     <ClCompile Include="Deferredbuffers.cpp">
-      <Filter>Renderer\Shader\deferred</Filter>
+      <Filter>ShaderManager\Shader\deferred</Filter>
     </ClCompile>
     <ClCompile Include="Deferredshader.cpp">
-      <Filter>Renderer\Shader\deferred</Filter>
+      <Filter>ShaderManager\Shader\deferred</Filter>
     </ClCompile>
     <ClCompile Include="Depthshader.cpp">
-      <Filter>Renderer\Shader\depth</Filter>
+      <Filter>ShaderManager\Shader\depth</Filter>
     </ClCompile>
     <ClCompile Include="LightShader.cpp">
-      <Filter>Renderer\Shader\light</Filter>
+      <Filter>ShaderManager\Shader\light</Filter>
     </ClCompile>
     <ClCompile Include="Shadowshader.cpp">
-      <Filter>Renderer\Shader\shadow</Filter>
+      <Filter>ShaderManager\Shader\shadow</Filter>
     </ClCompile>
     <ClCompile Include="TextureShader.cpp">
-      <Filter>Renderer\Shader\texture</Filter>
+      <Filter>ShaderManager\Shader\texture</Filter>
     </ClCompile>
     <ClCompile Include="Maskshader.cpp">
-      <Filter>Renderer\Shader\alphamap</Filter>
+      <Filter>ShaderManager\Shader\alphamap</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>MainSystem\Game</Filter>
     </ClCompile>
     <ClCompile Include="Multitexture.cpp">
-      <Filter>Renderer\Shader\Multi</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ShaderManager\Shader\Multi</Filter>
     </ClCompile>
     <ClCompile Include="ShaderManager.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>ShaderManager</Filter>
     </ClCompile>
     <ClCompile Include="FontShader.cpp">
-      <Filter>Renderer\Shader\Font</Filter>
+      <Filter>ShaderManager\Shader\Font</Filter>
     </ClCompile>
     <ClCompile Include="ParticleShader.cpp">
-      <Filter>Renderer\Shader\Particle</Filter>
+      <Filter>ShaderManager\Shader\Particle</Filter>
     </ClCompile>
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Fps.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -210,52 +216,55 @@
       <Filter>support</Filter>
     </ClInclude>
     <ClInclude Include="Bumpmap.h">
-      <Filter>Renderer\Shader\bumpmap</Filter>
+      <Filter>ShaderManager\Shader\bumpmap</Filter>
     </ClInclude>
     <ClInclude Include="Deferredbuffers.h">
-      <Filter>Renderer\Shader\deferred</Filter>
+      <Filter>ShaderManager\Shader\deferred</Filter>
     </ClInclude>
     <ClInclude Include="Deferredshader.h">
-      <Filter>Renderer\Shader\deferred</Filter>
+      <Filter>ShaderManager\Shader\deferred</Filter>
     </ClInclude>
     <ClInclude Include="Depthshader.h">
-      <Filter>Renderer\Shader\depth</Filter>
+      <Filter>ShaderManager\Shader\depth</Filter>
     </ClInclude>
     <ClInclude Include="Lightshader.h">
-      <Filter>Renderer\Shader\light</Filter>
+      <Filter>ShaderManager\Shader\light</Filter>
     </ClInclude>
     <ClInclude Include="Shadowshader.h">
-      <Filter>Renderer\Shader\shadow</Filter>
+      <Filter>ShaderManager\Shader\shadow</Filter>
     </ClInclude>
     <ClInclude Include="TextureShader.h">
-      <Filter>Renderer\Shader\texture</Filter>
+      <Filter>ShaderManager\Shader\texture</Filter>
     </ClInclude>
     <ClInclude Include="Maskshader.h">
-      <Filter>Renderer\Shader\alphamap</Filter>
+      <Filter>ShaderManager\Shader\alphamap</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>MainSystem\Game</Filter>
     </ClInclude>
     <ClInclude Include="Multitexture.h">
-      <Filter>Renderer\Shader\Multi</Filter>
+      <Filter>ShaderManager\Shader\Multi</Filter>
     </ClInclude>
     <ClInclude Include="namespace.h">
       <Filter>Namespace</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderManager.h">
-      <Filter>Renderer</Filter>
+      <Filter>ShaderManager</Filter>
     </ClInclude>
     <ClInclude Include="FontShader.h">
-      <Filter>Renderer\Shader\Font</Filter>
+      <Filter>ShaderManager\Shader\Font</Filter>
     </ClInclude>
     <ClInclude Include="ParticleShader.h">
-      <Filter>Renderer\Shader\Particle</Filter>
+      <Filter>ShaderManager\Shader\Particle</Filter>
     </ClInclude>
     <ClInclude Include="ParticleSystem.h">
       <Filter>ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Fps.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

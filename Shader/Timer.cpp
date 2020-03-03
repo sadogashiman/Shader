@@ -1,40 +1,57 @@
 #include "stdafx.h"
 #include "Timer.h"
-#include"Support.h"
+#include "Support.h"
 
-bool Timer::init()
+Timer::Timer()
 {
-	//システムが高性能タイマーをサポートしているか確認
-	QueryPerformanceFrequency((LARGE_INTEGER*)&frequency_);
-	if (!frequency_)
-	{
-		Error::showDialog("システムが高性能タイマーをサポートしていません");
-		return false;
-	}
+	running_ = false;
+	stopwatch_ = false;
+}
 
-	//一ミリ秒の周波数を数える
-	ticksperms_ = static_cast<float>(frequency_ / 1000);
-
-	//クロック数を取得
-	QueryPerformanceCounter((LARGE_INTEGER*)&starttime_);
-
-	return true;
+Timer::~Timer()
+{
 }
 
 void Timer::update()
 {
-	UINT64 currenttime;
-	float timedifference;
+	//稼働状態か確認
+	if (running_)
+	{
+		//現在時間を取得
+		nowtime_ = std::chrono::high_resolution_clock::now();
 
-	//現在のクロック数を取得
-	QueryPerformanceCounter((LARGE_INTEGER*)&currenttime);
+		if (stopwatch_)
+		{
+			//経過時間を算出
+			remaining_ = std::chrono::duration_cast<std::chrono::milliseconds>(nowtime_ - starttime_);
+		}
+	}
+}
 
-	//前回との差分を計算
-	timedifference = static_cast<float>(currenttime - starttime_);
+void Timer::setTimerStatus(const bool RuningFrag)
+{
+	//フラグをメンバにコピー
+	running_ = RuningFrag;
+}
 
-	//このフレームの時間を計算
-	frametime_ = timedifference / ticksperms_;
+void Timer::startTimer()
+{
+	//計測開始時間を取得
+	starttime_ = std::chrono::high_resolution_clock::now();
 
-	//現在時刻を開始時刻として保存
-	starttime_ = currenttime;
+	//ストップウォッチ機能を有効にする
+	stopwatch_ = true;
+}
+
+void Timer::stopTimer()
+{
+	//計測終了時間を取得
+	endtime_ = std::chrono::high_resolution_clock::now();
+
+	//ストップウォッチ機能を無効にする
+	stopwatch_ = false;
+
+	//ストップウォッチ機能が有効だった時間を算出
+	runningtime_ = std::chrono::duration_cast<std::chrono::milliseconds>(endtime_ - starttime_);
+
 }

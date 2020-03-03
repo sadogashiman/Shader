@@ -14,6 +14,11 @@ class ShaderManager
 private:
 	ShaderManager() = default;
 	~ShaderManager() = default;
+	ShaderManager(const ShaderManager&) = delete;
+	ShaderManager& operator=(const ShaderManager&) = delete;
+	ShaderManager(ShaderManager&&) = delete;
+	ShaderManager& operator=(ShaderManager&&) = delete;
+
 	std::unique_ptr<LightShader> lightshader_;
 	std::unique_ptr<Bumpmap> bumpshader_;
 	std::unique_ptr<Maskshader> maskshader_;
@@ -22,10 +27,7 @@ private:
 	std::unique_ptr<Textureshader>textureshader_;
 	std::unique_ptr<Deferredshader>deferredshader_;
 	std::unique_ptr<Multitexture>multitexshader_;
-	ShaderManager(const ShaderManager&) = delete;
-	ShaderManager& operator=(const ShaderManager&) = delete;
-	ShaderManager(ShaderManager&&) = delete;
-	ShaderManager& operator=(ShaderManager&&) = delete;
+
 public:
 
 	bool init();

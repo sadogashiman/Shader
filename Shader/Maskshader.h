@@ -10,7 +10,6 @@ private:
 		Matrix view;
 		Matrix projection;
 	};
-	void destroyshader();
 	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
 	void rendershader(int Indexcount);
 	ID3D11VertexShader* vertexshader_;

@@ -116,7 +116,7 @@ wchar_t* Support::renameToImageFileName(const wchar_t* ModelFileName)
 
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
-		PathRenameExtension(tmp,Extension::kExtension[i]);
+		PathRenameExtension(tmp, Extension::kExtension[i]);
 
 		//有効なファイルパスを見つけた場合ループを抜ける
 		if (PathFileExists(tmp))
@@ -139,7 +139,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 	if (searchFile(VertexShaderFileName))
 	{
 		//ファイル展開
-		fp.open(VertexShaderFileName,std::ios::binary);
+		fp.open(VertexShaderFileName, std::ios::binary);
 
 		//ファイルサイズ取得
 		size_t size = static_cast<size_t>(fp.seekg(0, std::ios::end).tellg());
@@ -156,7 +156,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 		//読み込み終了
 		fp.close();
 
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(&vertexdataarray_[0],size, nullptr, &vertexshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(&vertexdataarray_[0], size, nullptr, &vertexshader_);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -268,6 +268,26 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 		//バッファサイズとポインタをコピー
 		pixelblob_ = pixelshaderbuffer_.Get()->GetBufferPointer();
 		pixelsize_ = pixelshaderbuffer_.Get()->GetBufferSize();
+	}
+
+	return S_OK;
+}
+
+HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray, const unsigned int NumElements)
+{
+
+	HRESULT hr;
+#ifdef _DEBUG
+	if (!(checkInputLayoutData(vertexblob_, vertexsize_, PolygonLayoutArray, NumElements)))
+	{
+		Error::showDialog("頂点入力レイアウトのデータが正しくありません");
+		return S_FALSE;
+	}
+#endif // _DEBUG
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(PolygonLayoutArray, NumElements, vertexblob_, vertexsize_, &layout_);
+	if (FAILED(hr))
+	{
+		return hr;
 	}
 
 	return S_OK;

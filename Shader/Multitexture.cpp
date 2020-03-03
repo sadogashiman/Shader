@@ -21,7 +21,7 @@ bool Multitexture::init()
 	ID3D10Blob* vertexshaderbuffer_;
 	ID3D10Blob* pixelshaderbuffer_;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
-	unsigned int numelement;
+	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
 
@@ -68,21 +68,18 @@ bool Multitexture::init()
 	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[1].InstanceDataStepRate = 0;
 
-	numelement = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
+	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
-#ifdef _DEBUG
-	//データが有効か確認
-	if (!Support::checkInputLayoutData(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelement))
-	{
-		return false;
-	}
-#endif
-	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelement, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
+	//頂点入力レイアウトを作成
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
+
+	//作成した頂点入力レイアウトを取得
+	layout_ = support_.get()->getInputLayout();
 
 
 	//動的マトリックス定数バッファの設定

@@ -69,19 +69,16 @@ bool Textureshader::init()
 
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
-#ifdef _DEBUG
-	//データが有効か確認
-	if (!Support::checkInputLayoutData(support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), polygonlayout, numelements))
-	{
-		return false;
-	}
-#endif // _DEBUG
-	//頂点入力レイアウトの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(polygonlayout, numelements, support_.get()->getVertexBufferPtr(), support_.get()->getVertexBufferSize(), &layout_);
+	//頂点入力レイアウトを作成
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
+
+	//作成した頂点入力レイアウトを取得
+	layout_ = support_.get()->getInputLayout();
 
 	//マトリックスバッファの設定
 	matrixbuffer.Usage = D3D11_USAGE_DYNAMIC;
