@@ -165,6 +165,7 @@
     <ClCompile Include="OrthoWindow.cpp" />
     <ClCompile Include="ParticleShader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="Position.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Shadowshader.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -201,6 +202,7 @@
     <ClInclude Include="OrthoWindow.h" />
     <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="release.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Shadowshader.h" />
