@@ -113,17 +113,16 @@ bool Game::render()
 	Direct3D::getInstance()->begin(Colors::Black);
 
 	//行列を取得
-	Direct3D::getInstance()->getWorld(world);
-	Direct3D::getInstance()->getProjection(projection);
-	Direct3D::getInstance()->getOrtho(ortho);
+	world = Direct3D::getInstance()->getWorld();
+	projection = Direct3D::getInstance()->getProjection();
+	ortho = Direct3D::getInstance()->getOrtho();
 	view = camera_->getBaseViewMatrix();
 
 	//Direct3D::getInstance()->turnZbufferOff();
 
 	//フルスクリーンの2Dウィンドウを作成
 	//ortho_->render();
-	model_->render();
-	if (!(ShaderManager::getInstance()->textureRender(model_->getIndexCount(), world, view, projection,model_->getTexture())))
+	if (!(ShaderManager::getInstance()->textureRender(model_, world, view, projection,model_->getTexture())))
 	{
 		return false;
 	}
@@ -162,8 +161,8 @@ bool Game::renderSceneToTexture()
 	defbuffer_->clearRenderTargets(Colors::Black);
 
 	//行列を取得
-	Direct3D::getInstance()->getWorld(world);
-	Direct3D::getInstance()->getProjection(projection);
+	world = Direct3D::getInstance()->getWorld();
+	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
 
 	//モデルを回転
@@ -179,7 +178,7 @@ bool Game::renderSceneToTexture()
 	//モデルをレンダリング
 	model_->render();
 
-	if (!(ShaderManager::getInstance()->deferredRender(model_->getIndexCount(), world, view, projection, model_->getTexture())))
+	if (!(ShaderManager::getInstance()->deferredRender(model_, world, view, projection, model_->getTexture())))
 	{
 		return false;
 	}

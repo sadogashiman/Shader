@@ -33,7 +33,7 @@ public:
 	Direct3D(Direct3D&&) = delete;
 	Direct3D& operator = (Direct3D&&) = delete;
 
-	bool init(const int ScreenWidth,const int ScreenHeight,const bool Vsync,HWND Hwnd,const bool FullScreen,const float ScreenDepth,const float ScreenNear);
+	bool init(const int ScreenWidth, const int ScreenHeight, const bool Vsync, HWND Hwnd, const bool FullScreen, const float ScreenDepth, const float ScreenNear);
 	void begin(XMVECTORF32 Color);
 	void end();
 	void destroy();
@@ -43,9 +43,9 @@ public:
 	inline ID3D11DeviceContext* getContext()const { return cpdevicecontext_.Get(); }
 	inline ID3D11DepthStencilView* getStencilView()const { return cpdepthview_.Get(); }
 
-	inline void getProjection(Matrix& Projection) { Projection = projection_; }
-	inline void getWorld(Matrix& World) { World = world_; }
-	inline void getOrtho(Matrix& Ortho) { Ortho = ortho_; }
+	inline XMMATRIX getProjection() { return projection_; }
+	inline XMMATRIX getWorld() { return world_; }
+	inline XMMATRIX getOrtho() { return ortho_; }
 
 	//set
 	void setVideoCardInfo(char* CardName, int& Memory);

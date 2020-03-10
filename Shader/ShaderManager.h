@@ -8,6 +8,7 @@
 #include"TextureShader.h"
 #include"Deferredshader.h"
 #include"Multitexture.h"
+#include"Model.h"
 
 class ShaderManager
 {
@@ -39,28 +40,28 @@ public:
 		return &instance;
 	}
 
-	//マスクを使用するときのレンダー(モデルのインデックスカウント、各行列、テクスチャ二枚とアルファマップの入ったテクスチャ配列)
-	bool maskRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
+	//マスクを使用するときのレンダー(モデルのポインタ、各行列、テクスチャ二枚とアルファマップの入ったテクスチャ配列)
+	bool maskRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
 
-	//バンプマップを使用するときのレンダー(モデルのインデックスカウント、各行列、テクスチャ二枚と法線マップの入ったテクスチャ配列、ライトのパラメーター)
-	bool bumpRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, Light* Lightdata);
+	//バンプマップを使用するときのレンダー(モデルのポインタ、各行列、テクスチャ二枚と法線マップの入ったテクスチャ配列、ライトのパラメーター)
+	bool bumpRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, Light* Lightdata);
 
-	//デプスマップを使用するときのレンダー(モデルのインデックスカウント、各行列)
-	bool depthRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection);
+	//デプスマップを使用するときのレンダー(モデルのポインタ、各行列)
+	bool depthRender(Model* Model, Matrix World, Matrix View, Matrix Projection);
 
-	//ライトシェーダーを使用するときのレンダー(モデルのインデックスカウント、、各行列、テクスチャ、ライトのパラメーター)
-	bool lightRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2, Light* Lightdata);
+	//ライトシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ、ライトのパラメーター)
+	bool lightRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2, Light* Lightdata);
 
-	//シャドウシェーダーを使用するときのレンダー(モデルのインデックスカウント、、各行列、テクスチャ、デプスマップのテクスチャ)
-	bool shadowRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata);
+	//シャドウシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ、デプスマップのテクスチャ)
+	bool shadowRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata);
 
-	//テクスチャシェーダーを使用するときのレンダー(モデルのインデックスカウント、、各行列、テクスチャ)
-	bool textureRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
+	//テクスチャシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ)
+	bool textureRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 
 	//遅延シェーディングを使用するときのレンダー
-	bool deferredRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
+	bool deferredRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 
 	//マルチテクスチャリングを使用するときのレンダー
-	bool multiTextureRender(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, const int Texturenum);
+	bool multiTextureRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, const int Texturenum);
 };
 

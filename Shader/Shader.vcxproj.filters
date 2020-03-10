@@ -34,9 +34,6 @@
     <Filter Include="MainSystem\2D">
       <UniqueIdentifier>{16fb15f2-c53e-44d8-b5cc-161e934915a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MainSystem\Game">
-      <UniqueIdentifier>{abc67d18-bb03-4a05-9da7-1874dfaccbf4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Namespace">
       <UniqueIdentifier>{1739837b-8a35-4866-85a3-4e1b8cab3f77}</UniqueIdentifier>
     </Filter>
@@ -45,9 +42,6 @@
     </Filter>
     <Filter Include="ParticleSystem">
       <UniqueIdentifier>{2957ac51-fe1a-44eb-8ba4-112e6639966c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Timer">
-      <UniqueIdentifier>{5bb2d030-beb2-4bc5-94bb-cf329f3e9dcf}</UniqueIdentifier>
     </Filter>
     <Filter Include="ShaderManager">
       <UniqueIdentifier>{6c33b3cb-d1a6-46aa-960c-8a8193b1fc54}</UniqueIdentifier>
@@ -84,6 +78,15 @@
     </Filter>
     <Filter Include="ShaderManager\Shader\Particle">
       <UniqueIdentifier>{e0984b7c-7540-489a-9ccd-4248a68d9ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Timer">
+      <UniqueIdentifier>{5bb2d030-beb2-4bc5-94bb-cf329f3e9dcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{94975e98-f674-4520-b0a4-c4c20fe5ec91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Game">
+      <UniqueIdentifier>{abc67d18-bb03-4a05-9da7-1874dfaccbf4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +151,7 @@
       <Filter>ShaderManager\Shader\alphamap</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
-      <Filter>MainSystem\Game</Filter>
+      <Filter>Scene\Game</Filter>
     </ClCompile>
     <ClCompile Include="Multitexture.cpp">
       <Filter>ShaderManager\Shader\Multi</Filter>
@@ -166,12 +169,21 @@
       <Filter>ParticleSystem</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>Timer</Filter>
+      <Filter>UI\Timer</Filter>
     </ClCompile>
     <ClCompile Include="Fps.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Position.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Zone.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -243,7 +255,7 @@
       <Filter>ShaderManager\Shader\alphamap</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>MainSystem\Game</Filter>
+      <Filter>Scene\Game</Filter>
     </ClInclude>
     <ClInclude Include="Multitexture.h">
       <Filter>ShaderManager\Shader\Multi</Filter>
@@ -264,12 +276,21 @@
       <Filter>ParticleSystem</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>Timer</Filter>
+      <Filter>UI\Timer</Filter>
     </ClInclude>
     <ClInclude Include="Fps.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Position.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Zone.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
