@@ -90,7 +90,6 @@ bool Depthshader::init()
 
 void Depthshader::destroy()
 {
-	SAFE_RELEASE(matrixbuffer_);
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(vertexshader_);

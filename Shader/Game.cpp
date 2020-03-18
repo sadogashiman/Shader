@@ -101,6 +101,17 @@ bool Game::render()
 {
 	bool result;
 	Matrix world, view, projection,ortho;
+	static float rotation = 0;
+
+	if (rotation > 360.0F)
+	{
+		rotation -= 360.0F;
+	}
+	else
+	{
+		rotation++;
+	}
+
 
 	////シーンをレンダーバッファーにレンダリング
 	//result = renderSceneToTexture();
@@ -117,6 +128,7 @@ bool Game::render()
 	projection = Direct3D::getInstance()->getProjection();
 	ortho = Direct3D::getInstance()->getOrtho();
 	view = camera_->getBaseViewMatrix();
+	world = XMMatrixRotationY(XMConvertToRadians(rotation));
 
 	//Direct3D::getInstance()->turnZbufferOff();
 

@@ -6,11 +6,8 @@
 Bumpmap::Bumpmap()
 {
 	layout_ = nullptr;
-	lightbuffer_ = nullptr;
-	matrixbuffer_ = nullptr;
 	pixelshader_ = nullptr;
 	vertexshader_ = nullptr;
-	samplerstate_ = nullptr;
 }
 
 Bumpmap::~Bumpmap()
@@ -153,7 +150,7 @@ bool Bumpmap::init()
 	lightbufferdesc.StructureByteStride = 0;
 
 	//このクラス内から頂点シェーダーの定数バッファにアクセスできるようにポインタを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc, NULL, &lightbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc, NULL, lightbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -164,8 +161,6 @@ bool Bumpmap::init()
 
 void Bumpmap::destroy()
 {
-	SAFE_RELEASE(lightbuffer_);
-	SAFE_RELEASE(matrixbuffer_);
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(vertexshader_);
@@ -224,7 +219,7 @@ bool Bumpmap::SetShaderParameters(Matrix World, Matrix View, Matrix Projection, 
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 2, TextureArray);
 
 	//ライト定数バッファをロックして書き込み可能に
-	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -238,13 +233,13 @@ bool Bumpmap::SetShaderParameters(Matrix World, Matrix View, Matrix Projection, 
 	dataptr2->lightDirection = LightDirection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_.Get(), 0);
 
 	//ピクセルシェーダーでライト定数バッファの位置を設定
 	buffnumber = 0;
 
 	//更新された値でピクセルシェーダーのライト定数バッファを設定
-	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, &lightbuffer_);
+	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, lightbuffer_.GetAddressOf());
 	return true;
 }
 

@@ -26,7 +26,7 @@ private:
 	ID3D11InputLayout* layout_;
 	ComPtr<ID3D11Buffer> matrixbuffer_;
 	ComPtr<ID3D11SamplerState> samplerstate_;
-	ID3D11Buffer* lightbuffer_;
+	ComPtr<ID3D11Buffer> lightbuffer_;
 	std::unique_ptr<Support> support_;
 
 public:
