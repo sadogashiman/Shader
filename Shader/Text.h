@@ -1,8 +1,8 @@
 #pragma once
-class Zone
+class Text
 {
 private:
-
+	LOGFONT 
 public:
 
 };
