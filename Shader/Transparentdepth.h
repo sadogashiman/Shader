@@ -1,9 +1,10 @@
 #pragma once
-class Text
+class Transparentdepth
 {
 private:
-	//LOGFONT
+
 public:
+
 
 };
 

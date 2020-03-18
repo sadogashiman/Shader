@@ -94,7 +94,7 @@ bool LightShader::init()
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	//テクスチャのサンプラー状態を設定
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, &samplerstate_);
+	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplerstate_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -109,7 +109,7 @@ bool LightShader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//このクラスから頂点シェーダの定数バッファにアクセスできるようにポインタを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -155,9 +155,7 @@ void LightShader::destroy()
 {
 	SAFE_RELEASE(vertexshader_);
 	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(samplerstate_);
 	SAFE_RELEASE(lightbuffer_);
-	SAFE_RELEASE(matrixbuffer_);
 	SAFE_RELEASE(layout_);
 }
 
@@ -175,7 +173,7 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	Projection = XMMatrixTranspose(Projection);
 
 	//書き込み可能なように定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -190,13 +188,13 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	dataptr->projection = Projection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//頂点シェーダで定数バッファの位置を設定
 	buffnumber = 0;
 
 	//更新された値で頂点シェーダの定数バッファを最後に設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, &matrixbuffer_);
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
 
 	//ピクセルシェーダーでテクスチャリソースを設定
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &texture);
@@ -237,7 +235,7 @@ void LightShader::renderShader(const int Indexcount)
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
 
 	//サンプラー状態をピクセルシェーダーに設定
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplerstate_);
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());
 
 	//三角形をレンダリング
 	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);

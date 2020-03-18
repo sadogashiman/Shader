@@ -91,7 +91,7 @@ bool ParticleShader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//定数バッファのポインターを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("定数バッファの作成に失敗");
@@ -143,8 +143,6 @@ bool ParticleShader::render(const int IndexCount, Matrix World, Matrix View, Mat
 
 void ParticleShader::destroy()
 {
-	SAFE_RELEASE(samplerstate_);
-	SAFE_RELEASE(matrixbuffer_);
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(vertexshader_);
@@ -160,7 +158,7 @@ void ParticleShader::renderrShader(const int IndexCount)
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
 
 	//サンプラーをピクセルシェーダーに適応
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplerstate_);
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());
 
 	//レンダリング
 	Direct3D::getInstance()->getContext()->DrawIndexed(IndexCount,0,0);
@@ -179,7 +177,7 @@ bool ParticleShader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 	View = XMMatrixTranspose(View);
 	Projection = XMMatrixTranspose(Projection);
 
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("シェーダーのロックに失敗");
@@ -193,13 +191,13 @@ bool ParticleShader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 	dataptr->projection = Projection;
 
 	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//定数バッファの位置を設定
 	buffernumber = 0;
 
 	//定数バッファを設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, &matrixbuffer_);
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
 
 	//テクスチャリソースを設定
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);

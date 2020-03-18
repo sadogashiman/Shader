@@ -8,8 +8,6 @@ Shadowshader::Shadowshader()
 	vertexshader_ = nullptr;
 	pixelshader_ = nullptr;
 	layout_ = nullptr;
-	samplestateclamp_ = nullptr;
-	samplestatewrap_ = nullptr;
 	matrixbuffer_ = nullptr;
 	lightbuffer_ = nullptr;
 	lightbuffer2_ = nullptr;
@@ -109,18 +107,19 @@ bool Shadowshader::init()
 	samplerdesc.MinLOD = 0;
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	//テクスチャのサンプラー状態を設定
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, &samplestateclamp_);
+	//テクスチャのサンプラーを作成
+	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplestateclamp_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
+	//サンプルタイプの違うものを作成
 	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, &samplestatewrap_);
+	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplestatewrap_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -134,12 +133,14 @@ bool Shadowshader::init()
 	matrixbufferdesc.MiscFlags = 0;
 	matrixbufferdesc.StructureByteStride = 0;
 
+	//定数バッファを作成
 	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuffer_);
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
+	//ライトバッファの設定
 	lightbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
 	lightbufferdesc.ByteWidth = sizeof(LightBufferType);
 	lightbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -147,6 +148,7 @@ bool Shadowshader::init()
 	lightbufferdesc.MiscFlags = 0;
 	lightbufferdesc.StructureByteStride = 0;
 
+	//ライトバッファを作成
 	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc, NULL, &lightbuffer_);
 	if (FAILED(hr))
 	{
@@ -172,11 +174,9 @@ bool Shadowshader::init()
 
 void Shadowshader::destroy()
 {
-	SAFE_RELEASE(samplestatewrap_);
 	SAFE_RELEASE(lightbuffer_);
 	SAFE_RELEASE(lightbuffer2_);
 	SAFE_RELEASE(matrixbuffer_);
-	SAFE_RELEASE(samplestateclamp_);
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(vertexshader_);
@@ -296,8 +296,8 @@ void Shadowshader::renderShader(const int Indexcount)
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
 
 	//サンプラーの設定
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplestateclamp_);
-	Direct3D::getInstance()->getContext()->PSSetSamplers(1, 1, &samplestatewrap_);
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplestateclamp_.GetAddressOf());
+	Direct3D::getInstance()->getContext()->PSSetSamplers(1, 1, samplestatewrap_.GetAddressOf());
 
 	//レンダリング
 	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);

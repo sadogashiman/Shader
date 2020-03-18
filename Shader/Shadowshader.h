@@ -30,8 +30,8 @@ private:
 	ID3D11VertexShader* vertexshader_;
 	ID3D11PixelShader* pixelshader_;
 	ID3D11InputLayout* layout_;
-	ID3D11SamplerState* samplestateclamp_;
-	ID3D11SamplerState* samplestatewrap_;
+	ComPtr<ID3D11SamplerState> samplestateclamp_;
+	ComPtr<ID3D11SamplerState> samplestatewrap_;
 	ID3D11Buffer* matrixbuffer_;
 	ID3D11Buffer* lightbuffer_;
 	ID3D11Buffer* lightbuffer2_;

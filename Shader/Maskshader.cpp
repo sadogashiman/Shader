@@ -89,7 +89,7 @@ bool Maskshader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//このクラスから頂点シェーダの定数バッファにアクセスできるようにポインタを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -111,7 +111,7 @@ bool Maskshader::init()
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	//テクスチャのサンプラー状態を設定
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, &samplestate_);
+	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplestate_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -122,8 +122,6 @@ bool Maskshader::init()
 
 void Maskshader::destroy()
 {
-	SAFE_RELEASE(samplestate_);
-	SAFE_RELEASE(matrixbuffer_);
 	SAFE_RELEASE(layout_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(vertexshader_);
@@ -158,7 +156,7 @@ bool Maskshader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 	Projection = XMMatrixTranspose(Projection);
 
 	//書き込み可能なように定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -173,13 +171,13 @@ bool Maskshader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 	dataptr->projection = Projection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//頂点シェーダで定数バッファの位置を設定
 	buffnumber = 0;
 
 	//更新された値で頂点シェーダの定数バッファを最後に設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, &matrixbuffer_);
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
 
 	//ピクセルシェーダーでシェーダーリソーステクスチャ配列を設定
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 3, TextureArray);

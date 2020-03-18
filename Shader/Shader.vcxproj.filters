@@ -49,9 +49,6 @@
     <Filter Include="ShaderManager\Shader">
       <UniqueIdentifier>{905a3028-c829-4ca5-8cf3-591eac907a2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ShaderManager\Shader\alphamap">
-      <UniqueIdentifier>{7e55873b-c889-4644-b447-e7b85a712120}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ShaderManager\Shader\bumpmap">
       <UniqueIdentifier>{7461442a-12da-456d-ad76-06330930e4a9}</UniqueIdentifier>
     </Filter>
@@ -84,6 +81,9 @@
     </Filter>
     <Filter Include="Scene\Game">
       <UniqueIdentifier>{abc67d18-bb03-4a05-9da7-1874dfaccbf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\Mask">
+      <UniqueIdentifier>{7e55873b-c889-4644-b447-e7b85a712120}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -145,7 +145,7 @@
       <Filter>ShaderManager\Shader\texture</Filter>
     </ClCompile>
     <ClCompile Include="Maskshader.cpp">
-      <Filter>ShaderManager\Shader\alphamap</Filter>
+      <Filter>ShaderManager\Shader\Mask</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Scene\Game</Filter>
@@ -240,7 +240,7 @@
       <Filter>ShaderManager\Shader\texture</Filter>
     </ClInclude>
     <ClInclude Include="Maskshader.h">
-      <Filter>ShaderManager\Shader\alphamap</Filter>
+      <Filter>ShaderManager\Shader\Mask</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Scene\Game</Filter>
