@@ -85,6 +85,18 @@
     <Filter Include="ShaderManager\Shader\Mask">
       <UniqueIdentifier>{7e55873b-c889-4644-b447-e7b85a712120}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShaderManager\Shader\Trans">
+      <UniqueIdentifier>{d75dd138-4726-4d61-a422-a7423637f770}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3DModel">
+      <UniqueIdentifier>{4e7a2e6c-d6f5-4316-aa4e-68186cc7a958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3DModel\Model">
+      <UniqueIdentifier>{2a243caf-8861-48a4-8885-6936e226ea68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3DModel\Tree">
+      <UniqueIdentifier>{33d20330-616a-47c8-84d8-c6b3704db175}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -107,9 +119,6 @@
     </ClCompile>
     <ClCompile Include="Direct3D.cpp">
       <Filter>MainSystem\Direct3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル</Filter>
@@ -174,6 +183,18 @@
     <ClCompile Include="Text.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="TransParentDepth.cpp">
+      <Filter>ShaderManager\Shader\Trans</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendertexture.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>3DModel\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Tree.cpp">
+      <Filter>3DModel\Tree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -202,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="Direct3D.h">
       <Filter>MainSystem\Direct3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル</Filter>
@@ -272,6 +290,18 @@
     <ClInclude Include="Text.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="TransParentDepth.h">
+      <Filter>ShaderManager\Shader\Trans</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendertexture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>3DModel\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>3DModel\Tree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="bumpmapps.hlsl">
@@ -334,5 +364,7 @@
     <FxCompile Include="particleps.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="transparentdepthvs.hlsl" />
+    <FxCompile Include="transparentdepthps.hlsl" />
   </ItemGroup>
 </Project>
