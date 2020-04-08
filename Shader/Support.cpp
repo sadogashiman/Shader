@@ -3,6 +3,7 @@
 #include"Direct3D.h"
 #include"namespace.h"
 wchar_t Support::filename_[MAX_PATH];
+wchar_t Support::mtlfilename[MAX_PATH];
 
 Support::Support()
 {
@@ -127,6 +128,24 @@ wchar_t* Support::renameToImageFileName(const wchar_t* ModelFileName)
 	}
 
 	return filename_;
+}
+
+wchar_t* Support::renameToMaterialFileName(const wchar_t* MaterialFileName)
+{
+	//ƒƒ“ƒo‚É•¶š—ñ‚ğ•Û‘¶
+	wcscpy(mtlfilename, MaterialFileName);
+
+	//•¶š—ñ‘€ì‚Ì‚½‚ß‚ÉcharŒ^‚É•ÏŠ·
+	char tmp[MAX_PATH] = " ";
+	wcstombs(tmp, mtlfilename, MAX_PATH);
+
+	//Šg’£q‚ğmtl‚É•ÏŠ·
+	PathRenameExtension(tmp, ".mtl");
+
+	//Ä“xwchar‚É•ÏŠ·
+	mbstowcs(mtlfilename, tmp, MAX_PATH);
+
+	return mtlfilename;
 }
 
 HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)

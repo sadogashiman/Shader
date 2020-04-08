@@ -19,6 +19,7 @@ private:
 	std::vector<char> vertexdataarray_;
 	std::vector<char> pixeldataarray_;
 	static wchar_t filename_[MAX_PATH];
+	static wchar_t mtlfilename[MAX_PATH];
 
 public:
 	Support();
@@ -35,7 +36,7 @@ public:
 
 	//Rename
 	static wchar_t* renameToImageFileName(const wchar_t* ModelFileName);			//渡されたファイル名の拡張子をディレクトリ内に存在する同名の画像ファイル拡張子に変更する
-
+	static wchar_t* renameToMaterialFileName(const wchar_t* MaterialFileName);		//渡されたファイルパス文字列を拡張子.mtlに変換する
 	//Create
 	HRESULT createVertexData(const wchar_t* VertexShaderFileName);		 			//渡されたファイル名で頂点シェーダーを作成
 	HRESULT createPixelData(const wchar_t* PixelShaderFileName);					//渡されたファイル名でピクセルシェーダーを作成
