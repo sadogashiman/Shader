@@ -6,6 +6,7 @@
 #include"Deferredshader.h"
 #include"Camera.h"
 #include"Light.h"
+#include"RayTrace.h"
 
 class Game
 {
@@ -19,6 +20,7 @@ private:
 	OrthoWindow* ortho_;
 	Deferredbuffers* defbuffer_;
 	LightShader* lightshader_;
+	RayTrace* raytrace_;
 
 public:
 	Game(const Game&) = delete;

@@ -424,7 +424,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 
 	//2Dレンダリング用の正投影行列を作成
 	ortho_ = XMMatrixOrthographicLH(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight), ScreenNear, ScreenDepth);
-
+	
 	return true;
 }
 

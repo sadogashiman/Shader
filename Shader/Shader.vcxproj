@@ -164,6 +164,7 @@
     <ClCompile Include="ParticleShader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Position.cpp" />
+    <ClCompile Include="RayTrace.cpp" />
     <ClCompile Include="Rendertexture.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Shadowshader.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Position.h" />
+    <ClInclude Include="RayTrace.h" />
     <ClInclude Include="release.h" />
     <ClInclude Include="Rendertexture.h" />
     <ClInclude Include="ShaderManager.h" />

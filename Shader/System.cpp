@@ -5,6 +5,7 @@
 #include "ShaderManager.h"
 #include"Game.h"
 #include"TextureFactory.h"
+HWND System::hwnd_;
 
 System::System()
 {

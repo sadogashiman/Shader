@@ -82,13 +82,24 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
+	raytrace_ = new RayTrace;
+	Sphere sp;
+	sp.position = Vector3::Zero;
+	sp.rdius = 0.4F;
+
+	raytrace_->addSphere(&sp);
+
+
 	return true;
+
 }
 
 bool Game::update()
 {
 	bool result;
-	result = render();
+	result = raytrace_->render();
+
+	//result = render();
 	if (!result)
 	{
 		return false;

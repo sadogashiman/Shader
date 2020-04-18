@@ -8,10 +8,10 @@ cbuffer MatrixBuffer
     matrix lightProjectionMatrix;
 };
 
-cbuffer LightBuffer2
+cbuffer LightBuffer
 {
     float3 lightPosition;
-    float padding1;
+    float padding;
 };
 
 struct VertexInputType

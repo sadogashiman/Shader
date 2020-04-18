@@ -8,7 +8,7 @@ private:
 	void destroyWindows();
 protected:
 	HINSTANCE instance_;
-	HWND hwnd_;
+	static HWND hwnd_;
 public:
 	System();
 	~System();
@@ -16,6 +16,7 @@ public:
 	bool run();
 	void destroy();
 	bool handleInput(const float FrameTime);
+	static const HWND getWindowHandle(){ return hwnd_; }
 	LRESULT CALLBACK MessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 static LRESULT CALLBACK WinProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

@@ -97,6 +97,42 @@
     <Filter Include="3DModel\Tree">
       <UniqueIdentifier>{33d20330-616a-47c8-84d8-c6b3704db175}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\Trans">
+      <UniqueIdentifier>{8a1b3f97-f9a3-4d4a-99e3-1d0d97cdbadf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Bump">
+      <UniqueIdentifier>{0185520d-a261-4547-9fb3-7e0059400c6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Light">
+      <UniqueIdentifier>{37912831-1e2f-44ec-9911-b811bfd4b778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Depth">
+      <UniqueIdentifier>{de657f4b-f710-4749-ab5f-78d53122ddd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Mask">
+      <UniqueIdentifier>{1014c0ea-7a4b-4407-9f87-07918a833565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Deferred">
+      <UniqueIdentifier>{cb80beff-19ea-4571-9d22-4ebd260ab44f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Particle">
+      <UniqueIdentifier>{f120b3dd-de0c-41ef-a452-58238bd5a257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Texture">
+      <UniqueIdentifier>{e07f9110-6ffd-400d-a803-e40832fa1393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shadow">
+      <UniqueIdentifier>{1aadaf36-6cf8-40f3-9748-08a34966e914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Multi">
+      <UniqueIdentifier>{cc4391c3-00f9-4001-a6db-b3c9c8b5094f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTrace">
+      <UniqueIdentifier>{5263637d-7801-453e-a200-c6c68ac4665b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTrace\Software">
+      <UniqueIdentifier>{110543bd-1738-46ea-bff0-2508e5c4a2e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -194,6 +230,9 @@
     </ClCompile>
     <ClCompile Include="Tree.cpp">
       <Filter>3DModel\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTrace.cpp">
+      <Filter>RayTrace</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -302,69 +341,76 @@
     <ClInclude Include="Tree.h">
       <Filter>3DModel\Tree</Filter>
     </ClInclude>
+    <ClInclude Include="RayTrace.h">
+      <Filter>RayTrace</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="transparentdepthps.hlsl">
+      <Filter>リソース ファイル\Trans</Filter>
+    </FxCompile>
+    <FxCompile Include="transparentdepthvs.hlsl">
+      <Filter>リソース ファイル\Trans</Filter>
+    </FxCompile>
     <FxCompile Include="bumpmapps.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Bump</Filter>
     </FxCompile>
     <FxCompile Include="bumpmapvs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="depthps.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="depthvs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="lightvs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shadowvs.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Bump</Filter>
     </FxCompile>
     <FxCompile Include="lightps.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Light</Filter>
     </FxCompile>
-    <FxCompile Include="shadowps.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="lightvs.hlsl">
+      <Filter>リソース ファイル\Light</Filter>
     </FxCompile>
-    <FxCompile Include="deferredbuffps.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="depthps.hlsl">
+      <Filter>リソース ファイル\Depth</Filter>
     </FxCompile>
-    <FxCompile Include="deferredbuffvs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="deferredps.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="deferredvs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="textureps.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="texturevs.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="depthvs.hlsl">
+      <Filter>リソース ファイル\Depth</Filter>
     </FxCompile>
     <FxCompile Include="maskps.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Mask</Filter>
     </FxCompile>
     <FxCompile Include="maskvs.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Mask</Filter>
     </FxCompile>
-    <FxCompile Include="multitextureps.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="deferredbuffvs.hlsl">
+      <Filter>リソース ファイル\Deferred</Filter>
     </FxCompile>
-    <FxCompile Include="multitexturevs.hlsl">
-      <Filter>リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="particlevs.hlsl">
-      <Filter>リソース ファイル</Filter>
+    <FxCompile Include="deferredbuffps.hlsl">
+      <Filter>リソース ファイル\Deferred</Filter>
     </FxCompile>
     <FxCompile Include="particleps.hlsl">
-      <Filter>リソース ファイル</Filter>
+      <Filter>リソース ファイル\Particle</Filter>
     </FxCompile>
-    <FxCompile Include="transparentdepthvs.hlsl" />
-    <FxCompile Include="transparentdepthps.hlsl" />
+    <FxCompile Include="particlevs.hlsl">
+      <Filter>リソース ファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="texturevs.hlsl">
+      <Filter>リソース ファイル\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="textureps.hlsl">
+      <Filter>リソース ファイル\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="shadowps.hlsl">
+      <Filter>リソース ファイル\Shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="shadowvs.hlsl">
+      <Filter>リソース ファイル\Shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="deferredps.hlsl">
+      <Filter>リソース ファイル\Deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="deferredvs.hlsl">
+      <Filter>リソース ファイル\Deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="multitexturevs.hlsl">
+      <Filter>リソース ファイル\Multi</Filter>
+    </FxCompile>
+    <FxCompile Include="multitextureps.hlsl">
+      <Filter>リソース ファイル\Multi</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
