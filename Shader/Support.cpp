@@ -292,6 +292,78 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 	return S_OK;
 }
 
+HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName)
+{
+	HRESULT hr;
+	std::ifstream fp;
+	pixelshaderbuffer_ = nullptr;
+
+	//パスが有効か確認
+	if (searchFile(ComputeShaderFileName))
+	{
+		//ファイル展開
+		fp.open(ComputeShaderFileName, std::ios::binary);
+
+		//ファイルサイズ取得
+		size_t size = static_cast<size_t>(fp.seekg(0, std::ios::end).tellg());
+
+		//ポインタの位置を先頭に
+		fp.seekg(0, std::ios::beg);
+
+		//配列サイズを変更
+		computedataarray_.resize(size);
+
+		//読み込み
+		fp.read(&computedataarray_[0], size);
+
+		//読み込み終了
+		fp.close();
+
+		hr = Direct3D::getInstance()->getDevice()->CreateComputeShader(&computedataarray_[0], size, nullptr, &computeshader_);
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		//データをメンバにコピー
+		computesize_ = size;
+		computeblob_ = &computedataarray_[0];
+	}
+	else
+	{
+		char charfilename[MAX_PATH] = " ";
+		wchar_t wcharfilename[MAX_PATH] = L" ";
+
+		//wcharからcharに変換
+		wcstombs(charfilename, ComputeShaderFileName, MAX_PATH);
+
+		//拡張子をhlslに変更
+		PathRenameExtension(charfilename, ".hlsl");
+
+		//再度wcharに変換
+		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
+
+		//シェーダーをコンパイルしてポインタを取得
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "cs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, computeshaderbuffer_.GetAddressOf(), NULL);
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		hr = Direct3D::getInstance()->getDevice()->CreateComputeShader(computeshaderbuffer_.Get()->GetBufferPointer(), computeshaderbuffer_.Get()->GetBufferSize(), nullptr, &computeshader_);
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		//バッファサイズとポインタをコピー
+		computeblob_ = computeshaderbuffer_.Get()->GetBufferPointer();
+		computesize_ = computeshaderbuffer_.Get()->GetBufferSize();
+	}
+
+	return S_OK;
+}
+
 HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray, const unsigned int NumElements)
 {
 

@@ -133,6 +133,9 @@
     <Filter Include="RayTrace\Software">
       <UniqueIdentifier>{110543bd-1738-46ea-bff0-2508e5c4a2e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\Raytrace">
+      <UniqueIdentifier>{6f1cdd80-8cd2-4709-83b6-e8249ca39e03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -233,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="RayTrace.cpp">
       <Filter>RayTrace</Filter>
+    </ClCompile>
+    <ClCompile Include="Ray_trace_HW.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -344,6 +350,9 @@
     <ClInclude Include="RayTrace.h">
       <Filter>RayTrace</Filter>
     </ClInclude>
+    <ClInclude Include="Ray_trace_HW.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="transparentdepthps.hlsl">
@@ -411,6 +420,15 @@
     </FxCompile>
     <FxCompile Include="multitextureps.hlsl">
       <Filter>リソース ファイル\Multi</Filter>
+    </FxCompile>
+    <FxCompile Include="raytracecs.hlsl">
+      <Filter>リソース ファイル\Raytrace</Filter>
+    </FxCompile>
+    <FxCompile Include="raytraceps.hlsl">
+      <Filter>リソース ファイル\Raytrace</Filter>
+    </FxCompile>
+    <FxCompile Include="raytracevs.hlsl">
+      <Filter>リソース ファイル\Raytrace</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
