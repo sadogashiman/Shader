@@ -42,7 +42,7 @@ Buff ray_Sphere(Buff In)
     
     dir = normalize(dir);
     
-    float t; //レイの交点までの長さ
+    float t = 0; //レイの交点までの長さ
     float a = 0, b = 0, c = 0; //2次式の係数
     float d = 0; //判別式
     
@@ -87,8 +87,6 @@ float3 lambert_Shade(float3 L,float3 N,float3 Diffuse)
     float b = Diffuse.z * LN;
     
     return float3(r, g, b);
-    
-    
 }
 
 
@@ -114,7 +112,4 @@ void main( uint3 DTid : SV_DispatchThreadID,uint3 gid:SV_GroupID )
     }
     
     BufferOutput[index].color = ((int) finalcolor.z) << 16 | ((int) finalcolor.y) << 8 | ((int) finalcolor.x);
-    
-    
-    
 }

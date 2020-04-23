@@ -27,6 +27,12 @@ private:
 	ComPtr<IDXGISwapChain> cpswapchain_;
 	ComPtr<IDXGIDebug> cpdxgidebug_;
 	D3D11_VIEWPORT viewport_;
+
+
+
+
+
+
 public:
 	Direct3D(const Direct3D&) = delete;
 	Direct3D& operator = (const Direct3D&) = delete;
@@ -47,6 +53,8 @@ public:
 	inline XMMATRIX getWorld() { return world_; }
 	inline XMMATRIX getOrtho() { return ortho_; }
 
+	inline const char* getVideoCardName()const { return videocarddescription_; }	//GPU‚Ì–¼‘O‚ğæ“¾‚·‚é
+	inline const int getVideoCardMemroy()const { return videocardmemory_; }			//GPU‚Ìƒƒ‚ƒŠ[‚ğæ“¾‚·‚é
 	//set
 	void setVideoCardInfo(char* CardName, int& Memory);
 	void setBackBufferRenderTarget();

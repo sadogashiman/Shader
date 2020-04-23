@@ -89,6 +89,12 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 
 	raytrace_->addSphere(&sp);
 
+	rayhw_ = new Ray_trace_HW;
+	if (!rayhw_->init())
+	{
+		return false;
+	}
+
 
 	return true;
 
@@ -97,7 +103,8 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 bool Game::update()
 {
 	bool result;
-	result = raytrace_->render();
+	result = rayhw_->render(0,Direct3D::getInstance()->getWorld(),camera_->getViewMatrix(),Direct3D::getInstance()->getProjection(),light_);
+	//result = raytrace_->render();
 
 	//result = render();
 	if (!result)
@@ -171,6 +178,8 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(model_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
+	rayhw_->destroy();
+
 }
 
 bool Game::renderSceneToTexture()

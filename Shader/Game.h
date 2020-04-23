@@ -7,6 +7,7 @@
 #include"Camera.h"
 #include"Light.h"
 #include"RayTrace.h"
+#include"Ray_trace_HW.h"
 
 class Game
 {
@@ -21,6 +22,7 @@ private:
 	Deferredbuffers* defbuffer_;
 	LightShader* lightshader_;
 	RayTrace* raytrace_;
+	Ray_trace_HW* rayhw_;
 
 public:
 	Game(const Game&) = delete;

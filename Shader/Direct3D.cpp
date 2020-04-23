@@ -12,6 +12,7 @@ Direct3D::~Direct3D()
 {
 }
 
+
 bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vsync, HWND Hwnd, const bool FullScreen, const float ScreenDepth, const float ScreenNear)
 {
 	HRESULT hr;
@@ -245,6 +246,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	backbufferptr->Release();
 	backbufferptr = nullptr;
 
+
 	//深度バッファの初期化
 	ZeroMemory(&depthbufferdesc, sizeof(depthbufferdesc));
 
@@ -412,6 +414,8 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	//ビューポートの作成
 	cpdevicecontext_.Get()->RSSetViewports(1, &viewport_);
 
+	
+
 	//射影行列の作成
 	fieldofview = XM_PI / 14.0F;
 	screenaspect = static_cast<float>(ScreenWidth) / static_cast<float>(ScreenHeight);
@@ -491,4 +495,3 @@ void Direct3D::setBackBufferRenderTarget()
 	//レンダーターゲットビューと深度ステンシルバッファをパイプラインにバインド
 	cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());
 }
-
