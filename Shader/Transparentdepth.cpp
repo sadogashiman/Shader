@@ -42,6 +42,10 @@ bool Transparentdepth::init()
 		return false;
 	}
 
+	vertexshader_ = support_.get()->getVertexShader();
+	pixelshader_ = support_.get()->getPixelShader();
+
+
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
 	polygonlayout[0].SemanticIndex = 0;
@@ -69,6 +73,8 @@ bool Transparentdepth::init()
 		return false;
 	}
 
+	layout_ = support_.get()->getInputLayout();
+
 	//定数バッファの設定
 	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixbufferdesc.ByteWidth = sizeof(MatrixBufferType);
@@ -77,7 +83,7 @@ bool Transparentdepth::init()
 	matrixbufferdesc.MiscFlags = 0;
 	matrixbufferdesc.StructureByteStride = 0;
 
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, &matrixbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("定数バッファのの作成に失敗");

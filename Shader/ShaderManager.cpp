@@ -29,7 +29,6 @@ bool ShaderManager::init()
 
 		return false;
 	}
-
 	maskshader_.reset(new Maskshader);
 	if (!maskshader_.get())
 	{
@@ -103,6 +102,7 @@ bool ShaderManager::init()
 		Error::showDialog("マルチテクスチャシェーダーの初期化に失敗");
 		return false;
 	}
+	
 
 	transshader_.reset(new Transparentdepth);
 	if (!transshader_.get())
@@ -122,6 +122,7 @@ bool ShaderManager::init()
 
 void ShaderManager::destroy()
 {
+	transshader_.get()->destroy();
 	textureshader_.get()->destroy();
 	multitexshader_.get()->destroy();
 	deferredshader_.get()->destroy();

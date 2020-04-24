@@ -137,7 +137,6 @@ void Textureshader::destroy()
 	SAFE_RELEASE(vertexshader_);
 	SAFE_RELEASE(pixelshader_);
 	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(samplerstate_);
 }
 
 bool Textureshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
