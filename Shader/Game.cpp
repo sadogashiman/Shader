@@ -103,7 +103,7 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 bool Game::update()
 {
 	bool result;
-	result = rayhw_->render(0,Direct3D::getInstance()->getWorld(),camera_->getViewMatrix(),Direct3D::getInstance()->getProjection(),light_);
+	result = rayhw_->render();
 	//result = raytrace_->render();
 
 	//result = render();

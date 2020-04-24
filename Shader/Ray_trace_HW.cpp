@@ -1,10 +1,10 @@
-#include "stdafx.h"
 #include "Ray_trace_HW.h"
 #include"Direct3D.h"
-#include"TextureFactory.h"
 
 Ray_trace_HW::Ray_trace_HW()
 {
+	eyepos_ = Vector3(0.0F, 3.0F, -5.0F);
+	lightpos_ = Vector3(-10.0F, 10.0F, -5.0F);
 }
 
 Ray_trace_HW::~Ray_trace_HW()
@@ -15,25 +15,15 @@ bool Ray_trace_HW::init()
 {
 	HRESULT hr;
 
+	Sphere sp;
+	sp.position = Vector3::Zero;
+	sp.r = 1;
+	addSphere(&sp);
+
 	support_.reset(new Support);
 	if (!support_.get())
 	{
 		Error::showDialog("サポートクラスのメモリ確保に失敗");
-		return false;
-	}
-
-	//各シェーダーデータの作成
-	hr = support_.get()->createPixelData(L"raytraceps.cso");
-	if (FAILED(hr))
-	{
-		Error::showDialog("ピクセルシェーダーの作成に失敗");
-		return false;
-	}
-
-	hr = support_.get()->createVertexData(L"raytracevs.cso");
-	if (FAILED(hr))
-	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
@@ -44,294 +34,268 @@ bool Ray_trace_HW::init()
 		return false;
 	}
 
-	//作成したデータを受け取る
+	hr = support_.get()->createVertexData(L"raytracevs.cso");
+	if (FAILED(hr))
+	{
+		Error::showDialog("頂点シェーダーの作成に失敗");
+		return false;
+	}
+
+	hr = support_.get()->createPixelData(L"raytraceps.cso");
+	if (FAILED(hr))
+	{
+		Error::showDialog("ピクセルシェーダーの作成に失敗");
+		return false;
+	}
+
 	vertexshader_ = support_.get()->getVertexShader();
 	pixelshader_ = support_.get()->getPixelShader();
 	computeshader_ = support_.get()->getComputeShader();
 
-	//頂点入力レイアウトの設定
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
-	polygonlayout[0].SemanticName = "POSITION";
-	polygonlayout[0].SemanticIndex = 0;
-	polygonlayout[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	polygonlayout[0].InputSlot = 0;
-	polygonlayout[0].AlignedByteOffset = 0;
-	polygonlayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	polygonlayout[0].InstanceDataStepRate = 0;
-
-	polygonlayout[1].SemanticName = "TEXCOORD";
-	polygonlayout[1].SemanticIndex = 0;
-	polygonlayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	polygonlayout[1].InputSlot = 0;
-	polygonlayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	polygonlayout[1].InstanceDataStepRate = 0;
+	D3D11_INPUT_ELEMENT_DESC polygonlayout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
 
 	unsigned int numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
-	if (FAILED(hr))
-	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
-		return false;
-	}
-
-	//作成したデータを取得
+	support_.get()->createVertexInputLayout(polygonlayout, numelements);
 	layout_ = support_.get()->getInputLayout();
 
-	//データ作成
-	StructuredElement* raydata;
-	raydata = new StructuredElement[kWindow_Height * kWindow_Width]; //画面ピクセル分要素を取得
-	Vector3 pixelpos(0.0F, 0.0F, 0.0F); //3D空間のピクセル座標
-	Vector3 eyedir(0.0F, 0.0F, 1.0F);   //視線方向
-	float dist = 0.0F; //交点までの長さ
-	Vector3 dir(0.0F, 0.0F, 1.0F); //レイの方向
+	D3D11_TEXTURE2D_DESC dc;
+	dc.Usage = D3D11_USAGE_DYNAMIC;
+	dc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	dc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	dc.MiscFlags = 0;
+	dc.Width = kWindow_Width;
+	dc.Height = kWindow_Height;
+	dc.MipLevels = 1;
+	dc.ArraySize = 1;
+	dc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	dc.SampleDesc.Count = 1;
+	dc.SampleDesc.Quality = 0;
 
-	for (int i = 0; i < kWindow_Height; i++)
-	{
-		for (int j = 0; j < kWindow_Width; j++)
-		{
-			pixelpos = transScreenToWorld(j, i);
-			raydata[i * kWindow_Width + j].startpoint = eyepos_;
-			raydata[i * kWindow_Width + j].direction = pixelpos - eyepos_;
-		}
-	}
-
-	//データ渡し用のストラクチャードバッファを作成
-	D3D11_BUFFER_DESC structuredbufferdesc;
-	ZeroMemory(&structuredbufferdesc, sizeof(structuredbufferdesc));
-	structuredbufferdesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	structuredbufferdesc.ByteWidth = sizeof(StructuredElement) * kWindow_Height * kWindow_Width;
-	structuredbufferdesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	structuredbufferdesc.StructureByteStride = sizeof(StructuredElement);
-
-	D3D11_SUBRESOURCE_DATA subresource;
-	subresource.pSysMem = raydata;
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&structuredbufferdesc, &subresource, cpbufferinput_.GetAddressOf());
+	hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&dc, NULL, cpdynamictexture_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		return false;
-	}
-
-	//シェーダーリソースビュー(SRV)作成
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvdesc;
-	srvdesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-	srvdesc.BufferEx.FirstElement = 0;
-	srvdesc.Format = DXGI_FORMAT_UNKNOWN;
-	srvdesc.BufferEx.NumElements = kWindow_Height * kWindow_Width;
-
-	hr = Direct3D::getInstance()->getDevice()->CreateShaderResourceView(cpbufferinput_.Get(), &srvdesc, cpbufferinputsrv_.GetAddressOf());
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
-	//データ受取用の構造体バッファ(ストラクチャードバッファ)を作成
-	D3D11_BUFFER_DESC tex2ddesc;
-	ZeroMemory(&tex2ddesc, sizeof(tex2ddesc));
-	tex2ddesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	tex2ddesc.ByteWidth = sizeof(StructuredElement) * kWindow_Height * kWindow_Width;
-	tex2ddesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	tex2ddesc.StructureByteStride = sizeof(StructuredElement);
-
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&tex2ddesc, NULL, cpbufferresult_.GetAddressOf());
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
-	//UAV(Unordered Acces View)作成
-	D3D11_UNORDERED_ACCESS_VIEW_DESC uavdesc;
-	ZeroMemory(&uavdesc, sizeof(uavdesc));
-	uavdesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	uavdesc.Buffer.FirstElement = 0;
-	uavdesc.Format = DXGI_FORMAT_UNKNOWN;
-	uavdesc.Buffer.NumElements = kWindow_Height * kWindow_Width;
-
-	hr = Direct3D::getInstance()->getDevice()->CreateUnorderedAccessView(cpbufferresult_.Get(), &uavdesc, cpbufferresultuav_.GetAddressOf());
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
-	//データ渡し用のコンスタントバッファを作成
-	D3D11_BUFFER_DESC cbufferdesc;
-	ZeroMemory(&cbufferdesc, sizeof(cbufferdesc));
-	cbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbufferdesc.ByteWidth = sizeof(ConstantBufferType);
-	cbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	cbufferdesc.MiscFlags = 0;
-	cbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
-
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&cbufferdesc, NULL, cpconstantbuffer_.GetAddressOf());
-
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
-	//ダイナミックテクスチャの設定
-	D3D11_TEXTURE2D_DESC dynamictexdesc;
-	dynamictexdesc.Usage = D3D11_USAGE_DYNAMIC;
-	dynamictexdesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	dynamictexdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	dynamictexdesc.MiscFlags = 0;
-	dynamictexdesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	dynamictexdesc.MipLevels = 1;
-	dynamictexdesc.ArraySize = 1;
-	dynamictexdesc.SampleDesc.Count = 1;
-	dynamictexdesc.SampleDesc.Quality = 0;
-	dynamictexdesc.Width = kWindow_Width;
-	dynamictexdesc.Height = kWindow_Height;
-
-	//ダイナミックテクスチャの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&dynamictexdesc, NULL, cpdynamictexture_.GetAddressOf());
-	if (FAILED(hr))
-	{
+		Error::showDialog("TEXTURE2Dの作成に失敗");
 		return false;
 	}
 
 	hr = Direct3D::getInstance()->getDevice()->CreateShaderResourceView(cpdynamictexture_.Get(), NULL, &dynamictexture_);
 	if (FAILED(hr))
 	{
+		Error::showDialog("シェーダーリソースビューの作成に失敗");
 		return false;
 	}
 
-	//サンプラーを作成
+
 	D3D11_SAMPLER_DESC sampledesc;
-	ZeroMemory(&sampledesc, sizeof(D3D11_SAMPLER_DESC));
+	ZeroMemory(&sampledesc, sizeof(sampledesc));
 	sampledesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	sampledesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampledesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampledesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&sampledesc, samplerstate_.GetAddressOf());
+
+	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&sampledesc, cpsamplerstate_.GetAddressOf());
 	if (FAILED(hr))
 	{
+		Error::showDialog("サンプラーの作成に失敗");
 		return false;
 	}
 
-	//球を生成
-	Sphere sp;
-	sp.position = Vector3::Zero;
-	sp.r = 1;
-	addSphere(&sp);
-
-
-	return true;
-}
-
-bool Ray_trace_HW::render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, Light* Light)
-{
-	bool result;
-
-	result = setShaderParameters(World, View, Projection, Light);
-	if (!result)
+	VertexType vertices[] =
 	{
+		Vector3(-1.0F,-1.0F,0.0F),Vector2(0.0F,1.0F),
+		Vector3(-1.0F,1.0F,0.0F),Vector2(0.0F,0.0F),
+		Vector3(1.0F,-1.0F,0.0F),Vector2(1.0F,1.0F),
+		Vector3(1.0F,1.0F,0.0F),Vector2(1.0F,0.0F),
+	};
+
+	D3D11_BUFFER_DESC bd;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(VertexType) * 4;
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA initdata;
+	initdata.pSysMem = vertices;
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&bd, &initdata, &vertexbuffer_);
+	if (FAILED(hr))
+	{
+		Error::showDialog("頂点バッファの作成に失敗");
 		return false;
 	}
 
-	renderShader(Indexcount);
+	SbufferIn* raydata = new SbufferIn[kWindow_Width * kWindow_Height];
+	Vector3 pixelpos(0.0F, 0.0F, 0.0F);
+	Vector3 eyedir(0.0F, 0.0F, 1.0F);
+	float dist;
+	Vector3 dir(0.0F, 0.0F, 1.0F);
+
+	for(int sy = 0;sy<kWindow_Height;sy++)
+	{
+		for (int sx = 0; sx < kWindow_Width; sx++)
+		{
+			pixelpos = transScreenToWorld(sx, sy);
+			raydata[sy * kWindow_Width + sx].E = eyepos_;
+			raydata[sy * kWindow_Width + sx].V = pixelpos - eyepos_;
+		}
+	}
+
+	D3D11_BUFFER_DESC bc;
+	ZeroMemory(&bc, sizeof(bc));
+	bc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	bc.ByteWidth = sizeof(SbufferIn) * kWindow_Height * kWindow_Width;
+	bc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	bc.StructureByteStride = sizeof(SbufferIn);
+
+	initdata.pSysMem = raydata;
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&bc, &initdata, cpbufferinput_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		Error::showDialog("バッファの作成に失敗");
+		return false;
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srd;
+	srd.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+	srd.BufferEx.FirstElement = 0;
+	srd.Format = DXGI_FORMAT_UNKNOWN;
+	srd.BufferEx.NumElements = kWindow_Height * kWindow_Width;
+	
+	hr = Direct3D::getInstance()->getDevice()->CreateShaderResourceView(cpbufferinput_.Get(), &srd, cpbufferinputsrv_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		Error::showDialog("シェーダーリソースビューの作成に失敗");
+		return false;
+	}
+
+	ZeroMemory(&bc, sizeof(bc));
+	bc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	bc.ByteWidth = sizeof(SbufferOut) * kWindow_Height * kWindow_Width;
+	bc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	bc.StructureByteStride = sizeof(SbufferOut);
+
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&bc, NULL, cpbufferresult_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		Error::showDialog("バッファの作成に失敗");
+		return false;
+	}
+
+	D3D11_UNORDERED_ACCESS_VIEW_DESC ud;
+	ZeroMemory(&ud, sizeof(ud));
+	ud.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	ud.Buffer.FirstElement = 0;
+	ud.Format = DXGI_FORMAT_UNKNOWN;
+	ud.Buffer.NumElements = kWindow_Height * kWindow_Width;
+
+	hr = Direct3D::getInstance()->getDevice()->CreateUnorderedAccessView(cpbufferresult_.Get(), &ud, cpbufferresultuav_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		Error::showDialog("UAVの作成に失敗");
+		return false;
+	}
+
+	ZeroMemory(&bc, sizeof(bc));
+	bc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bc.ByteWidth = sizeof(ConstantBufferType);
+	bc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bc.MiscFlags = 0;
+	bc.Usage = D3D11_USAGE_DYNAMIC;
+
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&bc, NULL, cpconstantbuffer_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		Error::showDialog("コンスタントバッファの作成に失敗");
+		return false;
+	}
+
 
 	return true;
 }
 
-void Ray_trace_HW::destroy()
-{
-	SAFE_RELEASE(vertexshader_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(computeshader_);
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(dynamictexture_);
-}
-
-bool Ray_trace_HW::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Light* Light)
+bool Ray_trace_HW::render()
 {
 	HRESULT hr;
-	D3D11_MAPPED_SUBRESOURCE mappedresource;
-	ConstantBufferType* dataptr;
+	Matrix world;
+	Matrix view;
+	Matrix projection;
 
+	//絶対値座標変換
+	world = XMMatrixTranslation(0.0F, 0.0F, 0.0F);
+
+	Vector3 lookat(0.0F, 0.0F, 0.0F);
+	Vector3 upvec(0.0F, 1.0F, 0.0F);
+	view = XMMatrixLookAtLH(eyepos_, lookat, upvec);
+
+	projection = XMMatrixPerspectiveFovLH(XM_PI / 4, static_cast<float>(kWindow_Width) / static_cast<float>(kWindow_Height), 1, 100);
 
 	//シェーダーの登録
 	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
 	Direct3D::getInstance()->getContext()->CSSetShader(computeshader_, NULL, 0);
 
-	//コンピュートシェーダーにデータを渡す
-	//バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(cpconstantbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	D3D11_MAPPED_SUBRESOURCE pdata;
+	ConstantBufferType cb;
+
+	hr = Direct3D::getInstance()->getContext()->Map(cpconstantbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);
 	if (FAILED(hr))
 	{
 		Error::showDialog("バッファのロックに失敗");
 		return false;
 	}
+	else
+	{
+		cb.position = spheresrray_[0]->position;
+		cb.r = spheresrray_[0]->r;
+		spheresrray_[0]->im = XMMatrixTranslation(spheresrray_[0]->position.x, spheresrray_[0]->position.y, spheresrray_[0]->position.z);
+		spheresrray_[0]->im = XMMatrixInverse(0, spheresrray_[0]->im);
+		cb.sphereiw = XMMatrixTranspose(cb.sphereiw);
 
-	dataptr = (ConstantBufferType*)mappedresource.pData;
+		cb.miw = XMMatrixInverse(0, cb.miw);
+		cb.miw = XMMatrixTranspose(cb.miw);
 
-	//データコピー
-	dataptr->position = spheresrray_[0]->position;
-	dataptr->r = spheresrray_[0]->r;
+		cb.lightposition = lightpos_;
 
-	//球のワールド逆行列
-	spheresrray_[0]->im = XMMatrixTranslation(spheresrray_[0]->position.x, spheresrray_[0]->position.y, spheresrray_[0]->position.z);
-	spheresrray_[0]->im = XMMatrixInverse(0, spheresrray_[0]->im);
-	dataptr->sphereiw = spheresrray_[0]->im;
-	dataptr->sphereiw = XMMatrixTranspose(dataptr->sphereiw);
+		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));
+		Direct3D::getInstance()->getContext()->Unmap(cpconstantbuffer_.Get(), 0);
 
-	//ビューの逆行列
-	dataptr->miw = XMMatrixInverse(0, View);
-	dataptr->miw = XMMatrixTranspose(dataptr->miw);
-
-	//ライト位置
-	dataptr->lightposition = Light->getPosition();
-
-	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(cpconstantbuffer_.Get(), 0);
-
-	//このコンスタントバッファを使うシェーダーの登録
-	Direct3D::getInstance()->getContext()->CSSetConstantBuffers(0, 1, cpconstantbuffer_.GetAddressOf());
+	}
 
 
-	//コンスタントバッファをでレイトレースし結果をテクスチャに書きこむ
+	Direct3D::getInstance()->getContext()->CSSetConstantBuffers(0, 1, cpconstantbuffer_.GetAddressOf());;
+
+
 	//コンピュートシェーダー実行
 	Direct3D::getInstance()->getContext()->CSSetShaderResources(0, 1, cpbufferinputsrv_.GetAddressOf());
 	Direct3D::getInstance()->getContext()->CSSetUnorderedAccessViews(0, 1, cpbufferresultuav_.GetAddressOf(), 0);
 	Direct3D::getInstance()->getContext()->Dispatch(kWindow_Width, kWindow_Height, 1);
 
-	//コンピュートシェーダーの結果を受け取る
-	ID3D11Buffer* copy = nullptr;
-	StructuredElement* result = new StructuredElement[kWindow_Height * kWindow_Width];
+	//結果受け取り
+	ID3D11Buffer* buffercopy = NULL;
+	SbufferOut* presult = new SbufferOut[kWindow_Width * kWindow_Height];
 
-	D3D11_BUFFER_DESC bufferdesc;
-	cpbufferresult_.Get()->GetDesc(&bufferdesc);
-	bufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	bufferdesc.Usage = D3D11_USAGE_STAGING;
-	bufferdesc.BindFlags = 0;
-	bufferdesc.MiscFlags = 0;
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&bufferdesc, NULL, &copy);
-	if (FAILED(hr))
-	{
-		return false;
-	}
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	cpbufferresult_.Get()->GetDesc(&bd);
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	bd.Usage = D3D11_USAGE_STAGING;
+	bd.BindFlags = 0;
+	bd.MiscFlags = 0;
 
-	//コピー
-	Direct3D::getInstance()->getContext()->CopyResource(copy, cpbufferresult_.Get());
+	Direct3D::getInstance()->getDevice()->CreateBuffer(&bd, NULL, &buffercopy);
+	Direct3D::getInstance()->getContext()->CopyResource(buffercopy, cpbufferresult_.Get());
 
-	hr = Direct3D::getInstance()->getContext()->Map(copy, 0, D3D11_MAP_READ, 0, &mappedresource);
-	if (FAILED(hr))
-	{
-		Error::showDialog("バッファのロックに失敗");
-		return false;
-	}
+	D3D11_MAPPED_SUBRESOURCE mappedresource;
+	Direct3D::getInstance()->getContext()->Map(buffercopy, 0, D3D11_MAP_READ, 0, &mappedresource);
+	memcpy(presult, (SbufferOut*)mappedresource.pData, sizeof(SbufferOut) * kWindow_Width * kWindow_Height);
+	Direct3D::getInstance()->getContext()->Unmap(buffercopy, 0);
+	buffercopy->Release();
 
-	memcpy(result, (StructuredElement*)mappedresource.pData, sizeof(StructuredElement) * kWindow_Height * kWindow_Width);
-	
-	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(copy, 0);
-
-	//不要になったので破棄
-	copy->Release();
-
-	//テクスチャにデータを書き込む
 	hr = Direct3D::getInstance()->getContext()->Map(cpdynamictexture_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
@@ -339,56 +303,72 @@ bool Ray_trace_HW::setShaderParameters(Matrix World, Matrix View, Matrix Project
 		return false;
 	}
 
-	//データ書き込み
-	DWORD* texel = (DWORD*)mappedreso
-		urce.pData;
+	DWORD* ptexel = (DWORD*)mappedresource.pData;
 	DWORD pitch = mappedresource.RowPitch;
 	int cnt = 0;
+
 	for (int i = 0; i < kWindow_Height; i++)
 	{
-		for (int j = 0; j < kWindow_Width; j++)
+		for (int k = 0; k < kWindow_Width; k++)
 		{
-			texel[j] = result[cnt].color;
+			ptexel[k] = presult[cnt].color;
 			cnt++;
 		}
 
-		texel += pitch / (sizeof(DWORD) / sizeof(BYTE));
+		ptexel += pitch / (sizeof(DWORD) / sizeof(BYTE));
 	}
 
-	texel[0] = result[cnt].color;
+	ptexel[0] = presult[cnt].color;
 	Direct3D::getInstance()->getContext()->Unmap(cpdynamictexture_.Get(), 0);
 
-	//破棄
-	delete[] result;
+	delete presult;
 
 
+	//描画
+	Direct3D::getInstance()->getContext()->ClearRenderTargetView(Direct3D::getInstance()->getRenderTargetView(), Colors::White);
+	Direct3D::getInstance()->getContext()->ClearDepthStencilView(Direct3D::getInstance()->getStencilView(), D3D10_CLEAR_DEPTH, 1.0F, 0);
+
+	UINT stride = sizeof(VertexType);
+	UINT offset = 0;
+
+	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, &vertexbuffer_, &stride, &offset);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, cpsamplerstate_.GetAddressOf());
+	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &dynamictexture_);;
+
+	Direct3D::getInstance()->getSwapChain()->Present(0, 0);
+
+	return true;
+}
+
+void Ray_trace_HW::destroy()
+{
+	SAFE_RELEASE(vertexbuffer_);
+	SAFE_RELEASE(pixelshader_);
+	SAFE_RELEASE(vertexshader_);
+	SAFE_RELEASE(computeshader_);
+	SAFE_RELEASE(layout_);
+	SAFE_RELEASE(dynamictexture_);
+}
+
+bool Ray_trace_HW::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Light* Light)
+{
 	return true;
 }
 
 void Ray_trace_HW::renderShader(const int IndexCount)
 {
-	//頂点入力レイアウトをセット
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
-
-	//プリミティブモードを設定
-	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	//シェーダーに情報を渡す
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &dynamictexture_);
-
-	Direct3D::getInstance()->getContext()->Draw(4, 0);
 }
 
 Vector3 Ray_trace_HW::transScreenToWorld(const int ScreenHeight, const int ScreenWidth)
 {
-	Vector3 screenpos;
+	Vector3 tmp;
+	tmp.z = 0;
+	tmp.x = (static_cast<float>(ScreenWidth) / static_cast<float>(kWindow_Width)) * 2 - 1.0F;
+	tmp.y = -(static_cast<float>(ScreenHeight) / static_cast<float>(kWindow_Height)) * 2 - 1.0F;
 
-	screenpos.z = 0.0F;
-	screenpos.x = (static_cast<float>(ScreenWidth)) / static_cast<float>(kWindow_Width) * 2 - 1.0F;
-	screenpos.y = -(static_cast<float>(ScreenHeight)) / static_cast<float>(kWindow_Height) * 2 - 1.0F;
-
-	return screenpos;
+	return tmp;
 }
 
 void Ray_trace_HW::addSphere(Sphere* Sp)
@@ -397,3 +377,4 @@ void Ray_trace_HW::addSphere(Sphere* Sp)
 	memcpy(spheresrray_[numsphere_], Sp, sizeof(Sphere));
 	numsphere_++;
 }
+

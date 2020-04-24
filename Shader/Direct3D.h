@@ -48,6 +48,8 @@ public:
 	inline ID3D11Device* getDevice()const { return cpdevice_.Get(); }
 	inline ID3D11DeviceContext* getContext()const { return cpdevicecontext_.Get(); }
 	inline ID3D11DepthStencilView* getStencilView()const { return cpdepthview_.Get(); }
+	inline ID3D11RenderTargetView* getRenderTargetView()const { return cprendertarget_.Get(); }
+	inline IDXGISwapChain* getSwapChain()const { return cpswapchain_.Get(); }
 
 	inline XMMATRIX getProjection() { return projection_; }
 	inline XMMATRIX getWorld() { return world_; }
@@ -55,6 +57,7 @@ public:
 
 	inline const char* getVideoCardName()const { return videocarddescription_; }	//GPU‚Ì–¼‘O‚ğæ“¾‚·‚é
 	inline const int getVideoCardMemroy()const { return videocardmemory_; }			//GPU‚Ìƒƒ‚ƒŠ[‚ğæ“¾‚·‚é
+	
 	//set
 	void setVideoCardInfo(char* CardName, int& Memory);
 	void setBackBufferRenderTarget();

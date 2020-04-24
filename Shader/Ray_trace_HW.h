@@ -4,14 +4,21 @@
 class Ray_trace_HW
 {
 private:
-	struct StructuredElement
+	struct VertexType
 	{
-		 Vector3 startpoint;
-		 Vector3 direction;
-		 Vector3 intersection;
-		 Vector3 normal;
-		 float distance;
-		 DWORD color;
+		Vector3 position;
+		Vector2 texture;
+	};
+
+	struct SbufferIn
+	{
+		Vector3 E;
+		Vector3 V;
+	};
+
+	struct SbufferOut
+	{
+		DWORD color;
 	};
 
 	struct ConstantBufferType
@@ -34,10 +41,12 @@ private:
 	ID3D11PixelShader* pixelshader_;
 	ID3D11ComputeShader* computeshader_;
 	ID3D11InputLayout* layout_;
-	ComPtr<ID3D11SamplerState> samplerstate_;
+	ComPtr<ID3D11SamplerState> cpsamplerstate_;
 	ComPtr<ID3D11Texture2D> cpdynamictexture_;
 	ID3D11ShaderResourceView* dynamictexture_;
+	ID3D11Buffer* vertexbuffer_;
 	Vector3 eyepos_;
+	Vector3 lightpos_;
 	unsigned int numsphere_;
 	Sphere* spheresrray_[100];
 
@@ -62,7 +71,7 @@ public:
 	Ray_trace_HW();
 	~Ray_trace_HW();
 	bool init();
-	bool render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, Light* Light);
+	bool render();
 	void destroy();
 };
 

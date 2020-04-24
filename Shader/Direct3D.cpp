@@ -414,8 +414,6 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	//ビューポートの作成
 	cpdevicecontext_.Get()->RSSetViewports(1, &viewport_);
 
-	
-
 	//射影行列の作成
 	fieldofview = XM_PI / 14.0F;
 	screenaspect = static_cast<float>(ScreenWidth) / static_cast<float>(ScreenHeight);

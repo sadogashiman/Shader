@@ -136,6 +136,9 @@
     <Filter Include="リソース ファイル\Raytrace">
       <UniqueIdentifier>{6f1cdd80-8cd2-4709-83b6-e8249ca39e03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RayTrace\Hardware">
+      <UniqueIdentifier>{66e2e458-2e96-4d5d-90ae-df3843be3d6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -235,10 +238,10 @@
       <Filter>3DModel\Tree</Filter>
     </ClCompile>
     <ClCompile Include="RayTrace.cpp">
-      <Filter>RayTrace</Filter>
+      <Filter>RayTrace\Software</Filter>
     </ClCompile>
     <ClCompile Include="Ray_trace_HW.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>RayTrace\Hardware</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -348,10 +351,10 @@
       <Filter>3DModel\Tree</Filter>
     </ClInclude>
     <ClInclude Include="RayTrace.h">
-      <Filter>RayTrace</Filter>
+      <Filter>RayTrace\Software</Filter>
     </ClInclude>
     <ClInclude Include="Ray_trace_HW.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>RayTrace\Hardware</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

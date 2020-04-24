@@ -1,115 +1,119 @@
+//
+//
 struct Buff
 {
-    float3 startpoint;    //レイの視点(入力)
-    float3 direction;     //レイの方向(入力)
-    float3 intersection;  //交点
-    float3 normal;        //交点の法線
-    float distance;       //視点から交点までの距離
-    uint color;           //ピクセルカラー
+    float3 E;
+    float3 V;
+};
+
+struct BuffOut
+{
+    uint color;
+};
+
+struct RET
+{
+    float3 P;
+    float3 N;
+    float d;
 };
 
 cbuffer global : register(b0)
 {
-    float3 position : packoffset(c0); //中心座標
-    float radius : packoffset(c1);    //半径
-    matrix modeliw : packoffset(c2);  //モデルの行列
-    matrix cameraiw : packoffset(c6); //カメラの行列
-    float3 lightposition : packoffset(c10); //ライトの座標
-}
+    float3 g_Pos : packoffset(c0); //中心座標
+    float g_Radius : packoffset(c1); //半径
+    matrix g_mSphereIW : packoffset(c2);
+    matrix g_mIV : packoffset(c6);
+    float3 g_LightPos : packoffset(c10);
+};
 
 StructuredBuffer<Buff> BufferInput : register(t0);
-RWStructuredBuffer<Buff> BufferOutput : register(u0);
-
-Buff ray_Sphere(Buff In)
+RWStructuredBuffer<BuffOut> BufferOut : register(u0);
+//
+//
+//
+RET Ray_Sphere(Buff In)
 {
-    Buff output;
-    output = (Buff) 0;
-    
-    float3 start = In.startpoint;
-    float3 dir = In.direction;
-    float3 inter;
-    float3 normal;
-    
-    //レイをカメラ空間で変換
-    float4 e = float4(start.x, start.y, start.z, 1.0F);
-    
-    e = mul(e, cameraiw);
-    dir = mul(dir, (float3x3) cameraiw);
-    
-    e = mul(e, modeliw);
-    start = e.xyz;
-    dir = mul(dir, (float) modeliw);
-    
-    dir = normalize(dir);
-    
+    RET ret = (RET) 0;
+    float3 E = In.E;
+    float3 V = In.V;
+    float3 P, N;
+
+	//レイをカメラ空間(の逆空間）で変換 （カメラと”同じ”ように動かすため。モデルの場合とは理由が異なる）
+    E = mul(float4(E, 1), g_mIV);
+    V = mul(V, (float3x3) g_mIV); //方向ベクトルに移動成分をかけてはだめ（方向が変わる）	
+
+	////さらに、このモデル（球）の姿勢の逆行列でも変換　（モデルのローカル系にレイを当てているため）
+    E = mul(float4(E, 1), g_mSphereIW);
+    V = mul(V, (float3x3) g_mSphereIW); //方向ベクトルに移動成分をかけてはだめ（方向が変わる）
+	
+    V = normalize(V);
+
     float t = 0; //レイの交点までの長さ
     float a = 0, b = 0, c = 0; //2次式の係数
-    float d = 0; //判別式
-    
-    a = dot(dir, dir);
-    b = 2 * dot(start, dir);
-    c = dot(start, start) - radius * radius;
-    
-    d = b * b * 4 * a * c;
-    
-    if(d>0)
+    float D = 0; //判別式
+
+    a = dot(V, V);
+    b = 2 * dot(E, V);
+    c = dot(E, E) - g_Radius * g_Radius;
+
+    D = b * b - 4 * a * c;
+
+    if (D > 0)//交点は２つ（だが、使う1個の交点は確定できる）
     {
-        t = (-b - sqrt(d)) / 2 * a;
+        t = (-b - sqrt(D)) / 2 * a;
     }
-    else if(d==0)
+    else if (D == 0)//交点はひとつだけ
     {
-        t = (-b - sqrt(d)) / 2 * a;
+        t = (-b - sqrt(D)) / 2 * a;
     }
-    else
+    else //交点なし
     {
         t = -1;
-        return output;
+        return ret;
     }
-    
-    //交点はレイの式をそのまま
-    inter = start + t * dir;
-    normal = inter - float3(0.0F, 0.0F, 0.0F);
-    normal = normalize(normal); //正規化
-    
-    output.intersection = inter;
-    output.normal = normal;
-    output.direction = dir;
-    
-    return output;
-}
 
-float3 lambert_Shade(float3 L,float3 N,float3 Diffuse)
+    P = E + t * V; //交点は、レイの式そのまま
+    N = P - float3(0, 0, 0); //法線は球の中心から交点に向かうベクトル 　せっかくレイのほうを曲げているのにSphere.posを使ってはまずい  球のローカル系の中心を使う
+    N = normalize(N);
+	
+    ret.P = P;
+    ret.N = N;
+    ret.d = t;
+
+    return ret;
+}
+//
+//
+//ランバートシェーディングを計算する関数
+float3 Lambert_Shade(float3 L, float3 N, float3 Diffuse)
 {
     float LN = dot(L, N);
     LN = max(0, LN);
     float r = Diffuse.x * LN;
     float g = Diffuse.y * LN;
     float b = Diffuse.z * LN;
-    
+
     return float3(r, g, b);
 }
-
-
-//スレッド数はシェーダー側で指定できないので1,1,1にしておく
 [numthreads(1, 1, 1)]
-void main( uint3 DTid : SV_DispatchThreadID,uint3 gid:SV_GroupID )
+//
+//
+//スレッド数はスクリーンピクセル数で変わる値なので、シェーダー内でスレッド数を指定できない。なのでスレッドは(1,1,1)　アプリ側（Dispatch)で複数回数を指定。
+void main(uint3 id : SV_DispatchThreadID, uint3 gid : SV_GroupID)
 {
-    uint index = DTid.y * 484 + DTid.x;
-    
-    //デフォルトの出力色を設定
-    float3 finalcolor = float3(80.0F, 80.0F,80.0F);
-    
-    Buff ret;
-    ret = (Buff) 0; //初期化
-    
-    ret = ray_Sphere(BufferInput[index]);
-    
-    if(ret.distance>0)
+    uint index = id.y * 484 + id.x;
+
+    float3 C = float3(80, 80, 80); //最終色
+
+    RET ret = (RET) 0;
+    ret = Ray_Sphere(BufferInput[index]);
+    if (ret.d > 0)
     {
-        float3 L = lightposition - ret.intersection;
+        float3 L = g_LightPos - ret.P;
         L = normalize(L);
-        finalcolor = lambert_Shade(L, ret.normal, float3(3.0F, 125.0F, 251.0F));
+        C = Lambert_Shade(L, ret.N, float3(3, 125, 251));
     }
-    
-    BufferOutput[index].color = ((int) finalcolor.z) << 16 | ((int) finalcolor.y) << 8 | ((int) finalcolor.x);
+
+    BufferOut[index].color = ((int) C.z) << 16 | ((int) C.y) << 8 | ((int) C.x);
 }
