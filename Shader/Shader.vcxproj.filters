@@ -85,9 +85,6 @@
     <Filter Include="ShaderManager\Shader\Mask">
       <UniqueIdentifier>{7e55873b-c889-4644-b447-e7b85a712120}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ShaderManager\Shader\Trans">
-      <UniqueIdentifier>{d75dd138-4726-4d61-a422-a7423637f770}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3DModel">
       <UniqueIdentifier>{4e7a2e6c-d6f5-4316-aa4e-68186cc7a958}</UniqueIdentifier>
     </Filter>
@@ -225,9 +222,6 @@
     <ClCompile Include="Text.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="TransParentDepth.cpp">
-      <Filter>ShaderManager\Shader\Trans</Filter>
-    </ClCompile>
     <ClCompile Include="Rendertexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -337,9 +331,6 @@
     </ClInclude>
     <ClInclude Include="Text.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="TransParentDepth.h">
-      <Filter>ShaderManager\Shader\Trans</Filter>
     </ClInclude>
     <ClInclude Include="Rendertexture.h">
       <Filter>ヘッダー ファイル</Filter>

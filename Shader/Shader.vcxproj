@@ -180,7 +180,6 @@
     <ClCompile Include="TextureFactory.cpp" />
     <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="TransParentDepth.cpp" />
     <ClCompile Include="Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -221,7 +220,6 @@
     <ClInclude Include="TextureFactory.h" />
     <ClInclude Include="TextureShader.h" />
     <ClInclude Include="Timer.h" />
-    <ClInclude Include="TransParentDepth.h" />
     <ClInclude Include="Tree.h" />
   </ItemGroup>
   <ItemGroup>

@@ -26,22 +26,18 @@ bool ParticleShader::init()
 	}
 
 	//シェーダーコンパイル
-	hr = support_.get()->createVertexData(L"particlevs.cso");
+	hr = support_.get()->createVertexData(L"particlevs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"particleps.cso");
+	hr = support_.get()->createPixelData(L"particleps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
-
-	//作成されたデータを取得
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -72,16 +68,12 @@ bool ParticleShader::init()
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
-
-	//作成した頂点入力レイアウトを取得
-	layout_ = support_.get()->getInputLayout();
-
 
 	//動的定数バッファの設定
 	matrixbufferdesc.Usage = D3D11_USAGE_DEFAULT;
@@ -151,11 +143,11 @@ void ParticleShader::destroy()
 void ParticleShader::renderrShader(const int IndexCount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
 
 	//シェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラーをピクセルシェーダーに適応
 	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());

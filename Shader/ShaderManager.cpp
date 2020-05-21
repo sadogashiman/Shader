@@ -103,34 +103,11 @@ bool ShaderManager::init()
 		return false;
 	}
 	
-
-	transshader_.reset(new Transparentdepth);
-	if (!transshader_.get())
-	{
-		return false;
-	}
-
-	if (!(transshader_.get()->init()))
-	{
-		Error::showDialog("トランスシェーダーの初期化に失敗");
-		return false;
-	}
-
-
 	return true;
 }
 
 void ShaderManager::destroy()
 {
-	transshader_.get()->destroy();
-	textureshader_.get()->destroy();
-	multitexshader_.get()->destroy();
-	deferredshader_.get()->destroy();
-	depthshader_.get()->destroy();
-	shadowshader_.get()->destroy();
-	maskshader_.get()->destroy();
-	bumpshader_.get()->destroy();
-	lightshader_.get()->destroy();
 }
 
 bool ShaderManager::maskRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)
@@ -179,9 +156,4 @@ bool ShaderManager::multiTextureRender(Model* Model, Matrix World, Matrix View, 
 {
 	Model->render();
 	return multitexshader_.get()->render(Model->getIndexCount(), World, View, Projection, TextureArray, Texturenum);
-}
-
-bool ShaderManager::transRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
-{
-	return transshader_.get()->render(IndexCount, World, View, Projection, Texture);
 }

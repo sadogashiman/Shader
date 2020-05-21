@@ -82,18 +82,18 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	raytrace_ = new RayTrace;
-	Sphere sp;
-	sp.position = Vector3::Zero;
-	sp.rdius = 0.4F;
+	//raytrace_ = new RayTrace;
+	//Sphere sp;
+	//sp.position = Vector3::Zero;
+	//sp.rdius = 0.4F;
 
-	raytrace_->addSphere(&sp);
+	//raytrace_->addSphere(&sp);
 
-	rayhw_ = new Ray_trace_HW;
-	if (!rayhw_->init())
-	{
-		return false;
-	}
+	//rayhw_ = new Ray_trace_HW;
+	//if (!rayhw_->init())
+	//{
+	//	return false;
+	//}
 
 
 	return true;
@@ -103,10 +103,10 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 bool Game::update()
 {
 	bool result;
-	result = rayhw_->render();
+	//result = rayhw_->render();
 	//result = raytrace_->render();
 
-	//result = render();
+	result = render();
 	if (!result)
 	{
 		return false;
@@ -176,9 +176,9 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(model_);
+	//SAFE_DELETE(raytrace_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
-	rayhw_->destroy();
 
 }
 

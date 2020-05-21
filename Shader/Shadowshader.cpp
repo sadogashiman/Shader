@@ -35,23 +35,19 @@ bool Shadowshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"shadowvs.cso");
+	hr = support_.get()->createVertexData(L"shadowvs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"shadowps.cso");
+	hr = support_.get()->createPixelData(L"shadowps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
-
-	//コンパイル済みシェーダーを取得
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -82,15 +78,12 @@ bool Shadowshader::init()
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
-
-	//作成した頂点入力レイアウトを取得
-	layout_ = support_.get()->getInputLayout();
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -172,16 +165,6 @@ bool Shadowshader::init()
 	return true;
 }
 
-void Shadowshader::destroy()
-{
-	SAFE_RELEASE(lightbuffer_);
-	SAFE_RELEASE(lightbuffer2_);
-	SAFE_RELEASE(matrixbuffer_);
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(vertexshader_);
-}
-
 bool Shadowshader::render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, const Matrix lightview, const Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor)
 {	bool result;
 
@@ -216,7 +199,7 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	Lightprojection = XMMatrixTranspose(Lightprojection);
 
 	//書き込み可能なように定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -233,19 +216,19 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	dataptr->lightprojection = Lightprojection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//頂点シェーダで定数バッファの位置を設定
 	buffnumber = 0;
 
 	//更新された値で頂点シェーダの定数バッファを最後に設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, &matrixbuffer_);
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
 
 	//シェーダーリソースを設定
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
 	Direct3D::getInstance()->getContext()->PSGetShaderResources(1, 1, &Depthmaptexture);
 
-	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_, 0, D3D11_MAP_WRITE_DISCARD,0, & mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD,0, & mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -256,14 +239,14 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	dataptr2->AmbientColor = Ambientcolor;
 	dataptr2->DiffuseColor = Diffusecolor;
 
-	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_.Get(), 0);
 
 	buffnumber = 0;
 
-	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, &lightbuffer_);
+	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, lightbuffer_.GetAddressOf());
 
 	//2番目のライト定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer2_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer2_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -275,13 +258,13 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	dataptr3->padding1 = 0.0F;
 
 	//ロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(lightbuffer2_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(lightbuffer2_.Get(), 0);
 
 	//バッファ番号を設定
 	buffnumber = 1;
 
 	//頂点シェーダーに定数バッファをセット
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, &lightbuffer2_);
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, lightbuffer2_.GetAddressOf());
 
 	return true;
 }
@@ -289,11 +272,11 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 void Shadowshader::renderShader(const int Indexcount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
 
 	//レンダリングに使用するシェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラーの設定
 	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplestateclamp_.GetAddressOf());

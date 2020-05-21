@@ -4,8 +4,7 @@
 
 Direct3D::Direct3D()
 {
-	videocardmemory_ = 0;
-	vsync_ = false;
+	ZeroMemory(this, sizeof(Direct3D));
 }
 
 Direct3D::~Direct3D()

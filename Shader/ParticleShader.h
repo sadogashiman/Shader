@@ -9,9 +9,9 @@ private:
 		Matrix view;
 		Matrix projection;
 	};
-	ID3D11VertexShader* vertexshader_;
-	ID3D11PixelShader* pixelshader_;
-	ID3D11InputLayout* layout_;
+	ComPtr<ID3D11VertexShader> vertexshader_;
+	ComPtr<ID3D11PixelShader> pixelshader_;
+	ComPtr<ID3D11InputLayout> layout_;
 	ComPtr<ID3D11Buffer> matrixbuffer_;
 	ComPtr<ID3D11SamplerState> samplerstate_;
 	std::unique_ptr<Support> support_;

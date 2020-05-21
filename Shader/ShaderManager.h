@@ -8,7 +8,6 @@
 #include"TextureShader.h"
 #include"Deferredshader.h"
 #include"Multitexture.h"
-#include"Transparentdepth.h"
 #include"Model.h"
 
 
@@ -30,7 +29,6 @@ private:
 	std::unique_ptr<Textureshader>textureshader_;
 	std::unique_ptr<Deferredshader>deferredshader_;
 	std::unique_ptr<Multitexture>multitexshader_;
-	std::unique_ptr<Transparentdepth> transshader_;
 
 public:
 
@@ -66,8 +64,5 @@ public:
 
 	//マルチテクスチャリングを使用するときのレンダー
 	bool multiTextureRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, const int Texturenum);
-
-	//透過を使用するときのレンダー
-	bool transRender(const int IndexCount,Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);
 };
 

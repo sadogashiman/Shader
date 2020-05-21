@@ -12,9 +12,9 @@ private:
 	};
 	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
 	void rendershader(int Indexcount);
-	ID3D11VertexShader* vertexshader_;
-	ID3D11PixelShader* pixelshader_;
-	ID3D11InputLayout* layout_;
+	ComPtr<ID3D11VertexShader> vertexshader_;
+	ComPtr<ID3D11PixelShader> pixelshader_;
+	ComPtr<ID3D11InputLayout> layout_;
 	ComPtr<ID3D11Buffer> matrixbuffer_;
 	ComPtr<ID3D11SamplerState> samplestate_;
 	std::unique_ptr<Support> support_;
@@ -22,7 +22,6 @@ public:
 	Maskshader();
 	~Maskshader();
 	bool init();
-	void destroy();
 	bool render(int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView**TextureArray);
 };
 

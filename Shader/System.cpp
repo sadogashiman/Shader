@@ -48,12 +48,12 @@ bool System::init()
 		return false;
 	}
 
-	////ƒQ[ƒ€ƒNƒ‰ƒX‰Šú‰»
-	//if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
-	//{
-	//	Error::showDialog("ƒQ[ƒ€ƒNƒ‰ƒX‚Ì‰Šú‰»‚É¸”s");
-	//	return false;
-	//}
+	//ƒQ[ƒ€ƒNƒ‰ƒX‰Šú‰»
+	if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
+	{
+		Error::showDialog("ƒQ[ƒ€ƒNƒ‰ƒX‚Ì‰Šú‰»‚É¸”s");
+		return false;
+	}
 
 	return true;
 }
@@ -92,7 +92,7 @@ bool System::run()
 
 void System::destroy()
 {
-	//Game::getInstance()->destroy();
+	Game::getInstance()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
 	ShaderManager::getInstance()->destroy();
 	Input::getInstance()->destroy();
@@ -111,11 +111,11 @@ bool System::update()
 		return false;
 	}
 
-	//result = Game::getInstance()->update();
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	result = Game::getInstance()->update();
+	if (!result)
+	{
+		return false;
+	}
 
 
 	return true;

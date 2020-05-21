@@ -32,22 +32,19 @@ bool Deferredshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"deferredvs.cso");
+	hr = support_.get()->createVertexData(L"deferredvs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"deferredps.cso");
+	hr = support_.get()->createPixelData(L"deferredps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
-
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -78,15 +75,12 @@ bool Deferredshader::init()
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements, layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
-
-	//作成した頂点入力レイアウトを取得
-	layout_ = support_.get()->getInputLayout();
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -126,13 +120,6 @@ bool Deferredshader::init()
 	}
 
 	return true;
-}
-
-void Deferredshader::destroy()
-{
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(vertexshader_);
 }
 
 bool Deferredshader::render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)
@@ -197,11 +184,11 @@ bool Deferredshader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 void Deferredshader::renderShader(const int Indexcount)
 {
 	//頂点入力レイアウトの設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
 
 	//レンダリングに使用される頂点シェーダーとピクセルシェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラーの状態をピクセルシェーダーに設定
 	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplestatewrap_.GetAddressOf());

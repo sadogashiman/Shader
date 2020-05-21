@@ -21,9 +21,9 @@ private:
 	bool SetShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, Vector3 LightDirection, Vector4 DiffuseColor);
 	void renderShader( const int Indexcount);
 
-	ID3D11VertexShader* vertexshader_;
-	ID3D11PixelShader* pixelshader_;
-	ID3D11InputLayout* layout_;
+	ComPtr<ID3D11VertexShader> vertexshader_;
+	ComPtr<ID3D11PixelShader> pixelshader_;
+	ComPtr<ID3D11InputLayout> layout_;
 	ComPtr<ID3D11Buffer> matrixbuffer_;
 	ComPtr<ID3D11SamplerState> samplerstate_;
 	ComPtr<ID3D11Buffer> lightbuffer_;
@@ -33,7 +33,6 @@ public:
 	Bumpmap();
 	~Bumpmap();
 	bool init();
-	void destroy();
 	bool render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, ID3D11ShaderResourceView** TextureArray, Vector3 LightDirection, Vector4 DiffuseColor);
 
 };

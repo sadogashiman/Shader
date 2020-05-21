@@ -7,9 +7,6 @@
 class Support
 {
 private:
-	ID3D11VertexShader* vertexshader_;
-	ID3D11PixelShader* pixelshader_;
-	ID3D11ComputeShader* computeshader_;
 	LPVOID vertexblob_;
 	LPVOID pixelblob_;
 	LPVOID computeblob_;
@@ -19,7 +16,6 @@ private:
 	ComPtr<ID3D10Blob> pixelshaderbuffer_;
 	ComPtr<ID3D10Blob> vertexshaderbuffer_;
 	ComPtr<ID3D10Blob> computeshaderbuffer_;
-	ID3D11InputLayout* layout_;
 	std::vector<char> vertexdataarray_;
 	std::vector<char> pixeldataarray_;
 	std::vector<char> computedataarray_;
@@ -44,10 +40,10 @@ public:
 	static wchar_t* renameToMaterialFileName(const wchar_t* MaterialFileName);		//渡されたファイルパス文字列を拡張子.mtlに変換する
 	
 	//Create
-	HRESULT createVertexData(const wchar_t* VertexShaderFileName);		 			//渡されたファイル名で頂点シェーダーを作成
-	HRESULT createPixelData(const wchar_t* PixelShaderFileName);					//渡されたファイル名でピクセルシェーダーを作成
-	HRESULT createComputeData(const wchar_t* ComputeShdaerFileName);
-	HRESULT createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray,const unsigned int NumElements); //渡された情報で頂点入力レイアウトを作成(デバック時はデータチェックを行う)
+	HRESULT createVertexData(const wchar_t* VertexShaderFileName,ID3D11VertexShader** VertexShader);		 			//渡されたファイル名で頂点シェーダーを作成
+	HRESULT createPixelData(const wchar_t* PixelShaderFileName,ID3D11PixelShader** PixelShader);					//渡されたファイル名でピクセルシェーダーを作成
+	HRESULT createComputeData(const wchar_t* ComputeShdaerFileName,ID3D11ComputeShader** ComputeShader);
+	HRESULT createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray,const unsigned int NumElements,ID3D11InputLayout** InputLayout); //渡された情報で頂点入力レイアウトを作成(デバック時はデータチェックを行う)
 
 	//Get
 	inline const LPVOID getVertexBufferPtr()const { return vertexblob_; }			//頂点シェーダーのバッファポインタを返す
@@ -56,9 +52,5 @@ public:
 	inline const size_t getVertexBufferSize()const { return vertexsize_; }			//頂点シェーダーのバッファサイズを返す
 	inline const size_t getPixelBufferSize()const { return pixelsize_; }			//ピクセルシェーダーのバッファサイズを返す
 	inline const size_t getComputeBufferSize()const { return computesize_; }		//コンピュートシェーダーのバッファサイズを返す
-	inline ID3D11VertexShader* getVertexShader()const { return vertexshader_; }		//作成された頂点シェーダーのポインターを返す
-	inline ID3D11PixelShader* getPixelShader()const { return pixelshader_; }		//作成したピクセルシェーダーのポインターを返す
-	inline ID3D11ComputeShader* getComputeShader()const { return computeshader_; }  //作成したコンピュートシェーダーのポインタを返す
-	inline ID3D11InputLayout* getInputLayout()const { return layout_; }				//作成した頂点入力レイアウトのポインタを返す
 };
 

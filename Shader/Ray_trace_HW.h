@@ -37,14 +37,14 @@ private:
 		Matrix im; //ƒ[ƒ‹ƒh‚Ì‹ts—ñ
 	};
 
-	ID3D11VertexShader* vertexshader_;
-	ID3D11PixelShader* pixelshader_;
-	ID3D11ComputeShader* computeshader_;
-	ID3D11InputLayout* layout_;
+	ComPtr<ID3D11VertexShader> vertexshader_;
+	ComPtr<ID3D11PixelShader> pixelshader_;
+	ComPtr<ID3D11ComputeShader> computeshader_;
+	ComPtr<ID3D11InputLayout> layout_;
 	ComPtr<ID3D11SamplerState> cpsamplerstate_;
 	ComPtr<ID3D11Texture2D> cpdynamictexture_;
-	ID3D11ShaderResourceView* dynamictexture_;
-	ID3D11Buffer* vertexbuffer_;
+	ComPtr<ID3D11ShaderResourceView> dynamictexture_;
+	ComPtr<ID3D11Buffer> vertexbuffer_;
 	Vector3 eyepos_;
 	Vector3 lightpos_;
 	unsigned int numsphere_;
@@ -72,6 +72,5 @@ public:
 	~Ray_trace_HW();
 	bool init();
 	bool render();
-	void destroy();
 };
 

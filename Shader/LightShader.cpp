@@ -29,23 +29,19 @@ bool LightShader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"lightvs.cso");
+	hr = support_.get()->createVertexData(L"lightvs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"lightps.cso");
+	hr = support_.get()->createPixelData(L"lightps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
-
-	//作成されたデータをコピー
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -68,15 +64,12 @@ bool LightShader::init()
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
-
-	//作成した頂点入力レイアウトを取得
-	layout_ = support_.get()->getInputLayout();
 
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -124,7 +117,7 @@ bool LightShader::init()
 	lightbufferdesc.StructureByteStride = 0;
 
 	//このクラス内から頂点シェーダーの定数バッファにアクセスできるようにポインタを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc, NULL, &lightbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc, NULL, lightbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -149,14 +142,6 @@ bool LightShader::render(const int Indexcound, const Matrix World, const Matrix 
 	renderShader(Indexcound);
 
 	return true;
-}
-
-void LightShader::destroy()
-{
-	SAFE_RELEASE(vertexshader_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(lightbuffer_);
-	SAFE_RELEASE(layout_);
 }
 
 bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* NormalTexture, Vector3 LightDirection)
@@ -200,7 +185,7 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &texture);
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(1, 1, &NormalTexture);	//ライト定数バッファをロックして書き込み可能に
 
-	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -214,7 +199,7 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	dataptr2->pading = 0.0F;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_.Get(), 0);
 
 	//ピクセルシェーダーでライト定数バッファの位置を設定
 	buffnumber = 0;
@@ -228,11 +213,11 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 void LightShader::renderShader(const int Indexcount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
 
 	//この三角形のレンダリングに使用される頂点シェーダとピクセルシェーダを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラー状態をピクセルシェーダーに設定
 	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());

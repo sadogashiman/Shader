@@ -1,8 +1,10 @@
 #include "Ray_trace_HW.h"
 #include"Direct3D.h"
+#include"System.h"
 
 Ray_trace_HW::Ray_trace_HW()
 {
+	ZeroMemory(this, sizeof(Ray_trace_HW));
 	eyepos_ = Vector3(0.0F, 3.0F, -5.0F);
 	lightpos_ = Vector3(-10.0F, 10.0F, -5.0F);
 }
@@ -14,6 +16,8 @@ Ray_trace_HW::~Ray_trace_HW()
 bool Ray_trace_HW::init()
 {
 	HRESULT hr;
+	RECT rc;
+	GetClientRect(System::getWindowHandle(), &rc);
 
 	Sphere sp;
 	sp.position = Vector3::Zero;
@@ -27,30 +31,26 @@ bool Ray_trace_HW::init()
 		return false;
 	}
 
-	hr = support_.get()->createComputeData(L"raytracecs.cso");
+	hr = support_.get()->createComputeData(L"raytracecs.cso",computeshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("コンピュートシェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createVertexData(L"raytracevs.cso");
+	hr = support_.get()->createVertexData(L"raytracevs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"raytraceps.cso");
+	hr = support_.get()->createPixelData(L"raytraceps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
-
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
-	computeshader_ = support_.get()->getComputeShader();
 
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[] =
 	{
@@ -60,8 +60,7 @@ bool Ray_trace_HW::init()
 
 	unsigned int numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
-	support_.get()->createVertexInputLayout(polygonlayout, numelements);
-	layout_ = support_.get()->getInputLayout();
+	support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 
 	D3D11_TEXTURE2D_DESC dc;
 	dc.Usage = D3D11_USAGE_DYNAMIC;
@@ -122,7 +121,7 @@ bool Ray_trace_HW::init()
 
 	D3D11_SUBRESOURCE_DATA initdata;
 	initdata.pSysMem = vertices;
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&bd, &initdata, &vertexbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&bd, &initdata, vertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点バッファの作成に失敗");
@@ -235,9 +234,9 @@ bool Ray_trace_HW::render()
 	projection = XMMatrixPerspectiveFovLH(XM_PI / 4, static_cast<float>(kWindow_Width) / static_cast<float>(kWindow_Height), 1, 100);
 
 	//シェーダーの登録
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->CSSetShader(computeshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->CSSetShader(computeshader_.Get(), NULL, 0);
 
 	D3D11_MAPPED_SUBRESOURCE pdata;
 	ConstantBufferType cb;
@@ -306,7 +305,7 @@ bool Ray_trace_HW::render()
 	DWORD* ptexel = (DWORD*)mappedresource.pData;
 	DWORD pitch = mappedresource.RowPitch;
 	int cnt = 0;
-
+	int tmp = 0;
 	for (int i = 0; i < kWindow_Height; i++)
 	{
 		for (int k = 0; k < kWindow_Width; k++)
@@ -331,8 +330,8 @@ bool Ray_trace_HW::render()
 	UINT stride = sizeof(VertexType);
 	UINT offset = 0;
 
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, &vertexbuffer_, &stride, &offset);
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, cpsamplerstate_.GetAddressOf());
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &dynamictexture_);;
@@ -340,16 +339,6 @@ bool Ray_trace_HW::render()
 	Direct3D::getInstance()->getSwapChain()->Present(0, 0);
 
 	return true;
-}
-
-void Ray_trace_HW::destroy()
-{
-	SAFE_RELEASE(vertexbuffer_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(vertexshader_);
-	SAFE_RELEASE(computeshader_);
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(dynamictexture_);
 }
 
 bool Ray_trace_HW::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Light* Light)

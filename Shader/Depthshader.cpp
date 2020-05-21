@@ -30,23 +30,19 @@ bool Depthshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"depthvs.cso");
+	hr = support_.get()->createVertexData(L"depthvs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"depthps.cso");
+	hr = support_.get()->createPixelData(L"depthps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
-
-	//作成されたデータをコピー
-	vertexshader_ = support_.get()->getVertexShader();
-	pixelshader_ = support_.get()->getPixelShader();
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -61,15 +57,12 @@ bool Depthshader::init()
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements);
+	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
-
-	//作成した頂点入力レイアウトを取得
-	layout_ = support_.get()->getInputLayout();
 
 	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixbufferdesc.ByteWidth = sizeof(MatrixBufferType);
@@ -86,13 +79,6 @@ bool Depthshader::init()
 	}
 
 	return true;
-}
-
-void Depthshader::destroy()
-{
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(vertexshader_);
 }
 
 bool Depthshader::render(int indexCount, Matrix World, Matrix View, Matrix Projection)
@@ -150,11 +136,11 @@ bool Depthshader::setShaderParameters( Matrix World, Matrix View, Matrix Project
 void Depthshader::renderShader(int Indexcount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_);
+	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
 
 	//レンダリングに使用するシェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_, NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_, NULL, 0);
+	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//レンダリング
 	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);

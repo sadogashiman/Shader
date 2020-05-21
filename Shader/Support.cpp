@@ -13,8 +13,6 @@ Support::Support()
 	pixelsize_ = 0;
 	vertexshaderbuffer_ = nullptr;
 	pixelshaderbuffer_ = nullptr;
-	vertexshader_ = nullptr;
-	pixelshader_ = nullptr;
 }
 
 Support::~Support()
@@ -148,7 +146,7 @@ wchar_t* Support::renameToMaterialFileName(const wchar_t* MaterialFileName)
 	return mtlfilename;
 }
 
-HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
+HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName, ID3D11VertexShader** VertexShader)
 {
 	HRESULT hr;
 	std::ifstream fp;
@@ -175,7 +173,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 		//読み込み終了
 		fp.close();
 
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(&vertexdataarray_[0], size, nullptr, &vertexshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(&vertexdataarray_[0], size, nullptr, VertexShader);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -184,6 +182,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 		//データをメンバにコピー
 		vertexsize_ = size;
 		vertexblob_ = &vertexdataarray_[0];
+
 	}
 	else
 	{
@@ -206,7 +205,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 			return hr;
 		}
 
-		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer_.Get()->GetBufferPointer(), vertexshaderbuffer_.Get()->GetBufferSize(), nullptr, &vertexshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer_.Get()->GetBufferPointer(), vertexshaderbuffer_.Get()->GetBufferSize(), nullptr, VertexShader);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -220,7 +219,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName)
 	return S_OK;
 }
 
-HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
+HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName, ID3D11PixelShader** PixelShader)
 {
 	HRESULT hr;
 	std::ifstream fp;
@@ -247,7 +246,7 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 		//読み込み終了
 		fp.close();
 
-		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(&pixeldataarray_[0], size, nullptr, &pixelshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(&pixeldataarray_[0], size, nullptr, PixelShader);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -278,7 +277,7 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 			return hr;
 		}
 
-		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer_.Get()->GetBufferPointer(), pixelshaderbuffer_.Get()->GetBufferSize(), nullptr, &pixelshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer_.Get()->GetBufferPointer(), pixelshaderbuffer_.Get()->GetBufferSize(), nullptr, PixelShader);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -292,7 +291,7 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName)
 	return S_OK;
 }
 
-HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName)
+HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName, ID3D11ComputeShader** ComputeShader)
 {
 	HRESULT hr;
 	std::ifstream fp;
@@ -319,7 +318,7 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName)
 		//読み込み終了
 		fp.close();
 
-		hr = Direct3D::getInstance()->getDevice()->CreateComputeShader(&computedataarray_[0], size, nullptr, &computeshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreateComputeShader(&computedataarray_[0], size, nullptr, ComputeShader);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -350,7 +349,7 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName)
 			return hr;
 		}
 
-		hr = Direct3D::getInstance()->getDevice()->CreateComputeShader(computeshaderbuffer_.Get()->GetBufferPointer(), computeshaderbuffer_.Get()->GetBufferSize(), nullptr, &computeshader_);
+		hr = Direct3D::getInstance()->getDevice()->CreateComputeShader(computeshaderbuffer_.Get()->GetBufferPointer(), computeshaderbuffer_.Get()->GetBufferSize(), nullptr, ComputeShader);
 		if (FAILED(hr))
 		{
 			return hr;
@@ -364,7 +363,7 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName)
 	return S_OK;
 }
 
-HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray, const unsigned int NumElements)
+HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray, const unsigned int NumElements, ID3D11InputLayout** InputLayout)
 {
 
 	HRESULT hr;
@@ -375,7 +374,7 @@ HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayout
 		return S_FALSE;
 	}
 #endif // _DEBUG
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(PolygonLayoutArray, NumElements, vertexblob_, vertexsize_, &layout_);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(PolygonLayoutArray, NumElements, vertexblob_, vertexsize_, InputLayout);
 	if (FAILED(hr))
 	{
 		return hr;
