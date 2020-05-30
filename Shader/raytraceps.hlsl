@@ -3,7 +3,7 @@ SamplerState samplestate : register(s0);
 
 struct PixelInputType
 {
-    float4 Pos : SV_POSITION;
+    float4 Pos : POSITION;
     float2 tex : TEXCOORD0;
 };
 

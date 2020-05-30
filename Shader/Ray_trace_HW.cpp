@@ -67,8 +67,8 @@ bool Ray_trace_HW::init()
 	dc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	dc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	dc.MiscFlags = 0;
-	dc.Width = kWindow_Width;
-	dc.Height = kWindow_Height;
+	dc.Width = System::getWindowWidth();
+	dc.Height = System::getWindowHeight();
 	dc.MipLevels = 1;
 	dc.ArraySize = 1;
 	dc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -128,26 +128,26 @@ bool Ray_trace_HW::init()
 		return false;
 	}
 
-	SbufferIn* raydata = new SbufferIn[kWindow_Width * kWindow_Height];
+	SbufferIn* raydata = new SbufferIn[System::getWindowWidth() * System::getWindowHeight()];
 	Vector3 pixelpos(0.0F, 0.0F, 0.0F);
 	Vector3 eyedir(0.0F, 0.0F, 1.0F);
 	float dist;
 	Vector3 dir(0.0F, 0.0F, 1.0F);
 
-	for(int sy = 0;sy<kWindow_Height;sy++)
+	for(int sy = 0;sy<System::getWindowHeight();sy++)
 	{
-		for (int sx = 0; sx < kWindow_Width; sx++)
+		for (int sx = 0; sx < System::getWindowWidth(); sx++)
 		{
 			pixelpos = transScreenToWorld(sx, sy);
-			raydata[sy * kWindow_Width + sx].E = eyepos_;
-			raydata[sy * kWindow_Width + sx].V = pixelpos - eyepos_;
+			raydata[sy * System::getWindowWidth() + sx].E = eyepos_;
+			raydata[sy * System::getWindowWidth() + sx].V = pixelpos - eyepos_;
 		}
 	}
 
 	D3D11_BUFFER_DESC bc;
 	ZeroMemory(&bc, sizeof(bc));
 	bc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	bc.ByteWidth = sizeof(SbufferIn) * kWindow_Height * kWindow_Width;
+	bc.ByteWidth = sizeof(SbufferIn) * System::getWindowHeight() * System::getWindowWidth();
 	bc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	bc.StructureByteStride = sizeof(SbufferIn);
 
@@ -159,11 +159,13 @@ bool Ray_trace_HW::init()
 		return false;
 	}
 
+	delete raydata;
+
 	D3D11_SHADER_RESOURCE_VIEW_DESC srd;
 	srd.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
 	srd.BufferEx.FirstElement = 0;
 	srd.Format = DXGI_FORMAT_UNKNOWN;
-	srd.BufferEx.NumElements = kWindow_Height * kWindow_Width;
+	srd.BufferEx.NumElements = System::getWindowHeight() * System::getWindowWidth();
 	
 	hr = Direct3D::getInstance()->getDevice()->CreateShaderResourceView(cpbufferinput_.Get(), &srd, cpbufferinputsrv_.GetAddressOf());
 	if (FAILED(hr))
@@ -174,7 +176,7 @@ bool Ray_trace_HW::init()
 
 	ZeroMemory(&bc, sizeof(bc));
 	bc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	bc.ByteWidth = sizeof(SbufferOut) * kWindow_Height * kWindow_Width;
+	bc.ByteWidth = sizeof(SbufferOut) * System::getWindowHeight() * System::getWindowWidth();
 	bc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	bc.StructureByteStride = sizeof(SbufferOut);
 
@@ -190,7 +192,7 @@ bool Ray_trace_HW::init()
 	ud.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 	ud.Buffer.FirstElement = 0;
 	ud.Format = DXGI_FORMAT_UNKNOWN;
-	ud.Buffer.NumElements = kWindow_Height * kWindow_Width;
+	ud.Buffer.NumElements = System::getWindowHeight() * System::getWindowWidth();
 
 	hr = Direct3D::getInstance()->getDevice()->CreateUnorderedAccessView(cpbufferresult_.Get(), &ud, cpbufferresultuav_.GetAddressOf());
 	if (FAILED(hr))
@@ -213,7 +215,6 @@ bool Ray_trace_HW::init()
 		return false;
 	}
 
-
 	return true;
 }
 
@@ -231,7 +232,7 @@ bool Ray_trace_HW::render()
 	Vector3 upvec(0.0F, 1.0F, 0.0F);
 	view = XMMatrixLookAtLH(eyepos_, lookat, upvec);
 
-	projection = XMMatrixPerspectiveFovLH(XM_PI / 4, static_cast<float>(kWindow_Width) / static_cast<float>(kWindow_Height), 1, 100);
+	projection = XMMatrixPerspectiveFovLH(XM_PI / 4, static_cast<float>(System::getWindowWidth()) / static_cast<float>(System::getWindowHeight()), 1, 100);
 
 	//シェーダーの登録
 	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
@@ -272,11 +273,11 @@ bool Ray_trace_HW::render()
 	//コンピュートシェーダー実行
 	Direct3D::getInstance()->getContext()->CSSetShaderResources(0, 1, cpbufferinputsrv_.GetAddressOf());
 	Direct3D::getInstance()->getContext()->CSSetUnorderedAccessViews(0, 1, cpbufferresultuav_.GetAddressOf(), 0);
-	Direct3D::getInstance()->getContext()->Dispatch(kWindow_Width, kWindow_Height, 1);
+	Direct3D::getInstance()->getContext()->Dispatch(System::getWindowWidth(), System::getWindowHeight(), 1);
 
 	//結果受け取り
 	ID3D11Buffer* buffercopy = NULL;
-	SbufferOut* presult = new SbufferOut[kWindow_Width * kWindow_Height];
+	SbufferOut* presult = new SbufferOut[System::getWindowWidth() * System::getWindowHeight()];
 
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -291,7 +292,7 @@ bool Ray_trace_HW::render()
 
 	D3D11_MAPPED_SUBRESOURCE mappedresource;
 	Direct3D::getInstance()->getContext()->Map(buffercopy, 0, D3D11_MAP_READ, 0, &mappedresource);
-	memcpy(presult, (SbufferOut*)mappedresource.pData, sizeof(SbufferOut) * kWindow_Width * kWindow_Height);
+	memcpy(presult, (SbufferOut*)mappedresource.pData, sizeof(SbufferOut) * System::getWindowWidth() * System::getWindowHeight());
 	Direct3D::getInstance()->getContext()->Unmap(buffercopy, 0);
 	buffercopy->Release();
 
@@ -306,9 +307,9 @@ bool Ray_trace_HW::render()
 	DWORD pitch = mappedresource.RowPitch;
 	int cnt = 0;
 	int tmp = 0;
-	for (int i = 0; i < kWindow_Height; i++)
+	for (int i = 0; i < System::getWindowHeight(); i++)
 	{
-		for (int k = 0; k < kWindow_Width; k++)
+		for (int k = 0; k < System::getWindowWidth(); k++)
 		{
 			ptexel[k] = presult[cnt].color;
 			cnt++;
@@ -336,6 +337,7 @@ bool Ray_trace_HW::render()
 	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, cpsamplerstate_.GetAddressOf());
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &dynamictexture_);;
 
+	Direct3D::getInstance()->getContext()->Draw(4, 0);
 	Direct3D::getInstance()->getSwapChain()->Present(0, 0);
 
 	return true;
@@ -354,8 +356,8 @@ Vector3 Ray_trace_HW::transScreenToWorld(const int ScreenHeight, const int Scree
 {
 	Vector3 tmp;
 	tmp.z = 0;
-	tmp.x = (static_cast<float>(ScreenWidth) / static_cast<float>(kWindow_Width)) * 2 - 1.0F;
-	tmp.y = -(static_cast<float>(ScreenHeight) / static_cast<float>(kWindow_Height)) * 2 - 1.0F;
+	tmp.x = (static_cast<float>(ScreenWidth) / static_cast<float>(System::getWindowWidth())) * 2 - 1.0F;
+	tmp.y = -(static_cast<float>(ScreenHeight) / static_cast<float>(System::getWindowHeight())) * 2 - 1.0F;
 
 	return tmp;
 }

@@ -4,6 +4,7 @@
 #include"release.h"
 #include"Input.h"
 #include"ShaderManager.h"
+#include"System.h"
 
 Game::Game()
 {
@@ -19,7 +20,7 @@ Game::~Game()
 {
 }
 
-bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
+bool Game::init()
 {
 	bool result;
 
@@ -64,7 +65,7 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	result = ortho_->init(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight));
+	result = ortho_->init(static_cast<float>(System::getWindowWidth()), static_cast<float>(System::getWindowHeight()));
 	if (!result)
 	{
 		return false;
@@ -77,7 +78,7 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 		return false;
 	}
 
-	if (!defbuffer_->init(ScreenWidth, ScreenHeight, kScreen_depth, kScreen_near))
+	if (!defbuffer_->init(System::getWindowWidth(), System::getWindowHeight(), kScreen_depth, kScreen_near))
 	{
 		return false;
 	}
@@ -89,30 +90,30 @@ bool Game::init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight)
 
 	//raytrace_->addSphere(&sp);
 
-	//rayhw_ = new Ray_trace_HW;
-	//if (!rayhw_->init())
-	//{
-	//	return false;
-	//}
+	rayhw_ = new Ray_trace_HW;
+	if (!rayhw_->init())
+	{
+		return false;
+	}
 
 
 	return true;
 
 }
 
-bool Game::update()
+State* Game::update()
 {
 	bool result;
-	//result = rayhw_->render();
+	result = rayhw_->render();
 	//result = raytrace_->render();
 
-	result = render();
+	//result = render();
 	if (!result)
 	{
-		return false;
+		return nullptr;
 	}
 
-	return true;
+	return this;
 }
 
 bool Game::render()

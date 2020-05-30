@@ -411,7 +411,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	viewport_.TopLeftY = 0.0F;
 
 	//ビューポートの作成
-	cpdevicecontext_.Get()->RSSetViewports(1, &viewport_);
+	setViewPort();
 
 	//射影行列の作成
 	fieldofview = XM_PI / 14.0F;
@@ -490,5 +490,16 @@ void Direct3D::setBackBufferRenderTarget()
 	cpdevicecontext_.Get()->PSSetShaderResources(0, _countof(dummysrv), dummysrv);
 
 	//レンダーターゲットビューと深度ステンシルバッファをパイプラインにバインド
+	setRenderTarget();
+}
+
+void Direct3D::setRenderTarget()
+{
 	cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());
+
+}
+
+void Direct3D::setViewPort()
+{
+	cpdevicecontext_.Get()->RSSetViewports(1, &viewport_);
 }

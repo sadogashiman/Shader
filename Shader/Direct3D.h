@@ -61,6 +61,8 @@ public:
 	//set
 	void setVideoCardInfo(char* CardName, int& Memory);
 	void setBackBufferRenderTarget();
+	void setRenderTarget();
+	void setViewPort();
 
 	//reset
 	inline void resetViewPort() { cpdevicecontext_.Get()->RSSetViewports(1, &viewport_); }

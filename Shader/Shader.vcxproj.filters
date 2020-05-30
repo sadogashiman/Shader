@@ -219,9 +219,6 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Rendertexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -329,9 +326,6 @@
     <ClInclude Include="Terrain.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Text.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Rendertexture.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -346,6 +340,9 @@
     </ClInclude>
     <ClInclude Include="Ray_trace_HW.h">
       <Filter>RayTrace\Hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

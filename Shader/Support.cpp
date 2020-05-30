@@ -295,7 +295,7 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName, ID3D11C
 {
 	HRESULT hr;
 	std::ifstream fp;
-	pixelshaderbuffer_ = nullptr;
+	computeshaderbuffer_ = nullptr;
 
 	//パスが有効か確認
 	if (searchFile(ComputeShaderFileName))
@@ -365,7 +365,6 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName, ID3D11C
 
 HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray, const unsigned int NumElements, ID3D11InputLayout** InputLayout)
 {
-
 	HRESULT hr;
 #ifdef _DEBUG
 	if (!(checkInputLayoutData(vertexblob_, vertexsize_, PolygonLayoutArray, NumElements)))

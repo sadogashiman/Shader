@@ -6,6 +6,8 @@
 #include"Game.h"
 #include"TextureFactory.h"
 HWND System::hwnd_;
+int System::screenheight_;
+int System::screenwidth_;
 
 System::System()
 {
@@ -19,16 +21,15 @@ System::~System()
 
 bool System::init()
 {
-	int screenwidth, screenheight;
 
-	screenheight = 0;
-	screenwidth = 0;
+	screenheight_ = 0;
+	screenwidth_ = 0;
 
 	//WindowsAPIを初期化
-	initWindows(screenwidth, screenheight);
+	initWindows(screenwidth_, screenheight_);
 
 	//DirectX初期化
-	if (!Direct3D::getInstance()->init(screenwidth, screenheight, kvsync, hwnd_, kFullScreen, kScreen_depth, kScreen_near))
+	if (!Direct3D::getInstance()->init(screenwidth_, screenheight_, kvsync, hwnd_, kFullScreen, kScreen_depth, kScreen_near))
 	{
 		Error::showDialog("DirectXの初期化に失敗");
 		return false;
@@ -47,11 +48,17 @@ bool System::init()
 		Error::showDialog("レンダラークラスの初期化に失敗");
 		return false;
 	}
-
-	//ゲームクラス初期化
-	if (!Game::getInstance()->init(hwnd_, screenwidth, screenheight))
+	//ゲームシステム初期化
+	state_.reset(new Game);
+	if (!state_.get())
 	{
-		Error::showDialog("ゲームクラスの初期化に失敗");
+		Error::showDialog("ゲームシステムの生成に失敗");
+		return false;
+	}
+
+	if (!state_.get()->init())
+	{
+		Error::showDialog("ゲームシステムの初期化に失敗");
 		return false;
 	}
 
@@ -92,7 +99,7 @@ bool System::run()
 
 void System::destroy()
 {
-	Game::getInstance()->destroy();
+	//state_.get()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
 	ShaderManager::getInstance()->destroy();
 	Input::getInstance()->destroy();
@@ -102,8 +109,7 @@ void System::destroy()
 
 bool System::update()
 {
-	bool result;
-
+	State* tmp;
 	Input::getInstance()->update();
 
 	if (Input::getInstance()->isPressed(DIK_ESCAPE))
@@ -111,10 +117,19 @@ bool System::update()
 		return false;
 	}
 
-	result = Game::getInstance()->update();
-	if (!result)
+	//更新
+	tmp = state_.get()->update();
+
+	//nullptrなら終了
+	if (tmp == nullptr)
 	{
 		return false;
+	}
+
+	//シーンチェンジ
+	if (state_.get() != tmp)
+	{
+		state_.get()->destroy();
 	}
 
 
@@ -173,7 +188,7 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 	{
 		//ウィンドウモード
 		ScreenHeight = kWindow_Height;
-		ScreenWidth = kWindow_Width;
+		ScreenWidth = System::getWindowWidth();
 	}
 
 	//ウィンドウサイズを設定

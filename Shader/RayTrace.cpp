@@ -67,7 +67,7 @@ bool RayTrace::render()
 	//‰æ‘f”•ª‚¾‚¯ƒ‹[ƒv
 	for (sy = 0; sy < kWindow_Height; sy++)
 	{
-		for (sx = 0; sx < kWindow_Width; sx++)
+		for (sx = 0; sx < System::getWindowWidth(); sx++)
 		{
 			finalcolor = Vector3(80.0F, 80.0F, 80.0F);
 			spherecolor = Vector3::Zero;

@@ -61,15 +61,13 @@ using namespace Microsoft::WRL;
 //******************************
 const int kScreenWidth = 1280;
 const int kScreenHeight = 720;
-const bool kFullScreen = false;
-const bool kvsync = true;
-const float kScreen_depth = 100.0F;
-const float kScreen_near = 1.0F;
 const int kWindow_Height = 720;
 const int kWindow_Width = 1280;
 const int kExtensionTypeNum = 4;
-
-
+const float kScreen_depth = 100.0F;
+const float kScreen_near = 1.0F;
+const bool kFullScreen = false;
+const bool kvsync = true;
 
 //******************************
 //Å@Å@		  óÒãìë‡

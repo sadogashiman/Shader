@@ -8,12 +8,12 @@
 #include"Light.h"
 #include"RayTrace.h"
 #include"Ray_trace_HW.h"
+#include"State.h"
 
-class Game
+class Game :public State
 {
 private:
-	Game();
-	~Game();
+
 	bool renderSceneToTexture();
 	Light* light_;
 	Model* model_;
@@ -25,20 +25,12 @@ private:
 	Ray_trace_HW* rayhw_;
 
 public:
-	Game(const Game&) = delete;
-	Game& operator = (const Game&) = delete;
-	Game(Game&&) = delete;
-	Game& operator = (Game&&) = delete;
-
-	bool init(HWND Hwnd, const int ScreenWidth, const int ScreenHeight);
-	bool update();
+	Game();
+	~Game();
+	bool init();
+	State* update();
 	bool render();
 	void destroy();
 
-	static inline Game* getInstance()
-	{
-		static Game instance;
-		return &instance;
-	}
 };
 

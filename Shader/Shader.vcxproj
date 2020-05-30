@@ -175,7 +175,6 @@
     <ClCompile Include="Support.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Terrain.cpp" />
-    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureFactory.cpp" />
     <ClCompile Include="TextureShader.cpp" />
@@ -211,11 +210,11 @@
     <ClInclude Include="Rendertexture.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Shadowshader.h" />
+    <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Support.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Terrain.h" />
-    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureFactory.h" />
     <ClInclude Include="TextureShader.h" />
