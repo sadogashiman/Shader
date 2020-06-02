@@ -128,10 +128,15 @@ bool ShaderManager::depthRender(Model* Model, Matrix World, Matrix View, Matrix 
 	return depthshader_.get()->render(Model->getIndexCount(), World, View, Projection);
 }
 
-bool ShaderManager::lightRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, Light* Lightdata)
+bool ShaderManager::lightRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, Light* LightData)
 {
 	Model->render();
-	return lightshader_.get()->render(Model->getIndexCount(), World, View, Projection, Texture1, Texture2, Lightdata->getDirection());
+	return lightshader_.get()->render(Model->getIndexCount(), World, View, Projection, Texture1, Texture2, LightData->getDirection());
+}
+
+bool ShaderManager::lightRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, Light* LightData)
+{
+	return lightshader_.get()->render(IndexCount, World, View, Projection, Texture1, Texture2, LightData->getDirection());
 }
 
 bool ShaderManager::shadowRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata)

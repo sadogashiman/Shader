@@ -131,7 +131,7 @@ bool Ray_trace_HW::init()
 	SbufferIn* raydata = new SbufferIn[System::getWindowWidth() * System::getWindowHeight()];
 	Vector3 pixelpos(0.0F, 0.0F, 0.0F);
 	Vector3 eyedir(0.0F, 0.0F, 1.0F);
-	float dist;
+	//float dist;
 	Vector3 dir(0.0F, 0.0F, 1.0F);
 
 	for(int sy = 0;sy<System::getWindowHeight();sy++)

@@ -6,6 +6,7 @@ Timer::Timer()
 {
 	running_ = false;
 	stopwatch_ = false;
+	prevtime_ = std::chrono::high_resolution_clock::now();
 }
 
 Timer::~Timer()
@@ -53,5 +54,18 @@ void Timer::stopTimer()
 
 	//ストップウォッチ機能が有効だった時間を算出
 	runningtime_ = std::chrono::duration_cast<std::chrono::milliseconds>(endtime_ - starttime_);
+}
 
+bool Timer::fpsControl(FrameRate Rate)
+{
+	//前回との差分を計算
+	auto difference = std::chrono::duration_cast<std::chrono::microseconds>((nowtime_ - prevtime_));
+	//16ミリ秒経過していたら更新を許可する
+	if (difference.count() > Rate)
+	{
+		prevtime_ = nowtime_;
+		return true;
+	}
+
+	return false;
 }

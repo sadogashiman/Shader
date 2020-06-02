@@ -5,6 +5,7 @@
 #include "ShaderManager.h"
 #include"Game.h"
 #include"TextureFactory.h"
+#include"Timer.h"
 HWND System::hwnd_;
 int System::screenheight_;
 int System::screenwidth_;
@@ -62,6 +63,9 @@ bool System::init()
 		return false;
 	}
 
+	//タイマーを稼働状態にセット
+	Timer::getInstance()->setTimerStatus(true);
+
 	return true;
 }
 
@@ -87,9 +91,16 @@ bool System::run()
 		}
 		else
 		{
-			if (!update())
+			Timer::getInstance()->update();
+
+			//60fpsに固定
+			if (Timer::getInstance()->fpsControl())
 			{
-				return false;
+				if (!update())
+				{
+					return false;
+				}
+
 			}
 		}
 	}
@@ -99,7 +110,8 @@ bool System::run()
 
 void System::destroy()
 {
-	//state_.get()->destroy();
+	Timer::getInstance()->setTimerStatus(false);
+	state_.get()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
 	ShaderManager::getInstance()->destroy();
 	Input::getInstance()->destroy();
@@ -211,7 +223,7 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 		NULL,
 		instance_,
 		NULL
-	);
+		);
 
 	//ウィンドウを表示
 	ShowWindow(hwnd_, SW_SHOW);

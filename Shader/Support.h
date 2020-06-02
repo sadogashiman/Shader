@@ -36,7 +36,7 @@ public:
 	static bool searchFile(const std::string FileName);
 
 	//Rename
-	static wchar_t* renameToImageFileName(const wchar_t* ModelFileName);			//渡されたファイル名の拡張子をディレクトリ内に存在する同名の画像ファイル拡張子に変更する
+	static wchar_t* renameToJPEG(const wchar_t* ModelFileName);			//渡されたファイル名の拡張子をディレクトリ内に存在する同名の画像ファイル拡張子に変更する
 	static wchar_t* renameToMaterialFileName(const wchar_t* MaterialFileName);		//渡されたファイルパス文字列を拡張子.mtlに変換する
 	
 	//Create

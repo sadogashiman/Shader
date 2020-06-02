@@ -105,7 +105,7 @@ bool Support::searchFile(const std::string FileName)
 	return false;
 }
 
-wchar_t* Support::renameToImageFileName(const wchar_t* ModelFileName)
+wchar_t* Support::renameToJPEG(const wchar_t* ModelFileName)
 {
 	//ƒƒ“ƒo‚É•¶š—ñ‚ğ•Û‘¶
 	wcscpy(filename_, ModelFileName);

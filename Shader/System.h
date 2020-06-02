@@ -1,5 +1,6 @@
 #pragma once
 #include"State.h"
+#include"Timer.h"
 class System
 {
 private:

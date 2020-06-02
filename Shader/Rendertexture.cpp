@@ -125,7 +125,6 @@ void Rendertexture::destroy()
 
 void Rendertexture::setRenderTarget()
 {
-
     //レンダーターゲットビューと深度ステンシルバッファを出力レンダーパイプラインにバインド
     Direct3D::getInstance()->getContext()->OMSetRenderTargets(1, &rendertargetview_, depthstencilview_);
 

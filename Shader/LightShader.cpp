@@ -205,7 +205,7 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	buffnumber = 0;
 
 	//更新された値でピクセルシェーダーのライト定数バッファを設定
-	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, &lightbuffer_);
+	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, lightbuffer_.GetAddressOf());
 
 	return true;
 }

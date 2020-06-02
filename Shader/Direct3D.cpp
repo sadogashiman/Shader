@@ -496,7 +496,6 @@ void Direct3D::setBackBufferRenderTarget()
 void Direct3D::setRenderTarget()
 {
 	cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());
-
 }
 
 void Direct3D::setViewPort()

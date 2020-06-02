@@ -5,6 +5,7 @@
 #include"Input.h"
 #include"ShaderManager.h"
 #include"System.h"
+#include"Timer.h"
 
 Game::Game()
 {
@@ -83,20 +84,6 @@ bool Game::init()
 		return false;
 	}
 
-	//raytrace_ = new RayTrace;
-	//Sphere sp;
-	//sp.position = Vector3::Zero;
-	//sp.rdius = 0.4F;
-
-	//raytrace_->addSphere(&sp);
-
-	rayhw_ = new Ray_trace_HW;
-	if (!rayhw_->init())
-	{
-		return false;
-	}
-
-
 	return true;
 
 }
@@ -104,10 +91,8 @@ bool Game::init()
 State* Game::update()
 {
 	bool result;
-	result = rayhw_->render();
-	//result = raytrace_->render();
 
-	//result = render();
+	result = render();
 	if (!result)
 	{
 		return nullptr;
@@ -131,13 +116,13 @@ bool Game::render()
 		rotation++;
 	}
 
+	result = renderSceneToTexture();
+	if (!result)
+	{
+		Error::showDialog("テクスチャへの書き込みに失敗");
+		return false;
+	}
 
-	////シーンをレンダーバッファーにレンダリング
-	//result = renderSceneToTexture();
-	//if (!result)
-	//{
-	//	return false;
-	//}
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::Black);
@@ -149,22 +134,19 @@ bool Game::render()
 	view = camera_->getBaseViewMatrix();
 	world = XMMatrixRotationY(XMConvertToRadians(rotation));
 
-	//Direct3D::getInstance()->turnZbufferOff();
+	//Zバッファオフ
+	Direct3D::getInstance()->turnZbufferOff();
+	
+	//2Dウィンドウレンダリング
+	ortho_->render();
 
-	//フルスクリーンの2Dウィンドウを作成
-	//ortho_->render();
-	if (!(ShaderManager::getInstance()->textureRender(model_, world, view, projection,model_->getTexture())))
+	if (!(ShaderManager::getInstance()->lightRender(ortho_->getIndexCount(),world,view,ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_)))
 	{
 		return false;
 	}
 
-	//if (!(ShaderManager::getInstance()->lightRender(ortho_->getIndexCount(),world,view,ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_)))
-	//{
-	//	return false;
-	//}
-
-	////すべての2Dレンダリングが終了したのでZバッファを有効にする
-	//Direct3D::getInstance()->turnZbufferOn();
+	//すべての2Dレンダリングが終了したのでZバッファを有効にする
+	Direct3D::getInstance()->turnZbufferOn();
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -177,7 +159,6 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(model_);
-	//SAFE_DELETE(raytrace_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
 

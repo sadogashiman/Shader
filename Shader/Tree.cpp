@@ -66,8 +66,8 @@ bool Tree::init(const wchar_t* TrunkModelFileName, const wchar_t* LeafModelFileN
 	releaseModel();
 
 	//モデルファイル名から拡張子違いの画像ファイル名を生成
-	wcscpy(trunkfilename_, support_.get()->renameToImageFileName(TrunkModelFileName));
-	wcscpy(leaffilename_, support_.get()->renameToImageFileName(LeafModelFileName));
+	wcscpy(trunkfilename_, support_.get()->renameToJPEG(TrunkModelFileName));
+	wcscpy(leaffilename_, support_.get()->renameToJPEG(LeafModelFileName));
 
 	return true;
 }
