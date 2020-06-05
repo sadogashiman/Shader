@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ShaderManager.h"
-#include"Direct3D.h"
 
 bool ShaderManager::init()
 {
@@ -102,12 +101,20 @@ bool ShaderManager::init()
 		Error::showDialog("マルチテクスチャシェーダーの初期化に失敗");
 		return false;
 	}
+
+	skydomeshader_.reset(new Skydomeshader);
+	if (!skydomeshader_.get())
+	{
+		return false;
+	}
+
+	if (!(skydomeshader_.get()->init()))
+	{
+		Error::showDialog("スカイドームシェーダーの初期化に失敗");
+		return false;
+	}
 	
 	return true;
-}
-
-void ShaderManager::destroy()
-{
 }
 
 bool ShaderManager::maskRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)
@@ -161,4 +168,10 @@ bool ShaderManager::multiTextureRender(Model* Model, Matrix World, Matrix View, 
 {
 	Model->render();
 	return multitexshader_.get()->render(Model->getIndexCount(), World, View, Projection, TextureArray, Texturenum);
+}
+
+bool ShaderManager::skyDomeRender(SkyDome* Skydome, Matrix World, Matrix View, Matrix Projection)
+{
+	Skydome->render();
+	return skydomeshader_.get()->render(Skydome->getIndexCount(),World,View,Projection,Skydome->getApexColor(),Skydome->getCenterColor());
 }

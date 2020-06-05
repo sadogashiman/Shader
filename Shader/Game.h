@@ -8,6 +8,7 @@
 #include"Light.h"
 #include"RayTrace.h"
 #include"Ray_trace_HW.h"
+#include"SkyDome.h"
 #include"State.h"
 
 class Game :public State
@@ -23,6 +24,7 @@ private:
 	LightShader* lightshader_;
 	RayTrace* raytrace_;
 	Ray_trace_HW* rayhw_;
+	SkyDome* sky_;
 
 public:
 	Game();
@@ -31,6 +33,5 @@ public:
 	State* update();
 	bool render();
 	void destroy();
-
 };
 

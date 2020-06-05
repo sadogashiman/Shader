@@ -4,9 +4,7 @@
 
 Rendertexture::Rendertexture()
 {
-    rendertargettexture_ = nullptr;
-    rendertargetview_ = nullptr;
-    shaderresouceview_ = nullptr;
+    ZeroMemory(this, sizeof(Rendertexture));
 }
 
 Rendertexture::~Rendertexture()

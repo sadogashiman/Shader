@@ -139,11 +139,14 @@
     <Filter Include="3DModel\SkyDoom">
       <UniqueIdentifier>{5e163ef3-f858-45e5-96be-b40f183b7a1e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="リソース ファイル\Skydom">
-      <UniqueIdentifier>{fb43eee7-fa4c-4313-9746-d33feddedfd4}</UniqueIdentifier>
+    <Filter Include="3DModel\Terrain">
+      <UniqueIdentifier>{607baa90-e0a7-4638-aab5-2d0b13b73104}</UniqueIdentifier>
     </Filter>
     <Filter Include="ShaderManager\Shader\Skydome">
-      <UniqueIdentifier>{bbf06f97-3f3a-487e-8f79-cd18fa8a5fdb}</UniqueIdentifier>
+      <UniqueIdentifier>{09d9dd2e-df39-4003-946c-a994de2d9701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Skydome">
+      <UniqueIdentifier>{fb43eee7-fa4c-4313-9746-d33feddedfd4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -225,9 +228,6 @@
     <ClCompile Include="Position.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Terrain.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Rendertexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -243,11 +243,14 @@
     <ClCompile Include="Ray_trace_HW.cpp">
       <Filter>RayTrace\Hardware</Filter>
     </ClCompile>
-    <ClCompile Include="SkyDom.cpp">
-      <Filter>3DModel\SkyDoom</Filter>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>3DModel\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="Skydomeshader.cpp">
+      <Filter>ShaderManager\Shader\Skydome</Filter>
     </ClCompile>
     <ClCompile Include="SkyDome.cpp">
-      <Filter>ShaderManager\Shader\Skydome</Filter>
+      <Filter>3DModel\SkyDoom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,9 +341,6 @@
     <ClInclude Include="Position.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Terrain.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Rendertexture.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -359,11 +359,14 @@
     <ClInclude Include="State.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="SkyDom.h">
-      <Filter>3DModel\SkyDoom</Filter>
+    <ClInclude Include="Terrain.h">
+      <Filter>3DModel\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Skydomeshader.h">
+      <Filter>ShaderManager\Shader\Skydome</Filter>
     </ClInclude>
     <ClInclude Include="SkyDome.h">
-      <Filter>ShaderManager\Shader\Skydome</Filter>
+      <Filter>3DModel\SkyDoom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,10 +446,10 @@
       <Filter>リソース ファイル\Raytrace</Filter>
     </FxCompile>
     <FxCompile Include="skydomeps.hlsl">
-      <Filter>リソース ファイル\Skydom</Filter>
+      <Filter>リソース ファイル\Skydome</Filter>
     </FxCompile>
     <FxCompile Include="skydomevs.hlsl">
-      <Filter>リソース ファイル\Skydom</Filter>
+      <Filter>リソース ファイル\Skydome</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

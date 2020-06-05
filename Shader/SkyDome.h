@@ -1,32 +1,46 @@
 #pragma once
-#include"Support.h"
 class SkyDome
 {
 private:
-	struct MatrixBufferType
+	struct ModelType
 	{
-		Matrix world;
-		Matrix view;
-		Matrix projection;
+		Vector3 position;
+		Vector2 tex;
+		Vector3 normal;
 	};
 
-	struct GradientBufferType
+	struct VertexType
 	{
-		Vector4 apexcolor;
-		Vector4 centorcolor;
+		Vector3 position;
 	};
 
-	ComPtr<ID3D11VertexShader> vertexshader_;
-	ComPtr<ID3D11PixelShader> pixelshader_;
-	ComPtr<ID3D11InputLayout> layout_;
-	ComPtr<ID3D11Buffer> matrixbuffer_;
-	ComPtr<ID3D11Buffer> gradientbuffer_;
-	std::unique_ptr<Support> support_;
-	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, Vector4 ApexColor, Vector4 CentorColor);
-	void renderShader(const int IndexCount);
+	ComPtr<ID3D11Buffer> vertexbuffer_;
+	ComPtr<ID3D11Buffer> indexbuffer_;
+	Vector4 apexcolor_;
+	Vector4 centercolor_;
+	std::vector<ModelType> model_;
+	int indexcount_;
+	int vertexcount_;
+
+	bool loadSkyDomModel(const wchar_t* ModelFileName);
+	void releaseSkyDomModel();
+
 public:
-	bool init();
-	bool render(const int Indexcount, Matrix World, Matrix View, Matrix Projection, Vector4 ApexColor, Vector4 CentorColor);
+	SkyDome();
+	~SkyDome();
+	bool init(const wchar_t* ModelFileName);
+	void render();
+	void destroy();
 
+	//set
+	inline void setApexColor(const Vector4& ApexColor) { apexcolor_ = ApexColor; }
+	inline void setApexColor(const float Red, const float Green, const float Blue, const float Alpha) { apexcolor_ = Vector4(Red, Green, Blue, Alpha); }
+	inline void setCentorColor(const Vector4& CentorColor) { centercolor_ = CentorColor; }
+	inline void setCentorColor(const float Red, const float Green, const float Blue, const float Alpha) { centercolor_ = Vector4(Red, Green, Blue, Alpha); }
+
+	//get
+	inline const int getIndexCount()const { return indexcount_; }
+	inline const Vector4 getApexColor()const { return apexcolor_; }
+	inline const Vector4 getCenterColor()const { return centercolor_; }
 };
 

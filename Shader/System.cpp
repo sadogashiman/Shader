@@ -113,7 +113,6 @@ void System::destroy()
 	Timer::getInstance()->setTimerStatus(false);
 	state_.get()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
-	ShaderManager::getInstance()->destroy();
 	Input::getInstance()->destroy();
 	Direct3D::getInstance()->destroy();
 	destroyWindows();
@@ -179,8 +178,8 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 	HWND desktop = GetDesktopWindow();
 	GetWindowRect(desktop, &rec);
 
-	ScreenHeight = rec.right;
-	ScreenWidth = rec.bottom;
+	ScreenHeight = rec.bottom;
+	ScreenWidth = rec.right;
 
 	if (kFullScreen)
 	{
@@ -200,7 +199,7 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 	{
 		//ウィンドウモード
 		ScreenHeight = kWindow_Height;
-		ScreenWidth = System::getWindowWidth();
+		ScreenWidth = kWindow_Width;
 	}
 
 	//ウィンドウサイズを設定

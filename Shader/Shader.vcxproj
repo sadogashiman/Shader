@@ -169,8 +169,8 @@
     <ClCompile Include="Rendertexture.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Shadowshader.cpp" />
-    <ClCompile Include="SkyDom.cpp" />
     <ClCompile Include="SkyDome.cpp" />
+    <ClCompile Include="Skydomeshader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -212,8 +212,8 @@
     <ClInclude Include="Rendertexture.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Shadowshader.h" />
-    <ClInclude Include="SkyDom.h" />
     <ClInclude Include="SkyDome.h" />
+    <ClInclude Include="Skydomeshader.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Support.h" />
@@ -398,7 +398,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="textureps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

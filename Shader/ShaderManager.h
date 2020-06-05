@@ -1,4 +1,6 @@
 #pragma once
+
+//シェーダー
 #include"Shadowshader.h"
 #include"Maskshader.h"
 #include"Bumpmap.h"
@@ -8,7 +10,11 @@
 #include"TextureShader.h"
 #include"Deferredshader.h"
 #include"Multitexture.h"
+#include"Skydomeshader.h"
+
+//モデル
 #include"Model.h"
+#include"SkyDome.h"
 
 
 class ShaderManager
@@ -29,11 +35,10 @@ private:
 	std::unique_ptr<Textureshader>textureshader_;
 	std::unique_ptr<Deferredshader>deferredshader_;
 	std::unique_ptr<Multitexture>multitexshader_;
-
+	std::unique_ptr<Skydomeshader> skydomeshader_;
 public:
 
 	bool init();
-	void destroy();
 
 	static inline ShaderManager* getInstance()
 	{
@@ -65,5 +70,8 @@ public:
 
 	//マルチテクスチャリングを使用するときのレンダー
 	bool multiTextureRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, const int Texturenum);
+
+	//スカイドーム専用レンダー
+	bool skyDomeRender(SkyDome* Skydome, Matrix World, Matrix View, Matrix Projection);
 };
 

@@ -6,6 +6,7 @@
 #include"ShaderManager.h"
 #include"System.h"
 #include"Timer.h"
+#include"SkyDome.h"
 
 Game::Game()
 {
@@ -46,19 +47,6 @@ bool Game::init()
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
 	light_->setDirection(0.0F, 0.0F, 1.0F);
 
-	//モデルオブジェクトを生成
-	model_ = new Model;
-	if (!model_)
-	{
-		return false;
-	}
-
-	result = model_->init(L"Resource/cube.txt");
-	if (!result)
-	{
-		return false;
-	}
-
 	//全画面の2Dウィンドウを生成
 	ortho_ = new OrthoWindow;
 	if (!ortho_)
@@ -84,6 +72,22 @@ bool Game::init()
 		return false;
 	}
 
+	sky_ = new SkyDome;
+	if (!sky_)
+	{
+		return false;
+	}
+
+	result = sky_->init(L"Resource/skydome.txt");
+	if (!result)
+	{
+		return false;
+	}
+
+	sky_->setApexColor(0.0f, 0.15f, 0.66f, 1.0f);
+	sky_->setCentorColor(0.81f, 0.38f, 0.66f, 1.0f);
+
+
 	return true;
 
 }
@@ -106,26 +110,10 @@ bool Game::render()
 	bool result;
 	Matrix world, view, projection,ortho;
 	static float rotation = 0;
-
-	if (rotation > 360.0F)
-	{
-		rotation -= 360.0F;
-	}
-	else
-	{
-		rotation++;
-	}
-
-	result = renderSceneToTexture();
-	if (!result)
-	{
-		Error::showDialog("テクスチャへの書き込みに失敗");
-		return false;
-	}
-
+	Vector3 camerapos;
 
 	//シーンをクリア
-	Direct3D::getInstance()->begin(Colors::Black);
+	Direct3D::getInstance()->begin(Colors::AliceBlue);
 
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
@@ -134,18 +122,21 @@ bool Game::render()
 	view = camera_->getBaseViewMatrix();
 	world = XMMatrixRotationY(XMConvertToRadians(rotation));
 
-	//Zバッファオフ
-	Direct3D::getInstance()->turnZbufferOff();
-	
-	//2Dウィンドウレンダリング
-	ortho_->render();
+	camerapos = camera_->getPosition();
 
-	if (!(ShaderManager::getInstance()->lightRender(ortho_->getIndexCount(),world,view,ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_)))
+	//カメラ座標からスカイドームの位置を計算
+	world = XMMatrixTranslation(camerapos.x, camerapos.y, camerapos.z);
+
+	Direct3D::getInstance()->turnCullingOff();
+	Direct3D::getInstance()->turnZbufferOff();
+
+	result = ShaderManager::getInstance()->skyDomeRender(sky_, world, view, projection);
+	if (!result)
 	{
 		return false;
 	}
 
-	//すべての2Dレンダリングが終了したのでZバッファを有効にする
+	Direct3D::getInstance()->turnCullingOn();
 	Direct3D::getInstance()->turnZbufferOn();
 
 	//描画終了
@@ -158,10 +149,9 @@ void Game::destroy()
 {
 	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(ortho_);
-	SAFE_DELETE_DESTROY(model_);
+	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
-
 }
 
 bool Game::renderSceneToTexture()

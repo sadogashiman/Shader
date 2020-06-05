@@ -7,12 +7,7 @@ wchar_t Support::mtlfilename[MAX_PATH];
 
 Support::Support()
 {
-	vertexblob_ = nullptr;
-	pixelblob_ = nullptr;
-	vertexsize_ = 0;
-	pixelsize_ = 0;
-	vertexshaderbuffer_ = nullptr;
-	pixelshaderbuffer_ = nullptr;
+	ZeroMemory(this, sizeof(Support));
 }
 
 Support::~Support()
@@ -128,22 +123,20 @@ wchar_t* Support::renameToJPEG(const wchar_t* ModelFileName)
 	return filename_;
 }
 
-wchar_t* Support::renameToMaterialFileName(const wchar_t* MaterialFileName)
+wchar_t* Support::renameExtension(const wchar_t* SorcePath, const char* RenameExtension)
 {
-	//メンバに文字列を保存
-	wcscpy(mtlfilename, MaterialFileName);
+	char charfilename[MAX_PATH] = " ";
 
-	//文字列操作のためにchar型に変換
-	char tmp[MAX_PATH] = " ";
-	wcstombs(tmp, mtlfilename, MAX_PATH);
+	//wcharからcharに変換
+	wcstombs(charfilename, SorcePath, MAX_PATH);
 
-	//拡張子をmtlに変換
-	PathRenameExtension(tmp, ".mtl");
+	//拡張子を変換
+	PathRenameExtension(charfilename, RenameExtension);
 
-	//再度wcharに変換
-	mbstowcs(mtlfilename, tmp, MAX_PATH);
+	//拡張子の変換が終わったのでwcharに戻す
+	mbstowcs(filename_ , charfilename, MAX_PATH);
 
-	return mtlfilename;
+	return filename_;
 }
 
 HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName, ID3D11VertexShader** VertexShader)
@@ -186,17 +179,9 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName, ID3D11Ver
 	}
 	else
 	{
-		char charfilename[MAX_PATH] = " ";
-		wchar_t wcharfilename[MAX_PATH] = L" ";
+		wchar_t* wcharfilename;
 
-		//wcharからcharに変換
-		wcstombs(charfilename, VertexShaderFileName, MAX_PATH);
-
-		//拡張子をhlslに変更
-		PathRenameExtension(charfilename, ".hlsl");
-
-		//再度wcharに変換
-		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
+		wcharfilename = renameExtension(VertexShaderFileName, ".hlsl");
 
 		//シェーダーをコンパイルしてポインタを取得
 		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, vertexshaderbuffer_.GetAddressOf(), NULL);
