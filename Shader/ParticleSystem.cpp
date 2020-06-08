@@ -4,6 +4,7 @@
 
 ParticleSystem::ParticleSystem()
 {
+	ZeroMemory(this, sizeof(ParticleSystem));
 }
 
 ParticleSystem::~ParticleSystem()

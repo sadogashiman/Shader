@@ -4,11 +4,7 @@
 
 Depthshader::Depthshader()
 {
-	vertexshader_ = nullptr;
-	pixelshader_ = nullptr;
-	layout_ = nullptr;
-	matrixbuffer_ = nullptr;
-
+	ZeroMemory(this, sizeof(Depthshader));
 }
 
 Depthshader::~Depthshader()

@@ -13,6 +13,8 @@ private:
 	int indexcnt_;
 
 public:
+	OrthoWindow();
+	~OrthoWindow();
 	bool init(const float WindowWidth, const float WindowHeight);
 	void render();
 	void destroy();

@@ -4,11 +4,7 @@
 
 Textureshader::Textureshader()
 {
-	vertexshader_ = nullptr;
-	pixelshader_ = nullptr;
-	layout_ = nullptr;
-	matrixbuffer_ = nullptr;
-	samplerstate_ = nullptr;
+	ZeroMemory(this, sizeof(Textureshader));
 }
 
 Textureshader::~Textureshader()

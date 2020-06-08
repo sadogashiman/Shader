@@ -4,6 +4,7 @@
 
 ParticleShader::ParticleShader()
 {
+	ZeroMemory(this, sizeof(ParticleShader));
 }
 
 ParticleShader::~ParticleShader()

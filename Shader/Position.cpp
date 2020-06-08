@@ -3,17 +3,7 @@
 
 Position::Position()
 {
-    position_ = Vector3::Zero;
-    rotation_ = Vector3::Zero;
-    frametime_ = 0;
-    forwardspeed_ = 0.0F;
-    backwardspeed_ = 0.0F;
-    upwardspeed_ = 0.0F;
-    downwardspeed_ = 0.0F;
-    rightturnspeed_ = 0.0F;
-    leftturnspeed_ = 0.0F;
-    lookupspeed_ = 0.0F;
-    lookdownspeed_ = 0.0F;
+    ZeroMemory(this, sizeof(Position));
 }
 
 void Position::moveForWard(bool KeyDown)

@@ -4,6 +4,55 @@
 #include"Support.h"
 #include"Texture.h"
 
+
+
+Model::Model()
+{
+	ZeroMemory(this, sizeof(Model));
+}
+
+Model::~Model()
+{
+}
+
+bool Model::init(const wchar_t* ModelFileName, MappingType Type,const wchar_t* TextureFileName2)
+{
+	//モデルデータ読み込み
+	if (!loadModel(ModelFileName))
+	{
+		return false;
+	}
+
+	wcscpy(texturefilename_, Support::renameToJPEG(ModelFileName));
+
+	loadTexture(texturefilename_);
+
+	if (!initBuffer())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void Model::destroy()
+{
+	//モデルテクスチャを解放
+	releaseTexture();
+
+	SAFE_RELEASE(indexbuff_);
+	SAFE_RELEASE(vertexbuff_);
+
+	//モデル解放
+	releaseModel();
+}
+
+void Model::render()
+{
+	//グラフィックスパイプラインに頂点バッファをインデックスバッファを配置
+	renderBuffer();
+}
+
 bool Model::initBuffer()
 {
 	Vertextype* vertices;
@@ -51,7 +100,7 @@ bool Model::initBuffer()
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr =Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbuffdesc, &vertexdata, &vertexbuff_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbuffdesc, &vertexdata, &vertexbuff_);
 	if (FAILED(hr))
 	{
 		return false;
@@ -124,7 +173,7 @@ bool Model::loadModel(const wchar_t* ModelFileName)
 	}
 
 	//ファイルパスが有効なのを確認したので展開
-	fp.open(ModelFileName,std::ios::beg|std::ios::in);
+	fp.open(ModelFileName, std::ios::beg | std::ios::in);
 
 	if (fp.fail())
 	{
@@ -187,62 +236,6 @@ void Model::releaseModel()
 		delete[] model_;
 		model_ = nullptr;
 	}
-}
-
-Model::Model()
-{
-	vertexbuff_ = nullptr;
-	indexbuff_ = nullptr;
-	model_ = nullptr;
-	vertexcount_ = 0;
-	indexcount_ = 0;
-	positionx_ = 0.0F;
-	positiony_ = 0.0F;
-	positionz_ = 0.0F;
-	facecount_ = 0;
-
-}
-
-Model::~Model()
-{
-}
-
-bool Model::init(const wchar_t* ModelFileName, MappingType Type,const wchar_t* TextureFileName2)
-{
-	//モデルデータ読み込み
-	if (!loadModel(ModelFileName))
-	{
-		return false;
-	}
-
-	wcscpy(texturefilename_, Support::renameToJPEG(ModelFileName));
-
-	loadTexture(texturefilename_);
-
-	if (!initBuffer())
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void Model::destroy()
-{
-	//モデルテクスチャを解放
-	releaseTexture();
-
-	SAFE_RELEASE(indexbuff_);
-	SAFE_RELEASE(vertexbuff_);
-
-	//モデル解放
-	releaseModel();
-}
-
-void Model::render()
-{
-	//グラフィックスパイプラインに頂点バッファをインデックスバッファを配置
-	renderBuffer();
 }
 
 void Model::setPosition(const float X, const float Y, const float Z)

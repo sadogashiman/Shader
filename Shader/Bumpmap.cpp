@@ -5,9 +5,7 @@
 
 Bumpmap::Bumpmap()
 {
-	layout_ = nullptr;
-	pixelshader_ = nullptr;
-	vertexshader_ = nullptr;
+	ZeroMemory(this, sizeof(Bumpmap));
 }
 
 Bumpmap::~Bumpmap()

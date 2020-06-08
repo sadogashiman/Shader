@@ -6,6 +6,7 @@
 
 LightShader::LightShader()
 {
+	ZeroMemory(this, sizeof(LightShader));
 }
 
 LightShader::~LightShader()

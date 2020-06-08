@@ -3,6 +3,15 @@
 #include"Support.h"
 #include"Direct3D.h"
 
+Terrain::Terrain()
+{
+	ZeroMemory(this, sizeof(Terrain));
+}
+
+Terrain::~Terrain()
+{
+}
+
 bool Terrain::init()
 {
 	HRESULT hr;

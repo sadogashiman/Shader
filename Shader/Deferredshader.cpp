@@ -5,11 +5,7 @@
 
 Deferredshader::Deferredshader()
 {
-	layout_ = nullptr;
-	vertexshader_ = nullptr;
-	pixelshader_ = nullptr;
-	matrixbuffer_ = nullptr;
-	samplestatewrap_ = nullptr;
+	ZeroMemory(this, sizeof(Deferredshader));
 }
 
 Deferredshader::~Deferredshader()

@@ -4,6 +4,7 @@
 
 Timer::Timer()
 {
+	ZeroMemory(this, sizeof(Timer));
 	running_ = false;
 	stopwatch_ = false;
 	prevtime_ = std::chrono::high_resolution_clock::now();

@@ -10,12 +10,7 @@
 
 Game::Game()
 {
-	light_ = nullptr;
-	lightshader_ = nullptr;
-	model_ = nullptr;
-	camera_ = nullptr;
-	ortho_ = nullptr;
-	defbuffer_ = nullptr;
+	ZeroMemory(this, sizeof(Game));
 }
 
 Game::~Game()

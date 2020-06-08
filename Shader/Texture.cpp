@@ -8,9 +8,7 @@
 
 Texture::Texture()
 {
-	texture_ = nullptr;
-	textureresource_ = nullptr;
-
+	ZeroMemory(this, sizeof(Texture));
 }
 
 Texture::~Texture()

@@ -4,6 +4,7 @@
 
 Light::Light()
 {
+    ZeroMemory(this, sizeof(Light));
 }
 
 

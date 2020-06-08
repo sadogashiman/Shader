@@ -5,15 +5,7 @@
 
 Deferredbuffers::Deferredbuffers()
 {
-	depthstencilbuffer_ = nullptr;
-	depthstencilview_ = nullptr;
-
-	for (int i = 0; i < kBuffer_cnt; i++)
-	{
-		rendertargettexturearray_[i] = nullptr;
-		rendertargetviewarray_[i] = nullptr;
-		shaderresourceviewarray_[i] = nullptr;
-	}
+	ZeroMemory(this, sizeof(Deferredbuffers));
 }
 
 Deferredbuffers::~Deferredbuffers()

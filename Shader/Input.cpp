@@ -3,8 +3,7 @@
 
 Input::Input()
 {
-	ZeroMemory(Keyprevstate_, sizeof(Keyprevstate_));
-	ZeroMemory(Keystate_, sizeof(Keystate_));
+	ZeroMemory(this, sizeof(Input));
 }
 
 Input::~Input()

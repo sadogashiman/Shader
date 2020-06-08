@@ -12,8 +12,7 @@ int System::screenwidth_;
 
 System::System()
 {
-	instance_ = 0;
-	hwnd_ = 0;
+	ZeroMemory(this, sizeof(System));
 }
 
 System::~System()

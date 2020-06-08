@@ -6,6 +6,7 @@
 
 TextureFactory::TextureFactory()
 {
+	ZeroMemory(this, sizeof(TextureFactory));
 }
 
 TextureFactory::~TextureFactory()

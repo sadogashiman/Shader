@@ -3,8 +3,7 @@
 
 Camera::Camera()
 {
-	position_ = Vector3::Zero;
-	rotation_ = Vector3::Zero;
+	ZeroMemory(this, sizeof(Camera));
 }
 
 Camera::~Camera()

@@ -4,11 +4,7 @@
 
 Maskshader::Maskshader()
 {
-	vertexshader_ = nullptr;
-	pixelshader_ = nullptr;
-	layout_ = nullptr;
-	matrixbuffer_ = nullptr;
-	samplestate_ = nullptr;
+	ZeroMemory(this, sizeof(Maskshader));
 }
 
 Maskshader::~Maskshader()

@@ -13,6 +13,8 @@ private:
 	int vertexcnt_;
 	int indexcnt_;
 public:
+	Terrain();
+	~Terrain();
 	bool init();
 	bool render();
 	void destroy();

@@ -3,6 +3,15 @@
 #include"Direct3D.h"
 #include"release.h"
 
+OrthoWindow::OrthoWindow()
+{
+	ZeroMemory(this, sizeof(OrthoWindow));
+}
+
+OrthoWindow::~OrthoWindow()
+{
+}
+
 bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 {
 	float left, right, top, bottom;

@@ -5,12 +5,7 @@
 
 Shadowshader::Shadowshader()
 {
-	vertexshader_ = nullptr;
-	pixelshader_ = nullptr;
-	layout_ = nullptr;
-	matrixbuffer_ = nullptr;
-	lightbuffer_ = nullptr;
-	lightbuffer2_ = nullptr;
+	ZeroMemory(this, sizeof(Shadowshader));
 }
 
 Shadowshader::~Shadowshader()
