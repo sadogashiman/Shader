@@ -6,7 +6,6 @@
 
 TextureFactory::TextureFactory()
 {
-	ZeroMemory(this, sizeof(TextureFactory));
 }
 
 TextureFactory::~TextureFactory()
@@ -31,19 +30,26 @@ void TextureFactory::deleteTexture(const wchar_t* TextureName)
 void TextureFactory::allDeleteTexture()
 {
 	auto end = texmap_.end();
-
-	for (auto itr = texmap_.begin(); itr != end;)
+	if (texmap_.size() > 0)
 	{
-		SAFE_RELEASE(itr->second);
-		itr = texmap_.erase(itr);
+		for (auto itr = texmap_.begin(); itr != end;)
+		{
+			SAFE_RELEASE(itr->second);
+			itr = texmap_.erase(itr);
+		}
 	}
+
+
 	auto end2 = resourcemap_.end();
-
-	for (auto itr = resourcemap_.begin(); itr != end2;)
+	if (resourcemap_.size() > 0)
 	{
-		SAFE_RELEASE(itr->second);
-		itr = resourcemap_.erase(itr);
+		for (auto itr = resourcemap_.begin(); itr != end2;)
+		{
+			SAFE_RELEASE(itr->second);
+			itr = resourcemap_.erase(itr);
+		}
 	}
+
 }
 
 ID3D11ShaderResourceView* TextureFactory::getTexture(const wchar_t* TextureName)

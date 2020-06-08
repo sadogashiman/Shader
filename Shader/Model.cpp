@@ -8,7 +8,6 @@
 
 Model::Model()
 {
-	ZeroMemory(this, sizeof(Model));
 }
 
 Model::~Model()

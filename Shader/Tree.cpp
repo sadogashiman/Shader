@@ -3,7 +3,6 @@
 #include "Direct3D.h"
 Tree::Tree()
 {
-	ZeroMemory(this, sizeof(Tree));
 }
 
 Tree::~Tree()

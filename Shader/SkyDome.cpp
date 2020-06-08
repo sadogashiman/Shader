@@ -6,7 +6,6 @@
 
 SkyDome::SkyDome()
 {
-	ZeroMemory(this, sizeof(SkyDome));
 }
 
 SkyDome::~SkyDome()
@@ -194,5 +193,5 @@ bool SkyDome::loadSkyDomModel(const wchar_t* ModelFileName)
 
 void SkyDome::releaseSkyDomModel()
 {
-	//model_.clear();
+	model_.clear();
 }

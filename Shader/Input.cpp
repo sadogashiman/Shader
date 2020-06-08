@@ -3,7 +3,6 @@
 
 Input::Input()
 {
-	ZeroMemory(this, sizeof(Input));
 }
 
 Input::~Input()

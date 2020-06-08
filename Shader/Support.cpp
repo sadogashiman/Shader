@@ -7,7 +7,6 @@ wchar_t Support::mtlfilename[MAX_PATH];
 
 Support::Support()
 {
-	ZeroMemory(this, sizeof(Support));
 }
 
 Support::~Support()

@@ -5,7 +5,6 @@
 
 Terrain::Terrain()
 {
-	ZeroMemory(this, sizeof(Terrain));
 }
 
 Terrain::~Terrain()

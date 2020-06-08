@@ -10,7 +10,6 @@
 
 Game::Game()
 {
-	ZeroMemory(this, sizeof(Game));
 }
 
 Game::~Game()
