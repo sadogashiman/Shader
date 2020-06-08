@@ -148,6 +148,9 @@
     <Filter Include="リソース ファイル\Skydome">
       <UniqueIdentifier>{fb43eee7-fa4c-4313-9746-d33feddedfd4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{246dd835-47d5-49f4-99d5-0aaa14a280ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -170,9 +173,6 @@
     </ClCompile>
     <ClCompile Include="Direct3D.cpp">
       <Filter>MainSystem\Direct3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="TextureFactory.cpp">
       <Filter>Texture</Filter>
@@ -252,6 +252,9 @@
     <ClCompile Include="SkyDome.cpp">
       <Filter>3DModel\SkyDoom</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -280,9 +283,6 @@
     </ClInclude>
     <ClInclude Include="Direct3D.h">
       <Filter>MainSystem\Direct3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="TextureFactory.h">
       <Filter>Texture</Filter>
@@ -367,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="SkyDome.h">
       <Filter>3DModel\SkyDoom</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

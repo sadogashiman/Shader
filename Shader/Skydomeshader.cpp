@@ -150,7 +150,7 @@ bool Skydomeshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 	buffernumber = 0;
 
 	//定数バッファをセット
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 0, matrixbuffer_.GetAddressOf());
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
 
 	//バッファロック
 	hr = Direct3D::getInstance()->getContext()->Map(gradientbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);

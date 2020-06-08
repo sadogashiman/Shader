@@ -78,8 +78,8 @@ bool Game::init()
 		return false;
 	}
 
-	sky_->setApexColor(0.0f, 0.15f, 0.66f, 1.0f);
-	sky_->setCentorColor(0.81f, 0.38f, 0.66f, 1.0f);
+	sky_->setApexColor(0.0f, 0.05f, 0.6f, 1.0f);
+	sky_->setCentorColor(0.0f, 0.5f, 0.8f, 1.0f);
 
 
 	return true;

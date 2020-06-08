@@ -178,7 +178,7 @@ bool SkyDome::loadSkyDomModel(const wchar_t* ModelFileName)
 	fin.get(input);
 
 	//モデルデータを読み込み
-	for (auto itr : model_)
+	for (auto& itr : model_)
 	{
 		fin >> itr.position.x >> itr.position.y >> itr.position.z;
 		fin >> itr.tex.x >> itr.tex.y;
