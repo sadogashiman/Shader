@@ -151,6 +151,12 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{246dd835-47d5-49f4-99d5-0aaa14a280ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShaderManager\Shader\Color">
+      <UniqueIdentifier>{5a49f0eb-5a63-4e9b-acd2-0faf9a28f9f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Color">
+      <UniqueIdentifier>{6f76d6ed-2666-45b2-aac8-7b3e5f70545d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -254,6 +260,9 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Colorshader.cpp">
+      <Filter>ShaderManager\Shader\Color</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -371,6 +380,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Colorshader.h">
+      <Filter>ShaderManager\Shader\Color</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="transparentdepthps.hlsl">
@@ -453,6 +465,12 @@
     </FxCompile>
     <FxCompile Include="skydomevs.hlsl">
       <Filter>リソース ファイル\Skydome</Filter>
+    </FxCompile>
+    <FxCompile Include="colorvs.hlsl">
+      <Filter>リソース ファイル\Color</Filter>
+    </FxCompile>
+    <FxCompile Include="colorps.hlsl">
+      <Filter>リソース ファイル\Color</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

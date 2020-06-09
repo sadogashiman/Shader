@@ -154,7 +154,7 @@ bool Terrain::init()
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, &vertexbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点バッファの作成に失敗");
@@ -175,7 +175,7 @@ bool Terrain::init()
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, &indexbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("インデックスバッファの作成に失敗");
@@ -201,20 +201,14 @@ bool Terrain::render()
 	offset = 0;
 
 	//頂点バッファをセット
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, &vertexbuffer_, &stride, &offset);
+	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
 
 	//インデックスバッファをセット
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_, DXGI_FORMAT_R32_UINT, 0);
+	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//プリミティブのモードを設定
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 
 	return false;
-}
-
-void Terrain::destroy()
-{
-	SAFE_RELEASE(indexbuffer_);
-	SAFE_RELEASE(vertexbuffer_);
 }

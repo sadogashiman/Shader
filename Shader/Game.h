@@ -10,6 +10,7 @@
 #include"Ray_trace_HW.h"
 #include"SkyDome.h"
 #include"State.h"
+#include"Terrain.h"
 
 class Game :public State
 {
@@ -25,7 +26,7 @@ private:
 	RayTrace* raytrace_;
 	Ray_trace_HW* rayhw_;
 	SkyDome* sky_;
-
+	Terrain* terrain_;
 public:
 	Game();
 	~Game();

@@ -46,6 +46,9 @@ public:
 		return &instance;
 	}
 
+	//カラーシェーダーを使用するときのレンダー
+	bool colorRender(Model* Model, Matrix World, Matrix View, Matrix Projection);
+
 	//マスクを使用するときのレンダー(モデルのポインタ、各行列、テクスチャ二枚とアルファマップの入ったテクスチャ配列)
 	bool maskRender(Model* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
 

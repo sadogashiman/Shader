@@ -81,6 +81,18 @@ bool Game::init()
 	sky_->setApexColor(0.0f, 0.05f, 0.6f, 1.0f);
 	sky_->setCentorColor(0.0f, 0.5f, 0.8f, 1.0f);
 
+	terrain_ = new Terrain;
+	if (!terrain_)
+	{
+		return false;
+	}
+
+	result = terrain_->init();
+	if (!result)
+	{
+		return false;
+	}
+
 
 	return true;
 
@@ -133,6 +145,8 @@ bool Game::render()
 	Direct3D::getInstance()->turnCullingOn();
 	Direct3D::getInstance()->turnZbufferOn();
 
+	terrain_->render();
+	
 	//•`‰æI—¹
 	Direct3D::getInstance()->end();
 
