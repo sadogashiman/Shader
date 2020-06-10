@@ -1,12 +1,7 @@
 #pragma once
 #include"TextureFactory.h"
-enum MappingType
-{
-	kNone,
-	kMaskMap,
-	kBumpMap,
-};
-class Model
+#include"Model3D.h"
+class Model:public Model3D
 {
 private:
 	struct Vertextype
@@ -65,7 +60,7 @@ private:
 public:
 	Model();
 	~Model();
-	bool init(const wchar_t* ModelFileName,MappingType Type = kNone,const wchar_t* TextureFileName2 = nullptr);
+	bool init(const wchar_t* ModelFileName);
 	void destroy();
 	void render();
 

@@ -136,9 +136,6 @@
     <Filter Include="RayTrace\Hardware">
       <UniqueIdentifier>{66e2e458-2e96-4d5d-90ae-df3843be3d6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="3DModel\SkyDoom">
-      <UniqueIdentifier>{5e163ef3-f858-45e5-96be-b40f183b7a1e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3DModel\Terrain">
       <UniqueIdentifier>{607baa90-e0a7-4638-aab5-2d0b13b73104}</UniqueIdentifier>
     </Filter>
@@ -156,6 +153,9 @@
     </Filter>
     <Filter Include="リソース ファイル\Color">
       <UniqueIdentifier>{6f76d6ed-2666-45b2-aac8-7b3e5f70545d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3DModel\SkyDome">
+      <UniqueIdentifier>{5e163ef3-f858-45e5-96be-b40f183b7a1e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -256,13 +256,16 @@
       <Filter>ShaderManager\Shader\Skydome</Filter>
     </ClCompile>
     <ClCompile Include="SkyDome.cpp">
-      <Filter>3DModel\SkyDoom</Filter>
+      <Filter>3DModel\SkyDome</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
     <ClCompile Include="Colorshader.cpp">
       <Filter>ShaderManager\Shader\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Model3D.cpp">
+      <Filter>3DModel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -375,13 +378,16 @@
       <Filter>ShaderManager\Shader\Skydome</Filter>
     </ClInclude>
     <ClInclude Include="SkyDome.h">
-      <Filter>3DModel\SkyDoom</Filter>
+      <Filter>3DModel\SkyDome</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
     <ClInclude Include="Colorshader.h">
       <Filter>ShaderManager\Shader\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Model3D.h">
+      <Filter>3DModel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

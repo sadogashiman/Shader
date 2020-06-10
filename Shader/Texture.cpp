@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "Texture.h"
-#include"release.h"
 #include"Direct3D.h"
-#include"error.h"
-
-
+#include"Support.h"
 
 Texture::Texture()
 {
@@ -24,7 +21,7 @@ bool Texture::init(const wchar_t* TextureName)
 	wcstombs(tmp, TextureName, MAX_PATH);
 
 	//ファイルパスが有効か確認
-	if (PathFindExtension(tmp))
+	if (Support::searchFile(TextureName))
 	{
 		//拡張子がテクスチャローダーに対応しているか確認
 		if (!checkExtension(TextureName))
@@ -32,20 +29,18 @@ bool Texture::init(const wchar_t* TextureName)
 			Error::showDialog("テクスチャローダーが対応していない拡張子です");
 			return false;
 		}
-		if(PathFileExists(tmp))
+
+		hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName, &textureresource_, &texture_);
+		if (FAILED(hr))
 		{
-			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName,&textureresource_, &texture_);
+			//DDSで読めない場合WICを使う
+			hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
 			if (FAILED(hr))
 			{
-				//DDSで読めない場合WICを使う
-				hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
-				if (FAILED(hr))
-				{
-					Error::showDialog("テクスチャの読み込みに失敗しました");
-					return false;
-				}
+				Error::showDialog("テクスチャの読み込みに失敗しました");
 				return false;
 			}
+			return false;
 		}
 	}
 	else
@@ -63,7 +58,7 @@ bool Texture::checkExtension(const wchar_t* PathName)
 	for (int i = 0; i < kExtensionTypeNum; i++)
 	{
 		//拡張子がローダーで使用できるものか確認
-		if (wcscmp(extensionarray[i],PathName))
+		if (wcscmp(extensionarray[i], PathName))
 		{
 			return true;
 		}

@@ -1,5 +1,6 @@
 #pragma once
-class SkyDome
+#include"Model3D.h"
+class SkyDome:public Model3D
 {
 private:
 	struct ModelType
