@@ -1,5 +1,6 @@
 #pragma once
-class Terrain
+#include"Model3D.h"
+class Terrain:public Model3D
 {
 private:
 	struct VertexType
@@ -15,8 +16,9 @@ private:
 public:
 	Terrain();
 	~Terrain();
-	bool init();
-	bool render();
+	bool init(const wchar_t* ModelFileName = nullptr);
+	void render();
+	void destroy();
 	
 	//get
 	inline const int getIndexCount()const { return indexcnt_; }

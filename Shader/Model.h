@@ -31,8 +31,8 @@ private:
 		float x, y, z;
 	};
 
-	ID3D11Buffer* vertexbuff_;
-	ID3D11Buffer* indexbuff_;
+	ComPtr<ID3D11Buffer> vertexbuff_;
+	ComPtr<ID3D11Buffer> indexbuff_;
 
 	int vertexcount_;
 	int indexcount_;

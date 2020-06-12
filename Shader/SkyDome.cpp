@@ -25,8 +25,8 @@ bool SkyDome::init(const wchar_t* ModelFileName)
 	}
 
 	//バッファ初期化
-	VertexType* vertices;
-	unsigned long* indices;
+	std::vector<VertexType>vertices;
+	std::vector<unsigned long> indices;
 	D3D11_BUFFER_DESC vertexbufferdesc;
 	D3D11_BUFFER_DESC indexbufferdesc;
 	D3D11_SUBRESOURCE_DATA vertexdata;
@@ -34,20 +34,10 @@ bool SkyDome::init(const wchar_t* ModelFileName)
 	HRESULT hr;
 
 	//頂点配列を作成
-	vertices = new VertexType[vertexcount_];
-	if (!vertices)
-	{
-		Error::showDialog("頂点配列のメモリ確保に失敗");
-		return false;
-	}
+	vertices.resize(vertexcount_);
 
 	//インデックス配列を作成
-	indices = new unsigned long[indexcount_];
-	if (!indices)
-	{
-		Error::showDialog("インデックス配列のメモリ確保に失敗");
-		return false;
-	}
+	indices.resize(indexcount_);
 
 	//頂点配列とインデックス配列にデータをロード
 	for (int i = 0; i < vertexcount_; i++)
@@ -65,7 +55,7 @@ bool SkyDome::init(const wchar_t* ModelFileName)
 	vertexbufferdesc.StructureByteStride = 0;
 
 	//サブリソースに頂点バッファのポインタをセット
-	vertexdata.pSysMem = vertices;
+	vertexdata.pSysMem = &vertices[0];
 	vertexdata.SysMemPitch = 0;
 	vertexdata.SysMemSlicePitch = 0;
 
@@ -86,7 +76,7 @@ bool SkyDome::init(const wchar_t* ModelFileName)
 	indexbufferdesc.StructureByteStride = 0;
 
 	//サブリソースにインデックスバッファのポインタをセット
-	indexdata.pSysMem = indices;
+	indexdata.pSysMem = &indices[0];
 	indexdata.SysMemPitch = 0;
 	indexdata.SysMemSlicePitch = 0;
 
@@ -97,9 +87,6 @@ bool SkyDome::init(const wchar_t* ModelFileName)
 		Error::showDialog("インデックスバッファの作成に失敗");
 		return false;
 	}
-
-	delete[] indices;
-	delete[] vertices;
 
 	return true;
 }

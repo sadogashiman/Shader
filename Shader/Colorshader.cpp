@@ -25,14 +25,14 @@ bool Colorshader::init()
 		return false;
 	}
 
-	hr = support_.get()->createVertexData(L"colorvs.hlsl", vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"colorvs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"colorps.hlsl", pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"colorps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("ピクセルシェーダーの作成に失敗");

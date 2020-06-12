@@ -45,7 +45,7 @@ bool System::init()
 	//シェーダーマネージャー初期化
 	if (!ShaderManager::getInstance()->init())
 	{
-		Error::showDialog("レンダラークラスの初期化に失敗");
+		Error::showDialog("シェーダーマネージャーの初期化に失敗");
 		return false;
 	}
 	//ゲームシステム初期化
@@ -110,7 +110,8 @@ bool System::run()
 void System::destroy()
 {
 	Timer::getInstance()->setTimerStatus(false);
-	state_.get()->destroy();
+	if (state_.get())
+		state_.get()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();
 	Input::getInstance()->destroy();
 	Direct3D::getInstance()->destroy();

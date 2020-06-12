@@ -113,6 +113,18 @@ bool ShaderManager::init()
 		Error::showDialog("スカイドームシェーダーの初期化に失敗");
 		return false;
 	}
+
+	colorshader_.reset(new Colorshader);
+	if (!colorshader_.get())
+	{
+		return false;
+	}
+
+	if (!colorshader_.get()->init())
+	{
+		Error::showDialog("カラーシェーダーの初期化に失敗");
+		return false;
+	}
 	
 	return true;
 }

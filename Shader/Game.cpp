@@ -145,7 +145,11 @@ bool Game::render()
 	Direct3D::getInstance()->turnCullingOn();
 	Direct3D::getInstance()->turnZbufferOn();
 
-	terrain_->render();
+	result = ShaderManager::getInstance()->colorRender(terrain_, world, view, projection);
+	if (!result)
+	{
+		return false;
+	}
 	
 	//•`‰æI—¹
 	Direct3D::getInstance()->end();
@@ -158,6 +162,7 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(sky_);
+	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
 }

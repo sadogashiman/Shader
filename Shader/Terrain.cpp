@@ -11,11 +11,11 @@ Terrain::~Terrain()
 {
 }
 
-bool Terrain::init()
+bool Terrain::init(const wchar_t* ModelFileName)
 {
 	HRESULT hr;
-	VertexType* vertices;
-	unsigned long* indices;
+	std::vector<VertexType>vertices;
+	std::vector<unsigned long> indices;
 	D3D11_BUFFER_DESC vertexbufferdesc;
 	D3D11_BUFFER_DESC indexbufferdesc;
 	D3D11_SUBRESOURCE_DATA vertexdata;
@@ -40,43 +40,35 @@ bool Terrain::init()
 	indexcnt_ = vertexcnt_;
 
 	//頂点配列を生成
-	vertices = new VertexType[vertexcnt_];
-	if (!vertices)
-	{
-		Error::showDialog("頂点配列のメモリ確保に失敗");
-		return false;
-	}
+	vertices.resize(vertexcnt_);
 
 	//インデックス配列を作成
-	indices = new unsigned long[indexcnt_];
-	if (!indices)
-	{
-		Error::showDialog("インデックス配列のメモリ確保に失敗");
-		return false;
-	}
+	indices.resize(indexcnt_);
 
 	//インデックス配列と頂点配列を初期化
 	index = 0;
+	int width = terrainwidth - 1;
+	int height = terrainheight - 1;
 
-	for (int i = 0; i < (terrainwidth - 1); i++)
+	for (int i = 0; i < width; i++)
 	{
-		for (int j = 0; j < (terrainheight - 1); i++)
+		for (int j = 0; j < height; j++)
 		{
 			//ライン1
 			//左上
 			position.x = static_cast<float>(i);
-			position.y = static_cast<float>(j + 1);
+			position.z = static_cast<float>(j + 1);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
 
 			//右上
 			position.x = static_cast<float>(i + 1);
-			position.y = static_cast<float>(j + 1);
+			position.z = static_cast<float>(j + 1);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
@@ -84,18 +76,18 @@ bool Terrain::init()
 			//ライン2
 			//右上
 			position.x = static_cast<float>(i + 1);
-			position.y = static_cast<float>(j + 1);
+			position.z = static_cast<float>(j + 1);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
 
 			//右下
 			position.x = static_cast<float>(i + 1);
-			position.y = static_cast<float>(j);
+			position.z = static_cast<float>(j);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
@@ -103,18 +95,18 @@ bool Terrain::init()
 			//ライン3
 			//右下
 			position.x = static_cast<float>(i + 1);
-			position.y = static_cast<float>(j);
+			position.z = static_cast<float>(j);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
 
 			//左下
 			position.x = static_cast<float>(i);
-			position.y = static_cast<float>(j + 1);
+			position.z = static_cast<float>(j);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
@@ -122,18 +114,18 @@ bool Terrain::init()
 			//ライン4
 			//左下
 			position.x = static_cast<float>(i);
-			position.y = static_cast<float>(j);
+			position.z = static_cast<float>(j);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
 
 			//左上
 			position.x = static_cast<float>(i);
-			position.y = static_cast<float>(j + 1);
+			position.z = static_cast<float>(j + 1);
 
-			vertices[index].position = static_cast<Vector3>(position.x, 0.0F, position.z);
+			vertices[index].position = Vector3(position.x, 0.0F, position.z);
 			vertices[index].color = color;
 			indices[index] = index;
 			index++;
@@ -149,7 +141,7 @@ bool Terrain::init()
 	vertexbufferdesc.StructureByteStride = 0;
 
 	//サブリソースへのポインタを作成
-	vertexdata.pSysMem = vertices;
+	vertexdata.pSysMem = &vertices[0];
 	vertexdata.SysMemPitch = 0;
 	vertexdata.SysMemSlicePitch = 0;
 
@@ -170,7 +162,7 @@ bool Terrain::init()
 	indexbufferdesc.StructureByteStride = 0;
 
 	//サブリソースへのポインタを作成
-	indexdata.pSysMem = indices;
+	indexdata.pSysMem = &indices[0];
 	indexdata.SysMemPitch = 0;
 	indexdata.SysMemSlicePitch = 0;
 
@@ -182,16 +174,10 @@ bool Terrain::init()
 		return false;
 	}
 
-	delete[] indices;
-	indices = nullptr;
-
-	delete[] vertices;
-	vertices = nullptr;
-
 	return true;
 }
 
-bool Terrain::render()
+void Terrain::render()
 {
 	unsigned int stride;
 	unsigned int offset;
@@ -208,7 +194,8 @@ bool Terrain::render()
 
 	//プリミティブのモードを設定
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+}
 
-
-	return false;
+void Terrain::destroy()
+{
 }

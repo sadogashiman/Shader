@@ -39,9 +39,6 @@ void Model::destroy()
 	//モデルテクスチャを解放
 	releaseTexture();
 
-	SAFE_RELEASE(indexbuff_);
-	SAFE_RELEASE(vertexbuff_);
-
 	//モデル解放
 	releaseModel();
 }
@@ -54,26 +51,18 @@ void Model::render()
 
 bool Model::initBuffer()
 {
-	Vertextype* vertices;
-	unsigned long* indices;
+	std::vector<Vertextype> vertices;
+	std::vector<unsigned long> indices;
 	D3D11_BUFFER_DESC vertexbuffdesc;
 	D3D11_BUFFER_DESC indexbuffdesc;
 	D3D11_SUBRESOURCE_DATA vertexdata, indexdata;
 	HRESULT hr;
 
 	//頂点配列を作成
-	vertices = new Vertextype[vertexcount_];
-	if (!vertices)
-	{
-		return false;
-	}
+	vertices.resize(vertexcount_);
 
 	//インデックス配列の作成
-	indices = new unsigned long[indexcount_];
-	if (!indices)
-	{
-		return false;
-	}
+	indices.resize(indexcount_);
 
 	//頂点配列にデータをロード
 	for (int i = 0; i < vertexcount_; i++)
@@ -94,12 +83,12 @@ bool Model::initBuffer()
 	vertexbuffdesc.StructureByteStride = 0;
 
 	//サブリソースに頂点データへのポインターを与える
-	vertexdata.pSysMem = vertices;
+	vertexdata.pSysMem = &vertices[0];
 	vertexdata.SysMemPitch = 0;
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbuffdesc, &vertexdata, &vertexbuff_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbuffdesc, &vertexdata, vertexbuff_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -114,23 +103,16 @@ bool Model::initBuffer()
 	indexbuffdesc.StructureByteStride = 0;
 
 	//サブリソースにインデックスデータへのポインタを与える
-	indexdata.pSysMem = indices;
+	indexdata.pSysMem = &indices[0];
 	indexdata.SysMemPitch = 0;
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbuffdesc, &indexdata, &indexbuff_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbuffdesc, &indexdata, indexbuff_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
-
-	//配列を解放
-	delete[] vertices;
-	vertices = nullptr;
-
-	delete[] indices;
-	indices = nullptr;
 
 	return true;
 }
@@ -145,10 +127,10 @@ void Model::renderBuffer()
 	offset = 0;
 
 	//入力アセンブラで頂点バッファをアクティブにしてレンダリング可能に
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, &vertexbuff_, &stride, &offset);
+	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuff_.GetAddressOf(), &stride, &offset);
 
 	//入力アセンブラでインデックスバッファをアクティブにしてレンダリング可能に
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuff_, DXGI_FORMAT_R32_UINT, 0);
+	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuff_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//頂点バッファからレンダリングされるプリミティブのタイプ
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
