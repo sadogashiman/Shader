@@ -14,6 +14,24 @@ Timer::~Timer()
 {
 }
 
+bool Timer::init()
+{
+	//システムがタイマーをサポートしているか確認
+	QueryPerformanceFrequency((LARGE_INTEGER*)&frequency_);
+	if (frequency_ == 0)
+	{
+		Error::showDialog("システムがタイマーをサポートしていません");
+		return false;
+	}
+
+	//ミリ秒あたりのクロック数を算出
+	tickperms_ = static_cast<float>(frequency_ / 1000);
+
+	QueryPerformanceCounter((LARGE_INTEGER*)&cpustart_);
+
+
+}
+
 void Timer::update()
 {
 	//稼働状態か確認
@@ -28,6 +46,13 @@ void Timer::update()
 			remaining_ = std::chrono::duration_cast<std::chrono::milliseconds>(nowtime_ - starttime_);
 		}
 	}
+
+	INT64 currenttime;
+	float timediffrence;
+	QueryPerformanceCounter((LARGE_INTEGER*)&currenttime);
+	timediffrence = static_cast<float>(currenttime - cpustart_);
+	frametime_ = timediffrence / tickperms_;
+	cpustart_ = currenttime;
 }
 
 void Timer::setTimerStatus(const bool RuningFrag)

@@ -8,6 +8,7 @@
 #include"Timer.h"
 #include"SkyDome.h"
 
+
 Game::Game()
 {
 }
@@ -26,7 +27,6 @@ bool Game::init()
 	{
 		return false;
 	}
-
 	camera_->setPosition(Vector3(0.0F, 0.0F, -10.0F));
 	camera_->render();
 	camera_->renderBaseViewMatrix();
@@ -41,18 +41,7 @@ bool Game::init()
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
 	light_->setDirection(0.0F, 0.0F, 1.0F);
 
-	//全画面の2Dウィンドウを生成
-	ortho_ = new OrthoWindow;
-	if (!ortho_)
-	{
-		return false;
-	}
-
-	result = ortho_->init(static_cast<float>(System::getWindowWidth()), static_cast<float>(System::getWindowHeight()));
-	if (!result)
-	{
-		return false;
-	}
+	
 
 	//バッファを作成
 	defbuffer_ = new Deferredbuffers;
@@ -93,7 +82,6 @@ bool Game::init()
 		return false;
 	}
 
-
 	return true;
 
 }
@@ -101,6 +89,7 @@ bool Game::init()
 State* Game::update()
 {
 	bool result;
+	handleMovementInput();
 
 	result = render();
 	if (!result)
@@ -115,8 +104,11 @@ bool Game::render()
 {
 	bool result;
 	Matrix world, view, projection,ortho;
+	Matrix baseview;
 	static float rotation = 0;
 	Vector3 camerapos;
+
+	camera_->render();
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::AliceBlue);
@@ -124,8 +116,7 @@ bool Game::render()
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
-	ortho = Direct3D::getInstance()->getOrtho();
-	view = camera_->getBaseViewMatrix();
+	baseview = camera_->getBaseViewMatrix();
 	world = XMMatrixRotationY(XMConvertToRadians(rotation));
 
 	camerapos = camera_->getPosition();
@@ -145,7 +136,10 @@ bool Game::render()
 	Direct3D::getInstance()->turnCullingOn();
 	Direct3D::getInstance()->turnZbufferOn();
 
-	result = ShaderManager::getInstance()->colorRender(terrain_, world, view, projection);
+	world = Direct3D::getInstance()->getWorld();
+	world = XMMatrixRotationY(XMConvertToRadians(rotation));
+
+	result = ShaderManager::getInstance()->colorRender(terrain_, world, baseview, projection);
 	if (!result)
 	{
 		return false;
@@ -160,7 +154,6 @@ bool Game::render()
 void Game::destroy()
 {
 	SAFE_DELETE_DESTROY(defbuffer_);
-	SAFE_DELETE_DESTROY(ortho_);
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE(light_);
@@ -207,4 +200,24 @@ bool Game::renderSceneToTexture()
 	Direct3D::getInstance()->resetViewPort();
 
 	return true;
+}
+
+void Game::handleMovementInput()
+{
+	auto time = Timer::getInstance()->getCpuTime();
+	
+
+	position_.setFrameTime(time);
+
+	position_.turnLeft(Input::getInstance()->keyDown(DIK_LEFT));
+	position_.turnRight(Input::getInstance()->keyDown(DIK_RIGHT));
+	position_.moveForWard(Input::getInstance()->keyDown(DIK_UP));
+	position_.moveBackWard(Input::getInstance()->keyDown(DIK_DOWN));
+	position_.moveUpWard(Input::getInstance()->keyDown(DIK_A));
+	position_.moveDownWard(Input::getInstance()->keyDown(DIK_Z));
+	position_.lookUpWard(Input::getInstance()->keyDown(DIK_PGUP));
+	position_.lookDownWard(Input::getInstance()->keyDown(DIK_PGDN));
+	
+	camera_->setPosition(position_.getPosition());
+	camera_->setRotation(position_.getRotation());
 }

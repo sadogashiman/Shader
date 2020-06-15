@@ -11,6 +11,7 @@
 #include"SkyDome.h"
 #include"State.h"
 #include"Terrain.h"
+#include"Timer.h"
 
 class Game :public State
 {
@@ -27,6 +28,8 @@ private:
 	Ray_trace_HW* rayhw_;
 	SkyDome* sky_;
 	Terrain* terrain_;
+	Position position_;
+	void handleMovementInput();
 public:
 	Game();
 	~Game();

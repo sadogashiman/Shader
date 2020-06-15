@@ -22,12 +22,15 @@ bool Model::init(const wchar_t* ModelFileName)
 		return false;
 	}
 
-	wcscpy(texturefilename_, Support::renameToJPEG(ModelFileName));
+	//モデルファイルの拡張子を変更
+	wcscpy(texturefilename_, Support::renameExtension(ModelFileName,"jpeg"));
 
+	//テクスチャ読み込み
 	loadTexture(texturefilename_);
 
 	if (!initBuffer())
 	{
+		Error::showDialog("バッファの初期化に失敗");
 		return false;
 	}
 
@@ -38,9 +41,6 @@ void Model::destroy()
 {
 	//モデルテクスチャを解放
 	releaseTexture();
-
-	//モデル解放
-	releaseModel();
 }
 
 void Model::render()
@@ -174,12 +174,8 @@ bool Model::loadModel(const wchar_t* ModelFileName)
 	//インデックスの数を頂点の数と同じに設定
 	indexcount_ = vertexcount_;
 
-	//読み込まれた頂点数を使用してもでるを描画
-	model_ = new ModelType[vertexcount_];
-	if (!model_)
-	{
-		return false;
-	}
+	//読み込まれた頂点数を使用してモデル配列を作成
+	model_.resize(vertexcount_);
 
 	//データを先頭まで読み取る
 	fp.get(input);
@@ -208,15 +204,6 @@ bool Model::loadModel(const wchar_t* ModelFileName)
 void Model::releaseTexture()
 {
 	TextureFactory::getInstance()->deleteTexture(texturefilename_);
-}
-
-void Model::releaseModel()
-{
-	if (model_)
-	{
-		delete[] model_;
-		model_ = nullptr;
-	}
 }
 
 void Model::setPosition(const float X, const float Y, const float Z)

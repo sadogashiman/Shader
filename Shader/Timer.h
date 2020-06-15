@@ -24,7 +24,16 @@ private:
 	std::chrono::high_resolution_clock::time_point endtime_;	 //計測終了時間
 	std::chrono::milliseconds runningtime_;						 //タイマーが稼働していた時間
 	std::chrono::milliseconds remaining_;						 //前回計測時との差分
+	std::chrono::milliseconds startuptime_;
+
+	//cpuクロック
+	float tickperms_;
+	float frametime_;
+	INT64 frequency_;
+	INT64 cpustart_;
+
 public:
+	bool init();
 	void update();								//タイマーの更新をする関数(タイマーが稼働状態でないときは何もしない)
 	void setTimerStatus(const bool RuningFrag); //タイマーの更新をするかどうかを設定する関数
 	void startTimer();							//時間計測を開始する関数
@@ -36,7 +45,7 @@ public:
 	inline const UINT64 getRunningTime()const { return runningtime_.count(); }		//計測開始から終了までの経過時間を返す(ミリ秒)
 	inline const bool getTimerStatus()const { return running_; }					//タイマーが現在稼働しているかどうかを返す
 	inline const bool getStopWatchStatus()const { return stopwatch_; }				//ストップウォッチ機能が有効かどうかを返す関数
-
+	inline const float getCpuTime()const { return frametime_; }
 	static inline Timer* getInstance() //インスタンスを返す
 	{
 		static Timer instance_;

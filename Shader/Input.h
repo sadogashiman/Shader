@@ -1,4 +1,7 @@
 #pragma once
+const int kQuitBottom = DIK_ESCAPE; //アプリケーション終了ボタン
+const bool kTgs = false; //TGSブース展示用ボタン配置
+
 struct ScreenSize
 {
 	int Width;
@@ -78,6 +81,10 @@ public:
 		static Input instance;
 		return &instance;
 	}
+
+	const bool anyKeyDown(const unsigned int KeyCode)const;
+	const bool anyKeyUp(const unsigned int KeyCode)const;
+	const bool quitApp()const;
 
 };
 

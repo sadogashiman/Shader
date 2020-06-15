@@ -47,12 +47,11 @@ private:
 
 	//release
 	void releaseTexture();
-	void releaseModel();
 
 	//render
 	void renderBuffer();
 
-	ModelType* model_;
+	std::vector<ModelType> model_;
 	float positionx_, positiony_, positionz_;
 	wchar_t texturefilename_[MAX_PATH];
 	wchar_t mapfilename_[MAX_PATH];

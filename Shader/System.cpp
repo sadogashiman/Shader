@@ -63,6 +63,11 @@ bool System::init()
 	}
 
 	//タイマーを稼働状態にセット
+	if (!Timer::getInstance()->init())
+	{
+		Error::showDialog("タイマークラスの初期化に失敗");
+		return false;
+	}
 	Timer::getInstance()->setTimerStatus(true);
 
 	return true;

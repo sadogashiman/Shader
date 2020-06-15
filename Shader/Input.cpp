@@ -175,9 +175,26 @@ bool Input::isReleased(const unsigned int KeyCode) const
 	return !(Keystate_[KeyCode] & DINPUT_VERTION) && Keyprevstate_[KeyCode] & DINPUT_VERTION;
 }
 
+const bool Input::anyKeyDown(const unsigned int KeyCode) const
+{
+	return false;
+}
+
+const bool Input::anyKeyUp(const unsigned int KeyCode) const
+{
+	return false;
+}
+
+const bool Input::quitApp() const
+{
+	return false;
+}
+
 void Input::readKeyBoard()
 {
-	keyboarddev_->GetDeviceState(sizeof(Keystate_), &Keystate_);
+	HRESULT hr;
+	hr = keyboarddev_->GetDeviceState(sizeof(Keystate_), &Keystate_);
+	recovery(keyboarddev_, hr);
 }
 
 void Input::readMouse()

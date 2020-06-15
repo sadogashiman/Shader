@@ -1,4 +1,5 @@
 #pragma once
+#include "Position.h"
 class Camera
 {
 private:
@@ -7,9 +8,13 @@ private:
 	Matrix view_;
 	Matrix reflectionview_;
 	Matrix baseview_;
+	Position poscontroller;
 public:
 	Camera();
 	~Camera();
+
+	//Move
+	void moveCamera();
 
 	//Render
 	void render();
@@ -17,8 +22,8 @@ public:
 	void renderBaseViewMatrix();
 
 	//Set
-	void setPosition(const Vector3& Position);
-	void setRotation(const Vector3& Rotation);
+	inline void setPosition(const Vector3& Position) { position_ = Position; }
+	inline void setRotation(const Vector3& Rotation) { rotation_ = Rotation; }
 
 	//Get
 	inline const Vector3 getPosition()const { return position_; }
@@ -26,7 +31,6 @@ public:
 	inline const Matrix getViewMatrix()const { return view_; }
 	inline const Matrix getReflectionViewMatrix()const { return reflectionview_; }
 	inline const Matrix getBaseViewMatrix()const { return baseview_; }
-
 
 };
 

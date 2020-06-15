@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Camera.h"
+#include "Timer.h"
+#include "Input.h"
 
 Camera::Camera()
 {
@@ -8,6 +10,11 @@ Camera::Camera()
 
 Camera::~Camera()
 {
+}
+
+void Camera::moveCamera()
+{
+
 }
 
 void Camera::render()
@@ -107,14 +114,4 @@ void Camera::renderBaseViewMatrix()
 
 	//更新されたベクトルからビュー行列を作成
 	baseview_ = XMMatrixLookAtLH(position, lookat, up);
-}
-
-void Camera::setPosition(const Vector3& Position)
-{
-	position_ = Position;
-}
-
-void Camera::setRotation(const Vector3& Rotation)
-{
-	rotation_ = Rotation;
 }
