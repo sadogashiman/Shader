@@ -85,6 +85,9 @@ bool Game::init()
 	Timer::getInstance()->setTimerStatus(true);
 	Timer::getInstance()->startTimer();
 
+	position_.setPosition(Vector3(128.0F, 10.0F, -10.0F));
+	position_.setRotation(Vector3::Zero);
+
 	return true;
 
 }
@@ -100,6 +103,7 @@ State* Game::update()
 		return nullptr;
 	}
 
+
 	return this;
 }
 
@@ -110,24 +114,32 @@ bool Game::render()
 	Matrix baseview;
 	static float rotation = 0;
 
+	if (rotation < 360.0F)
+	{
+		rotation += 0.05F;
+	}
+
+
 	camera_->render();
 
 	//シーンをクリア
-	Direct3D::getInstance()->begin(Colors::Black);
+	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
 	baseview = camera_->getBaseViewMatrix();
-	world = Direct3D::getInstance()->getWorld();
+
+	Direct3D::getInstance()->wireFrameEnable();
 
 	result = ShaderManager::getInstance()->colorRender(terrain_, world, view, projection);
 	if (!result)
 	{
 		return false;
 	}
-	
+	Direct3D::getInstance()->wireFrameDisable();
+
 	//描画終了
 	Direct3D::getInstance()->end();
 
@@ -187,7 +199,7 @@ bool Game::renderSceneToTexture()
 
 void Game::handleMovementInput()
 {
-
+	//カメラ制御
 	position_.setFrameTime(16.0F);
 
 	position_.turnLeft(Input::getInstance()->keyDown(DIK_LEFT));

@@ -380,7 +380,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 		return false;
 	}
 
-	//ラスタライザの状態を設定
+	//2番目のラスタライザの状態を設定
 	cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get());
 
 	//2番目のラスタライザの設定
@@ -401,6 +401,25 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	{
 		return false;
 	}
+
+	//ワイヤーフレームレンダリング用のラスタライザの設定
+	rasterdesc.AntialiasedLineEnable = false;
+	rasterdesc.CullMode = D3D11_CULL_BACK;
+	rasterdesc.DepthBias = 0;
+	rasterdesc.DepthBiasClamp = 0.0F;
+	rasterdesc.DepthClipEnable = true;
+	rasterdesc.FillMode = D3D11_FILL_WIREFRAME;
+	rasterdesc.FrontCounterClockwise = false;
+	rasterdesc.MultisampleEnable = false;
+	rasterdesc.ScissorEnable = false;
+	rasterdesc.SlopeScaledDepthBias = 0.0F;
+
+	hr = cpdevice_.Get()->CreateRasterizerState(&rasterdesc, cprasterstatewireframe_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
 
 	//ビューポートをレンダリング用にセットアップ
 	viewport_.Height = static_cast<float>(ScreenHeight);
@@ -491,14 +510,4 @@ void Direct3D::setBackBufferRenderTarget()
 
 	//レンダーターゲットビューと深度ステンシルバッファをパイプラインにバインド
 	setRenderTarget();
-}
-
-void Direct3D::setRenderTarget()
-{
-	cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());
-}
-
-void Direct3D::setViewPort()
-{
-	cpdevicecontext_.Get()->RSSetViewports(1, &viewport_);
 }

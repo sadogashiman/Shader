@@ -19,6 +19,7 @@ private:
 	ComPtr<ID3D11DepthStencilView> cpdepthview_;
 	ComPtr<ID3D11RasterizerState> cprasterstate_;
 	ComPtr<ID3D11RasterizerState> cprasterstatenoculling_;
+	ComPtr<ID3D11RasterizerState> cprasterstatewireframe_;
 	ComPtr<ID3D11Texture2D> cpdepthstencilbuffer_;
 	ComPtr<ID3D11BlendState> cpenabledalphablendstate_;
 	ComPtr<ID3D11BlendState> cpdisabledalphablendstate_;
@@ -61,8 +62,8 @@ public:
 	//set
 	void setVideoCardInfo(char* CardName, int& Memory);
 	void setBackBufferRenderTarget();
-	void setRenderTarget();
-	void setViewPort();
+	inline void setRenderTarget(){cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());}
+	inline void setViewPort() { cpdevicecontext_.Get()->RSSetViewports(1, &viewport_); }
 
 	//reset
 	inline void resetViewPort() { cpdevicecontext_.Get()->RSSetViewports(1, &viewport_); }
@@ -74,6 +75,10 @@ public:
 	//CullingØ‚è‘Ö‚¦ŠÖ”
 	inline void turnCullingOn() { cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get()); }
 	inline void turnCullingOff() { cpdevicecontext_.Get()->RSSetState(cprasterstatenoculling_.Get()); }
+
+	//WireFrameƒŒƒ“ƒ_ƒŠƒ“ƒOØ‚è‘Ö‚¦ŠÖ”
+	inline void wireFrameEnable() { cpdevicecontext_.Get()->RSSetState(cprasterstatewireframe_.Get()); }
+	inline void wireFrameDisable() { cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get()); }
 
 	//static
 	static inline Direct3D* getInstance()

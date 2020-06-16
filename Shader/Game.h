@@ -30,6 +30,7 @@ private:
 	Terrain* terrain_;
 	Position position_;
 	void handleMovementInput();
+	bool wire_;
 public:
 	Game();
 	~Game();

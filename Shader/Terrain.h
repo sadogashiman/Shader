@@ -9,10 +9,39 @@ private:
 		Vector4 color;
 	};
 
+	struct HeightMapType
+	{
+		float x;
+		float y;
+		float z;
+	};
+
+	struct ModelType
+	{
+		float x;
+		float y;
+		float z;
+	};
+
 	ComPtr<ID3D11Buffer> vertexbuffer_;
 	ComPtr<ID3D11Buffer> indexbuffer_;
 	int vertexcnt_;
 	int indexcnt_;
+	int terrainheight_;
+	int terrainwidth_;
+	float heightscale_;
+	char terrainfilename_[MAX_PATH];
+	std::vector<HeightMapType> heightmap_;
+	std::vector<ModelType> model_;
+
+	bool initbuffer();
+	bool loadTerrainDataFile(const wchar_t* FileName);
+	bool loadBitmapHeightMap();
+	void setTerrainCoordinate();
+	bool buildTerrainModel();
+
+	void destroyHightMap();
+	void destroyTerrainModel();
 public:
 	Terrain();
 	~Terrain();
