@@ -62,14 +62,6 @@ bool System::init()
 		return false;
 	}
 
-	//タイマーを稼働状態にセット
-	if (!Timer::getInstance()->init())
-	{
-		Error::showDialog("タイマークラスの初期化に失敗");
-		return false;
-	}
-	Timer::getInstance()->setTimerStatus(true);
-
 	return true;
 }
 
@@ -114,7 +106,6 @@ bool System::run()
 
 void System::destroy()
 {
-	Timer::getInstance()->setTimerStatus(false);
 	if (state_.get())
 		state_.get()->destroy();
 	TextureFactory::getInstance()->allDeleteTexture();

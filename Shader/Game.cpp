@@ -82,6 +82,9 @@ bool Game::init()
 		return false;
 	}
 
+	Timer::getInstance()->setTimerStatus(true);
+	Timer::getInstance()->startTimer();
+
 	return true;
 
 }
@@ -106,40 +109,20 @@ bool Game::render()
 	Matrix world, view, projection,ortho;
 	Matrix baseview;
 	static float rotation = 0;
-	Vector3 camerapos;
 
 	camera_->render();
 
 	//シーンをクリア
-	Direct3D::getInstance()->begin(Colors::AliceBlue);
+	Direct3D::getInstance()->begin(Colors::Black);
 
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
+	view = camera_->getViewMatrix();
 	baseview = camera_->getBaseViewMatrix();
-	world = XMMatrixRotationY(XMConvertToRadians(rotation));
-
-	camerapos = camera_->getPosition();
-
-	//カメラ座標からスカイドームの位置を計算
-	world = XMMatrixTranslation(camerapos.x, camerapos.y, camerapos.z);
-
-	Direct3D::getInstance()->turnCullingOff();
-	Direct3D::getInstance()->turnZbufferOff();
-
-	result = ShaderManager::getInstance()->skyDomeRender(sky_, world, view, projection);
-	if (!result)
-	{
-		return false;
-	}
-
-	Direct3D::getInstance()->turnCullingOn();
-	Direct3D::getInstance()->turnZbufferOn();
-
 	world = Direct3D::getInstance()->getWorld();
-	world = XMMatrixRotationY(XMConvertToRadians(rotation));
 
-	result = ShaderManager::getInstance()->colorRender(terrain_, world, baseview, projection);
+	result = ShaderManager::getInstance()->colorRender(terrain_, world, view, projection);
 	if (!result)
 	{
 		return false;
@@ -204,10 +187,8 @@ bool Game::renderSceneToTexture()
 
 void Game::handleMovementInput()
 {
-	auto time = Timer::getInstance()->getCpuTime();
-	
 
-	position_.setFrameTime(time);
+	position_.setFrameTime(16.0F);
 
 	position_.turnLeft(Input::getInstance()->keyDown(DIK_LEFT));
 	position_.turnRight(Input::getInstance()->keyDown(DIK_RIGHT));

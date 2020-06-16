@@ -33,7 +33,6 @@ private:
 	INT64 cpustart_;
 
 public:
-	bool init();
 	void update();								//タイマーの更新をする関数(タイマーが稼働状態でないときは何もしない)
 	void setTimerStatus(const bool RuningFrag); //タイマーの更新をするかどうかを設定する関数
 	void startTimer();							//時間計測を開始する関数
