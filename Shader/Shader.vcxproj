@@ -160,7 +160,6 @@
     <ClCompile Include="LightShader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Model3D.cpp" />
     <ClCompile Include="Multitexture.cpp" />
     <ClCompile Include="OrthoWindow.cpp" />
     <ClCompile Include="ParticleShader.cpp" />
@@ -190,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Colorshader.h" />
+    <ClInclude Include="InputKeycode.h" />
     <ClInclude Include="Maskshader.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Bumpmap.h" />

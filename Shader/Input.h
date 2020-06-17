@@ -1,7 +1,5 @@
 #pragma once
-const int kQuitBottom = DIK_ESCAPE; //アプリケーション終了ボタン
-const bool kTgs = false; //TGSブース展示用ボタン配置
-
+#include"InputKeycode.h"
 struct ScreenSize
 {
 	int Width;
@@ -36,6 +34,7 @@ private:
 	unsigned char keyprevstate_[256];
 	int mousex_, mousey_;
 	ScreenSize screen_;
+	std::chrono::high_resolution_clock::time_point starttime_;
 
 	//入力情報保存用Vector
 	std::vector<ComPtr< IDirectInputDevice8>>gamecontrollers_;
@@ -66,24 +65,84 @@ public:
 	//*******************************
 
 	//指定のキーの入力状態を返す
-	bool keyDown(const unsigned int KeyCode)const;
-	bool KeyUp(const unsigned int KeyCode)const;
+	const bool keyDown(const unsigned int KeyCode)const;
+	const bool KeyUp(const unsigned int KeyCode)const;
 
 	//特定のキーが押されたかを返す
-	bool isPressed(const unsigned int KeyCode)const;
+	const bool isKeyPressed(const unsigned int KeyCode)const;
 
 	//特定のキーが離されたかを返す
-	bool isReleased(const unsigned int KeyCode)const;
+	const bool isKeyReleased(const unsigned int KeyCode)const;
+
+	//特定のキーの入力が継続されているかを返す
+	const bool isKeyHeld(const unsigned int KeyCode)const;
+
+	//何らかのキーが入力されているかを返す
+	const bool anyKeyDown()const;
+
+	//何らかのキーの入力が終了したかを返す
+	const bool anyKeyUp()const;
+
+	//何らかキーの入力が継続されているかを返す
+	const bool anyKeyHeld()const;
+
+
+	//*******************************
+	//		    GamePad
+	//*******************************
+
+	//指定のボタンの入力状態を返す
+	const bool isBottonDown(const unsigned int BottonCode)const;
+	const bool isBottonUp(const unsigned int BottonCode)const;
+	
+	//指定のボタンの入力が開始されたかを返す
+	const bool isBottonPressed(const unsigned int BottonCode)const;
+	
+	//指定のボタンの入力が終了されたかを返す
+	const bool isBottonReleased(const unsigned int BottonCode)const;
+
+	//指定のボタンの入力が継続されているかを返す
+	const bool isBottonHeld(const unsigned int BottonCode)const;
+	
+	//何らかのボタンが入力されているかを返す
+	const bool anyBottomDown()const;
+
+	//何らかのボタンの入力が終了されたかを返す
+	const bool anyBottomUp()const;
+
+	//何らかのボタンの入力が継続されているかを返す
+	const bool anyBottonHeld()const;
+
+	//特定のPOVの入力状態を返す
+	const bool isPOVDown(const unsigned int POVBottonCode)const;
+	const bool isPOVUp(const unsigned int POVBottonCode)const;
+
+	//特定のPOVの入力が開始されたかを返す
+	const bool isPOVPressed(const unsigned int POVBottonCode)const;
+
+	//特定のPOVの入力が終了したかを返す
+	const bool isPOVReleased(const unsigned int POVBottonCode)const;
+
+	//特定のPOVの入力が継続されているかを返す
+	const bool isPOVHeld(const unsigned int POVBottonCode)const;
+
+	//何らかのPOVの入力が開始したかを返す
+	const bool anyPadPOVDown()const;
+
+	//何らかのPOVの入力が終了したかを返す
+	const bool anyPadPOVUp()const;
+
+	//何らかのPOVの入力が継続されているか返す
+	const bool anyPadPOVHeld()const;
+
+	//ゲーム終了キー
+	const bool quitApp();
 
 	static inline Input* getInstance()
 	{
 		static Input instance;
 		return &instance;
 	}
-
-	const bool anyKeyDown(const unsigned int KeyCode)const;
-	const bool anyKeyUp(const unsigned int KeyCode)const;
-	const bool quitApp()const;
 
 };
 

@@ -22,9 +22,6 @@
     <Filter Include="Texture">
       <UniqueIdentifier>{70ce20b9-6b0b-423e-bcfe-83d36920e68b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="control">
-      <UniqueIdentifier>{8909b097-2751-40d1-9ca1-5a566be31c9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="support">
       <UniqueIdentifier>{d42c3cde-c3ea-4435-8be6-ded1d313cd2a}</UniqueIdentifier>
     </Filter>
@@ -157,6 +154,9 @@
     <Filter Include="3DModel\SkyDome">
       <UniqueIdentifier>{5e163ef3-f858-45e5-96be-b40f183b7a1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{8909b097-2751-40d1-9ca1-5a566be31c9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -175,7 +175,7 @@
       <Filter>Texture</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>control</Filter>
+      <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Direct3D.cpp">
       <Filter>MainSystem\Direct3D</Filter>
@@ -264,9 +264,6 @@
     <ClCompile Include="Colorshader.cpp">
       <Filter>ShaderManager\Shader\Color</Filter>
     </ClCompile>
-    <ClCompile Include="Model3D.cpp">
-      <Filter>3DModel</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -285,7 +282,7 @@
       <Filter>Texture</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>control</Filter>
+      <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="error.h">
       <Filter>support</Filter>
@@ -388,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="Model3D.h">
       <Filter>3DModel</Filter>
+    </ClInclude>
+    <ClInclude Include="InputKeycode.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

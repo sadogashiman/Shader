@@ -215,8 +215,8 @@ void Game::handleMovementInput()
 	
 	camera_->setPosition(position_.getPosition());
 	camera_->setRotation(position_.getRotation());
-
-	if (Input::getInstance()->isPressed(DIK_F2))
+	Input::getInstance()->anyKeyUp();
+	if (Input::getInstance()->isKeyPressed(DIK_F2))
 	{
 		if (wire_)
 		{

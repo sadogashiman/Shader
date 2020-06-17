@@ -122,7 +122,7 @@ bool System::update()
 	State* tmp;
 	Input::getInstance()->update();
 
-	if (Input::getInstance()->isPressed(DIK_ESCAPE))
+	if (Input::getInstance()->isKeyPressed(DIK_ESCAPE))
 	{
 		return false;
 	}

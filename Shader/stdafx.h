@@ -3,7 +3,6 @@
 //		　　 マクロ
 //******************************
 #define _CRT_SECURE_NO_WARNINGS
-#define DINPUT_VERTION 0x80 //DirectInputのバージョンマクロ
 #define WIN32_LEAN_AND_MEAN //使われていないAPIの一部を除外するマクロ
 #define STRICT				//型チェックを厳密にするマクロ
 #define ALIGN16 _declspec(align(16)) //16アライメント
@@ -68,6 +67,7 @@ const float kScreen_depth = 1000.0F;
 const float kScreen_near = 1.0F;
 const bool kFullScreen = false;
 const bool kvsync = true;
+const bool kTgs = false; //TGSブース展示用ボタン配置
 
 //******************************
 //　　		  列挙隊

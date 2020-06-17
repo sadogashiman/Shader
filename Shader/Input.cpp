@@ -55,7 +55,7 @@ void Input::update()
 {
 	//前フレームの情報として保存
 	padprevstate_ = padstate_;
-	memcpy( keyprevstate_, keystate_, sizeof(unsigned char)*256);
+	memcpy(keyprevstate_, keystate_, sizeof(unsigned char) * 256);
 
 	//各デバイスの入力情報を取得
 	//readControllers();
@@ -154,38 +154,197 @@ BOOL Input::staticSetGameControllerAxesRange(LPCDIDEVICEINSTANCE Devobjinst, LPV
 	return DIENUM_CONTINUE;
 }
 
-bool Input::keyDown(const unsigned int KeyCode) const
+const bool Input::keyDown(const unsigned int KeyCode) const
 {
 	return keystate_[KeyCode] & DINPUT_VERTION;
 }
 
-bool Input::KeyUp(const unsigned int KeyCode) const
+const bool Input::KeyUp(const unsigned int KeyCode) const
 {
 	return !(keystate_[KeyCode] & DINPUT_VERTION);
 }
 
-bool Input::isPressed(const unsigned int KeyCode) const
+const bool Input::isKeyPressed(const unsigned int KeyCode) const
 {
-	return keystate_[KeyCode] & 0x80 && !(keyprevstate_[KeyCode] & 0x80);
+	return keystate_[KeyCode] & DINPUT_VERTION && !(keyprevstate_[KeyCode] & DINPUT_VERTION);
 }
 
-bool Input::isReleased(const unsigned int KeyCode) const
+const bool Input::isKeyReleased(const unsigned int KeyCode) const
 {
 	return !(keystate_[KeyCode] & DINPUT_VERTION) && keyprevstate_[KeyCode] & DINPUT_VERTION;
 }
 
-const bool Input::anyKeyDown(const unsigned int KeyCode) const
+const bool Input::isKeyHeld(const unsigned int KeyCode) const
 {
+	return keystate_[KeyCode] & DINPUT_VERTION&& keyprevstate_[KeyCode] & DINPUT_VERTION;
+}
+
+const bool Input::anyKeyDown() const
+{
+	for (int i = 0; i < 256; i++)
+	{
+		if (isKeyPressed(i))
+			return true;
+	}
+
 	return false;
 }
 
-const bool Input::anyKeyUp(const unsigned int KeyCode) const
+const bool Input::anyKeyUp() const
 {
+	for (int i = 0; i < 256; i++)
+	{
+		if (isKeyReleased(i))
+			return true;
+	}
+
 	return false;
 }
 
-const bool Input::quitApp() const
+const bool Input::anyKeyHeld() const
 {
+	for (int i = 0; i < 256; i++)
+	{
+		if (isKeyHeld(i))
+			return true;
+	}
+
+	return false;
+}
+
+const bool Input::isBottonDown(const unsigned int BottonCode) const
+{
+	return padstate_.rgbButtons[BottonCode] & DINPUT_VERTION;
+}
+
+const bool Input::isBottonUp(const unsigned int BottonCode) const
+{
+	return !(padstate_.rgbButtons[BottonCode] & DINPUT_VERTION);
+}
+
+const bool Input::isBottonPressed(const unsigned int BottonCode) const
+{
+	return padstate_.rgbButtons[BottonCode] & DINPUT_VERTION && !(padprevstate_.rgbButtons[BottonCode] & DINPUT_VERTION);
+}
+
+const bool Input::isBottonReleased(const unsigned int BottonCode) const
+{
+	return !(padstate_.rgbButtons[BottonCode] & DINPUT_VERTION) && padprevstate_.rgbButtons[BottonCode] & DINPUT_VERTION;
+}
+
+const bool Input::isBottonHeld(const unsigned int BottonCode) const
+{
+	return padstate_.rgbButtons[BottonCode] & DINPUT_VERTION && padprevstate_.rgbButtons[BottonCode] & DINPUT_VERTION;
+}
+
+const bool Input::anyBottomDown() const
+{
+	for (int i = 0; i < 32; i++)
+	{
+		if (isBottonPressed(i))
+			return true;
+	}
+
+	return false;
+}
+
+const bool Input::anyBottomUp() const
+{
+	for (int i = 0; i < 32; i++)
+	{
+		if (isBottonReleased(i))
+			return true;
+	}
+
+	return false;
+}
+
+const bool Input::anyBottonHeld() const
+{
+	for (int i = 0; i < 32; i++)
+	{
+		if (isBottonHeld(i))
+			return true;
+	}
+
+	return false;
+}
+
+const bool Input::isPOVDown(const unsigned int POVBottonCode) const
+{
+	return padstate_.rgdwPOV[0] == 9000 * POVBottonCode;
+}
+
+const bool Input::isPOVUp(const unsigned int POVBottonCode) const
+{
+	return padstate_.rgdwPOV[0] != 9000 * POVBottonCode;
+}
+
+const bool Input::isPOVPressed(const unsigned int POVBottonCode) const
+{
+	return padstate_.rgdwPOV[0] == 9000 * POVBottonCode && padprevstate_.rgdwPOV[0] != 9000 * POVBottonCode;
+}
+
+const bool Input::isPOVReleased(const unsigned int POVBottonCode) const
+{
+	return padstate_.rgdwPOV[0] != 9000 * POVBottonCode && padprevstate_.rgdwPOV[0] == 9000 * POVBottonCode;
+}
+
+const bool Input::isPOVHeld(const unsigned int POVBottonCode) const
+{
+	return padstate_.rgdwPOV[0] == 9000 * POVBottonCode && padprevstate_.rgdwPOV[0] == 9000 * POVBottonCode;
+}
+
+const bool Input::anyPadPOVDown() const
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (isPOVPressed(i))
+			return true;
+	}
+
+	return false;
+}
+
+const bool Input::anyPadPOVUp() const
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (isPOVReleased(i))
+			return true;
+	}
+
+	return false;
+}
+
+const bool Input::anyPadPOVHeld() const
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (isPOVHeld(i))
+			return true;
+	}
+
+	return false;
+}
+
+const bool Input::quitApp()
+{
+	if (kTgs)
+	{
+		if (isBottonPressed(DINPUT_BOTTON_8))
+			starttime_ = std::chrono::high_resolution_clock::now();
+		return true;
+	}
+	else
+	{
+		//ESCが押されたらアプリケーションを終了
+		if (isKeyPressed(DIK_ESCAPE))
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 
