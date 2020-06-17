@@ -29,11 +29,11 @@ private:
 	//ƒGƒ‰[‚ª‹N‚«‚½‚É‰ğÁ‚·‚é
 	void recovery(LPDIRECTINPUTDEVICE8& Dev,HRESULT Hr);
 
-	DIJOYSTATE Padstate_;
-	DIJOYSTATE Padprevstate_;
+	DIJOYSTATE padstate_;
+	DIJOYSTATE padprevstate_;
 	DIMOUSESTATE Mousesstate_;
 	unsigned char Keystate_[256];
-	unsigned char Keyprevstate_[256];
+	unsigned char keyprevstate_[256];
 	int mousex_, mousey_;
 	ScreenSize screen;
 	HWND hwnd_;

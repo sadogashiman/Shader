@@ -12,7 +12,7 @@ SkyDome::~SkyDome()
 {
 }
 
-bool SkyDome::init(const wchar_t* ModelFileName)
+bool SkyDome::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 {
 	bool result;
 

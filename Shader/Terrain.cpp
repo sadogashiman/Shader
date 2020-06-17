@@ -12,12 +12,12 @@ Terrain::~Terrain()
 {
 }
 
-bool Terrain::init(const wchar_t* ModelFileName)
+bool Terrain::init(const wchar_t* ModelFileName,const wchar_t* TextureFileName)
 {
 	bool result;
 
 	//テレイン情報の取得
-	result = loadTerrainDataFile(L"Resource/setup.txt");
+	result = loadTerrainDataFile(ModelFileName);
 	if (!result)
 	{
 		Error::showDialog("テレイン情報の取得に失敗");
@@ -56,6 +56,12 @@ bool Terrain::init(const wchar_t* ModelFileName)
 
 	//バッファが作成されたのでモデル情報を破棄
 	destroyTerrainModel();
+
+	if (TextureFileName != nullptr)
+	{
+		//ファイル名をメンバに保持
+		wcscpy(texturefilename_, TextureFileName);
+	}
 
 	return true;
 }
@@ -122,7 +128,7 @@ bool Terrain::initbuffer()
 	for (int i = 0; i < vertexcnt_; i++)
 	{
 		vertices[i].position = Vector3(model_[i].x, model_[i].y, model_[i].z);
-		vertices[i].color = color;
+		vertices[i].texture = Vector2(model_[i].u, model_[i].v);
 		indices[i] = i;
 	}
 
@@ -357,7 +363,7 @@ void Terrain::setTerrainCoordinate()
 
 			//X座標・Z座標を設定
 			heightmap_[index].x = static_cast<float>(j);
-			heightmap_[index].z = static_cast<float>(i);
+			heightmap_[index].z = -static_cast<float>(i);
 
 			//震度情報を正の値だけになるよう移動
 			heightmap_[index].z += static_cast<float>(terrainheight_ - 1);
@@ -401,31 +407,43 @@ bool Terrain::buildTerrainModel()
 			model_[index].x = heightmap_[index1].x;
 			model_[index].y = heightmap_[index1].y;
 			model_[index].z = heightmap_[index1].z;
+			model_[index].u = 0.0F;
+			model_[index].v = 0.0F;
 			index++;
 
 			model_[index].x = heightmap_[index2].x;
 			model_[index].y = heightmap_[index2].y;
 			model_[index].z = heightmap_[index2].z;
+			model_[index].u = 1.0F;
+			model_[index].v = 0.0F;
 			index++;
 
 			model_[index].x = heightmap_[index3].x;
 			model_[index].y = heightmap_[index3].y;
 			model_[index].z = heightmap_[index3].z;
+			model_[index].u = 0.0F;
+			model_[index].v = 1.0F;
 			index++;
 
 			model_[index].x = heightmap_[index3].x;
 			model_[index].y = heightmap_[index3].y;
 			model_[index].z = heightmap_[index3].z;
+			model_[index].u = 0.0F;
+			model_[index].v = 1.0F;
 			index++;
 
 			model_[index].x = heightmap_[index2].x;
 			model_[index].y = heightmap_[index2].y;
 			model_[index].z = heightmap_[index2].z;
+			model_[index].u = 1.0F;
+			model_[index].v = 0.0F;
 			index++;
 
 			model_[index].x = heightmap_[index4].x;
 			model_[index].y = heightmap_[index4].y;
 			model_[index].z = heightmap_[index4].z;
+			model_[index].u = 1.0F;
+			model_[index].v = 1.0F;
 			index++;
 		}
 	}

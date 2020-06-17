@@ -55,8 +55,8 @@ bool Input::init(HINSTANCE hInstance, HWND Hwnd)
 void Input::update()
 {
 	//前フレームの情報として保存
-	Padprevstate_ = Padstate_;
-	memcpy(Keyprevstate_, Keyprevstate_, sizeof(unsigned char));
+	padprevstate_ = padstate_;
+	memcpy(keyprevstate_, keyprevstate_, sizeof(unsigned char));
 
 	//各デバイスの入力情報を取得
 	//readControllers();
@@ -167,12 +167,12 @@ bool Input::KeyUp(const unsigned int KeyCode) const
 
 bool Input::isPressed(const unsigned int KeyCode) const
 {
-	return Keystate_[KeyCode] & DINPUT_VERTION && !(Keyprevstate_[KeyCode] & DINPUT_VERTION);
+	return Keystate_[KeyCode] & DINPUT_VERTION && !(keyprevstate_[KeyCode] & DINPUT_VERTION);
 }
 
 bool Input::isReleased(const unsigned int KeyCode) const
 {
-	return !(Keystate_[KeyCode] & DINPUT_VERTION) && Keyprevstate_[KeyCode] & DINPUT_VERTION;
+	return !(Keystate_[KeyCode] & DINPUT_VERTION) && keyprevstate_[KeyCode] & DINPUT_VERTION;
 }
 
 const bool Input::anyKeyDown(const unsigned int KeyCode) const
@@ -199,7 +199,7 @@ void Input::readKeyBoard()
 
 void Input::readMouse()
 {
-	mousedevice_->GetDeviceState(sizeof(Padstate_), &Padstate_);
+	mousedevice_->GetDeviceState(sizeof(padstate_), &padstate_);
 }
 
 void Input::readControllers()
@@ -208,7 +208,7 @@ void Input::readControllers()
 	for (auto controller : gamecontrollers_)
 	{
 		//前回の情報として記録
-		Padprevstate_ = Padstate_;
+		padprevstate_ = padstate_;
 
 		controller->GetDeviceState(sizeof(controller), controller.GetAddressOf());
 	}

@@ -5,24 +5,44 @@ enum ExtensionType
 	kPng,
 	kTiff,
 	kGif,
+	kTga,
 	kEnd
 };
 class Texture
 {
 private:
-	ID3D11ShaderResourceView* texture_;
-	ID3D11Resource* textureresource_;
-	bool checkExtension(const wchar_t* PathName);
-	Texture();
-	~Texture();
 	//TextureLoader‚ª‘Î‰ž‚µ‚Ä‚¢‚éŠg’£Žq
 	const wchar_t* extensionarray[kExtensionTypeNum] =
 	{
 		L"dds",
 		L"png",
 		L"tiff",
-		L"gif"
+		L"gif",
+		L"tga"
 	};
+
+	struct TargaHeader
+	{
+		unsigned char data1[12];
+		unsigned short width;
+		unsigned short height;
+		unsigned char bpp;
+		unsigned char data2;
+	};
+
+	ID3D11ShaderResourceView* texture_;
+	ID3D11Resource* textureresource_;
+	ComPtr<ID3D11Texture2D>texture2d_;
+
+	std::vector<unsigned char> targadata_;
+
+	Texture();
+	~Texture();
+
+	bool loadTargaFile(const wchar_t* TargaFileName,int& Width,int& Height);
+	bool createTargaTexture(const int Width,const int Height);
+	bool checkExtension(const wchar_t* PathName);
+
 public:
 	Texture(const Texture&) = delete;
 	Texture& operator = (const Texture&) = delete;

@@ -14,7 +14,7 @@ Model::~Model()
 {
 }
 
-bool Model::init(const wchar_t* ModelFileName)
+bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 {
 	//モデルデータ読み込み
 	if (!loadModel(ModelFileName))

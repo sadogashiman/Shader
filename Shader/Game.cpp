@@ -41,8 +41,6 @@ bool Game::init()
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
 	light_->setDirection(0.0F, 0.0F, 1.0F);
 
-	
-
 	//バッファを作成
 	defbuffer_ = new Deferredbuffers;
 	if (!defbuffer_)
@@ -76,7 +74,7 @@ bool Game::init()
 		return false;
 	}
 
-	result = terrain_->init();
+	result = terrain_->init(L"Resource/setup.txt", L"Resource/dirt.tga");
 	if (!result)
 	{
 		return false;
@@ -87,6 +85,8 @@ bool Game::init()
 
 	position_.setPosition(Vector3(128.0F, 10.0F, -10.0F));
 	position_.setRotation(Vector3::Zero);
+
+	wire_ = false;
 
 	return true;
 
@@ -130,14 +130,16 @@ bool Game::render()
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
 	baseview = camera_->getBaseViewMatrix();
-
+	if(wire_)
 	Direct3D::getInstance()->wireFrameEnable();
 
-	result = ShaderManager::getInstance()->colorRender(terrain_, world, view, projection);
+	result = ShaderManager::getInstance()->textureRender(terrain_, world, view, projection,terrain_->getTexture());
 	if (!result)
 	{
 		return false;
 	}
+
+	if (wire_)
 	Direct3D::getInstance()->wireFrameDisable();
 
 	//描画終了
@@ -213,4 +215,16 @@ void Game::handleMovementInput()
 	
 	camera_->setPosition(position_.getPosition());
 	camera_->setRotation(position_.getRotation());
+
+	if (Input::getInstance()->isPressed(DIK_F2))
+	{
+		if (wire_)
+		{
+			wire_ = false;
+		}
+		else
+		{
+			wire_ = true;
+		}
+	}
 }

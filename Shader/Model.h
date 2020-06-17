@@ -59,7 +59,7 @@ private:
 public:
 	Model();
 	~Model();
-	bool init(const wchar_t* ModelFileName);
+	bool init(const wchar_t* ModelFileName,const wchar_t* TextureFileName = nullptr);
 	void destroy();
 	void render();
 
