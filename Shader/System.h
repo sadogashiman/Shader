@@ -12,7 +12,7 @@ private:
 	std::unique_ptr<State> state_;
 
 protected:
-	HINSTANCE instance_;
+	static HINSTANCE instance_;
 	static HWND hwnd_;
 public:
 	System();
@@ -23,7 +23,8 @@ public:
 	bool handleInput(const float FrameTime);
 	
 	//get
-	static const HWND getWindowHandle() { return hwnd_; }
+	static inline const HINSTANCE getAppInstance(){ return instance_; }
+	static inline const HWND getWindowHandle() { return hwnd_; }
 	static inline const int getWindowWidth() { return screenwidth_; }
 	static inline const int getWindowHeight(){ return screenheight_; }
 

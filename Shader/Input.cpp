@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Input.h"
+#include"System.h"
 
 Input::Input()
 {
@@ -9,14 +10,12 @@ Input::~Input()
 {
 }
 
-bool Input::init(HINSTANCE hInstance, HWND Hwnd)
+bool Input::init()
 {
-	//ウィドウハンドルを保存
-	hwnd_ = Hwnd;
 	HRESULT hr;
 
 	//DirectInputインターフェイスを作成
-	hr = DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)didev_.GetAddressOf(), NULL);
+	hr = DirectInput8Create(System::getAppInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)didev_.GetAddressOf(), NULL);
 
 	//入力デバイスの列挙
 	//hr = didev_.Get()->EnumDevices(DI8DEVCLASS_GAMECTRL, &staticEnumGameControllers, this, DIEDFL_ATTACHEDONLY);
@@ -46,8 +45,8 @@ bool Input::init(HINSTANCE hInstance, HWND Hwnd)
 		return false;
 	}*/
 
-	screen.Height = GetSystemMetrics(SM_CYSCREEN);
-	screen.Width = GetSystemMetrics(SM_CXSCREEN);
+	screen_.Height = GetSystemMetrics(SM_CYSCREEN);
+	screen_.Width = GetSystemMetrics(SM_CXSCREEN);
 
 	return true;
 }
@@ -56,7 +55,7 @@ void Input::update()
 {
 	//前フレームの情報として保存
 	padprevstate_ = padstate_;
-	memcpy(keyprevstate_, keyprevstate_, sizeof(unsigned char));
+	memcpy( keyprevstate_, keystate_, sizeof(unsigned char)*256);
 
 	//各デバイスの入力情報を取得
 	//readControllers();
@@ -157,22 +156,22 @@ BOOL Input::staticSetGameControllerAxesRange(LPCDIDEVICEINSTANCE Devobjinst, LPV
 
 bool Input::keyDown(const unsigned int KeyCode) const
 {
-	return Keystate_[KeyCode] & DINPUT_VERTION;
+	return keystate_[KeyCode] & DINPUT_VERTION;
 }
 
 bool Input::KeyUp(const unsigned int KeyCode) const
 {
-	return !(Keystate_[KeyCode] & DINPUT_VERTION);
+	return !(keystate_[KeyCode] & DINPUT_VERTION);
 }
 
 bool Input::isPressed(const unsigned int KeyCode) const
 {
-	return Keystate_[KeyCode] & DINPUT_VERTION && !(keyprevstate_[KeyCode] & DINPUT_VERTION);
+	return keystate_[KeyCode] & 0x80 && !(keyprevstate_[KeyCode] & 0x80);
 }
 
 bool Input::isReleased(const unsigned int KeyCode) const
 {
-	return !(Keystate_[KeyCode] & DINPUT_VERTION) && keyprevstate_[KeyCode] & DINPUT_VERTION;
+	return !(keystate_[KeyCode] & DINPUT_VERTION) && keyprevstate_[KeyCode] & DINPUT_VERTION;
 }
 
 const bool Input::anyKeyDown(const unsigned int KeyCode) const
@@ -193,7 +192,7 @@ const bool Input::quitApp() const
 void Input::readKeyBoard()
 {
 	HRESULT hr;
-	hr = keyboarddev_->GetDeviceState(sizeof(Keystate_), &Keystate_);
+	hr = keyboarddev_->GetDeviceState(sizeof(keystate_), &keystate_);
 	recovery(keyboarddev_, hr);
 }
 
@@ -216,8 +215,8 @@ void Input::readControllers()
 
 void Input::processInput()
 {
-	mousex_ = Mousesstate_.lX;
-	mousey_ = Mousesstate_.lY;
+	mousex_ = mousesstate_.lX;
+	mousey_ = mousesstate_.lY;
 
 	//移動制限
 	if (mousex_ < 0)
@@ -226,11 +225,11 @@ void Input::processInput()
 	if (mousey_ < 0)
 		mousey_ = 0;
 
-	if (mousex_ > screen.Width)
-		mousex_ = screen.Width;
+	if (mousex_ > screen_.Width)
+		mousex_ = screen_.Width;
 
-	if (mousey_ > screen.Height)
-		mousey_ = screen.Height;
+	if (mousey_ > screen_.Height)
+		mousey_ = screen_.Height;
 }
 
 bool Input::initKeyboard()
@@ -248,7 +247,7 @@ bool Input::initKeyboard()
 	}
 
 	//協調レベルの設定
-	if (FAILED(keyboarddev_->SetCooperativeLevel(hwnd_, DISCL_FOREGROUND | DISCL_EXCLUSIVE)))
+	if (FAILED(keyboarddev_->SetCooperativeLevel(System::getWindowHandle(), DISCL_FOREGROUND | DISCL_EXCLUSIVE)))
 	{
 		return false;
 	}
@@ -274,7 +273,7 @@ bool Input::initMouse()
 	}
 
 	//協調レベルの設定(マウスはWindnowsの機能を使うときに必要なので占有しない)
-	if (FAILED(mousedevice_->SetCooperativeLevel(hwnd_, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
+	if (FAILED(mousedevice_->SetCooperativeLevel(System::getWindowHandle(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE)))
 	{
 		return false;
 	}
@@ -297,7 +296,7 @@ bool Input::initControllers()
 	LPDIRECTINPUTDEVICE8 gamecontroller = gamecontrollers_[currentactivecontroller_].Get();
 
 	//協調レベルの設定
-	if (FAILED(gamecontroller->SetCooperativeLevel(hwnd_, DISCL_FOREGROUND | DISCL_EXCLUSIVE)))
+	if (FAILED(gamecontroller->SetCooperativeLevel(System::getWindowHandle(), DISCL_FOREGROUND | DISCL_EXCLUSIVE)))
 	{
 		return false;
 	}

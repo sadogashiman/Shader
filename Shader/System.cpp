@@ -6,6 +6,9 @@
 #include"Game.h"
 #include"TextureFactory.h"
 #include"Timer.h"
+
+//実体の宣言
+HINSTANCE System::instance_;
 HWND System::hwnd_;
 int System::screenheight_;
 int System::screenwidth_;
@@ -29,14 +32,14 @@ bool System::init()
 	initWindows(screenwidth_, screenheight_);
 
 	//DirectX初期化
-	if (!Direct3D::getInstance()->init(screenwidth_, screenheight_, kvsync, hwnd_, kFullScreen, kScreen_depth, kScreen_near))
+	if (!Direct3D::getInstance()->init(screenwidth_, screenheight_, kvsync, kFullScreen, kScreen_depth, kScreen_near))
 	{
 		Error::showDialog("DirectXの初期化に失敗");
 		return false;
 	}
 
 	//インプットクラス初期化
-	if (!Input::getInstance()->init(instance_, hwnd_))
+	if (!Input::getInstance()->init())
 	{
 		Error::showDialog("DirectInputの初期化に失敗");
 		return false;
@@ -218,7 +221,7 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 		NULL,
 		instance_,
 		NULL
-		);
+	);
 
 	//ウィンドウを表示
 	ShowWindow(hwnd_, SW_SHOW);

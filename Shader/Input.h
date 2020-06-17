@@ -31,12 +31,11 @@ private:
 
 	DIJOYSTATE padstate_;
 	DIJOYSTATE padprevstate_;
-	DIMOUSESTATE Mousesstate_;
-	unsigned char Keystate_[256];
+	DIMOUSESTATE mousesstate_;
+	unsigned char keystate_[256];
 	unsigned char keyprevstate_[256];
 	int mousex_, mousey_;
-	ScreenSize screen;
-	HWND hwnd_;
+	ScreenSize screen_;
 
 	//“ü—Íî•ñ•Û‘¶—pVector
 	std::vector<ComPtr< IDirectInputDevice8>>gamecontrollers_;
@@ -53,7 +52,7 @@ public:
 	Input& operator = (Input&&) = delete;
 
 
-	bool init(HINSTANCE hInstance, HWND Hwnd);
+	bool init();
 	void update();
 	void destroy();
 

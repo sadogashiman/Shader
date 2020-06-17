@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Direct3D.h"
+#include "System.h"
 
 
 Direct3D::Direct3D()
@@ -12,7 +13,7 @@ Direct3D::~Direct3D()
 }
 
 
-bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vsync, HWND Hwnd, const bool FullScreen, const float ScreenDepth, const float ScreenNear)
+bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vsync,const bool FullScreen, const float ScreenDepth, const float ScreenNear)
 {
 	HRESULT hr;
 	IDXGIFactory* factry;
@@ -163,7 +164,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	swapchaindesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
 	//レンダリングするウィンドウの使用方法を設定
-	swapchaindesc.OutputWindow = Hwnd;
+	swapchaindesc.OutputWindow = System::getWindowHandle();
 
 	//マルチサンプリングの設定
 	swapchaindesc.SampleDesc.Count = 1;

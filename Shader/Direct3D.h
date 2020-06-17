@@ -40,7 +40,7 @@ public:
 	Direct3D(Direct3D&&) = delete;
 	Direct3D& operator = (Direct3D&&) = delete;
 
-	bool init(const int ScreenWidth, const int ScreenHeight, const bool Vsync, HWND Hwnd, const bool FullScreen, const float ScreenDepth, const float ScreenNear);
+	bool init(const int ScreenWidth, const int ScreenHeight, const bool Vsync,const bool FullScreen, const float ScreenDepth, const float ScreenNear);
 	void begin(XMVECTORF32 Color);
 	void end();
 	void destroy();
