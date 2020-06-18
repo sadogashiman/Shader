@@ -8,22 +8,25 @@ private:
 	{
 		Vector3 position;
 		Vector2 texture;
+		Vector3 normal;
 	};
 
 	struct HeightMapType
 	{
-		float x;
-		float y;
-		float z;
+		Vector3 position;
+		Vector3 normal;
 	};
 
 	struct ModelType
 	{
-		float x;
-		float y;
-		float z;
-		float u;
-		float v;
+		Vector3 position;
+		Vector2 texture;
+		Vector3 normal;
+	};
+
+	struct VectorType
+	{
+		Vector3 position;
 	};
 
 	ComPtr<ID3D11Buffer> vertexbuffer_;
@@ -43,7 +46,7 @@ private:
 	bool loadBitmapHeightMap();
 	void setTerrainCoordinate();
 	bool buildTerrainModel();
-
+	bool calcNormal();
 	void destroyHightMap();
 	void destroyTerrainModel();
 public:

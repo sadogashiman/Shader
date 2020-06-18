@@ -262,12 +262,12 @@ LRESULT System::MessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	{
 	case WM_KEYDOWN:
 	{
-		Input::getInstance()->keyDown(static_cast<unsigned int>(wParam));
+		Input::getInstance()->isKeyState(static_cast<unsigned int>(wParam));
 		return 0;
 	}
 	case WM_KEYUP:
 	{
-		Input::getInstance()->KeyUp(static_cast<unsigned int>(wParam));
+		Input::getInstance()->isKeyState(static_cast<unsigned int>(wParam));
 		return 0;
 	}
 	default:

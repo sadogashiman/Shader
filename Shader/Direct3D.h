@@ -29,11 +29,6 @@ private:
 	ComPtr<IDXGIDebug> cpdxgidebug_;
 	D3D11_VIEWPORT viewport_;
 
-
-
-
-
-
 public:
 	Direct3D(const Direct3D&) = delete;
 	Direct3D& operator = (const Direct3D&) = delete;
@@ -52,9 +47,9 @@ public:
 	inline ID3D11RenderTargetView* getRenderTargetView()const { return cprendertarget_.Get(); }
 	inline IDXGISwapChain* getSwapChain()const { return cpswapchain_.Get(); }
 
-	inline XMMATRIX getProjection() { return projection_; }
-	inline XMMATRIX getWorld() { return world_; }
-	inline XMMATRIX getOrtho() { return ortho_; }
+	inline XMMATRIX getProjection()const { return projection_; }
+	inline XMMATRIX getWorld()const { return world_; }
+	inline XMMATRIX getOrtho()const { return ortho_; }
 
 	inline const char* getVideoCardName()const { return videocarddescription_; }	//GPU‚Ì–¼‘O‚ğæ“¾‚·‚é
 	inline const int getVideoCardMemroy()const { return videocardmemory_; }			//GPU‚Ìƒƒ‚ƒŠ[‚ğæ“¾‚·‚é

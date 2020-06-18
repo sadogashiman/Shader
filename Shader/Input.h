@@ -65,8 +65,7 @@ public:
 	//*******************************
 
 	//指定のキーの入力状態を返す
-	const bool keyDown(const unsigned int KeyCode)const;
-	const bool KeyUp(const unsigned int KeyCode)const;
+	const bool isKeyState(const unsigned int KeyCode)const;
 
 	//特定のキーが押されたかを返す
 	const bool isKeyPressed(const unsigned int KeyCode)const;
@@ -92,8 +91,7 @@ public:
 	//*******************************
 
 	//指定のボタンの入力状態を返す
-	const bool isBottonDown(const unsigned int BottonCode)const;
-	const bool isBottonUp(const unsigned int BottonCode)const;
+	const bool isBottonState(const unsigned int BottonCode)const;
 	
 	//指定のボタンの入力が開始されたかを返す
 	const bool isBottonPressed(const unsigned int BottonCode)const;
@@ -114,8 +112,7 @@ public:
 	const bool anyBottonHeld()const;
 
 	//特定のPOVの入力状態を返す
-	const bool isPOVDown(const unsigned int POVBottonCode)const;
-	const bool isPOVUp(const unsigned int POVBottonCode)const;
+	const bool isPOVState(const unsigned int POVBottonCode)const;
 
 	//特定のPOVの入力が開始されたかを返す
 	const bool isPOVPressed(const unsigned int POVBottonCode)const;

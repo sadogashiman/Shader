@@ -12,7 +12,7 @@ Terrain::~Terrain()
 {
 }
 
-bool Terrain::init(const wchar_t* ModelFileName,const wchar_t* TextureFileName)
+bool Terrain::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 {
 	bool result;
 
@@ -127,8 +127,9 @@ bool Terrain::initbuffer()
 	//頂点配列にデータをロード
 	for (int i = 0; i < vertexcnt_; i++)
 	{
-		vertices[i].position = Vector3(model_[i].x, model_[i].y, model_[i].z);
-		vertices[i].texture = Vector2(model_[i].u, model_[i].v);
+		vertices[i].position = model_[i].position;
+		vertices[i].texture = model_[i].texture;
+		vertices[i].normal = model_[i].normal;
 		indices[i] = i;
 	}
 
@@ -334,7 +335,7 @@ bool Terrain::loadBitmapHeightMap()
 			height = bitmapimage[k];
 
 			//高さ情報としてピクセル値を格納
-			heightmap_[index].y = static_cast<float>(height);
+			heightmap_[index].position.y = static_cast<float>(height);
 
 			//ビットマップデータインデックスをインクリメント
 			k += 3;
@@ -362,14 +363,14 @@ void Terrain::setTerrainCoordinate()
 			index = (terrainwidth_ * i) + j;
 
 			//X座標・Z座標を設定
-			heightmap_[index].x = static_cast<float>(j);
-			heightmap_[index].z = -static_cast<float>(i);
+			heightmap_[index].position.x = static_cast<float>(j);
+			heightmap_[index].position.z = -static_cast<float>(i);
 
 			//震度情報を正の値だけになるよう移動
-			heightmap_[index].z += static_cast<float>(terrainheight_ - 1);
+			heightmap_[index].position.z += static_cast<float>(terrainheight_ - 1);
 
 			//高さをスケーリング
-			heightmap_[index].y /= heightscale_;
+			heightmap_[index].position.y /= heightscale_;
 		}
 	}
 
@@ -382,13 +383,13 @@ bool Terrain::buildTerrainModel()
 	int index2;
 	int index3;
 	int index4;
-	
+
 	//頂点数を計算
 	vertexcnt_ = (terrainheight_ - 1) * (terrainwidth_ - 1) * 6;
 
 	//頂点配列を作成
 	model_.resize(vertexcnt_);
-	
+
 	index = 0;
 
 	int width = terrainwidth_ - 1;
@@ -404,49 +405,176 @@ bool Terrain::buildTerrainModel()
 			index4 = (terrainwidth_ * (i + 1)) + (j + 1);	//右下
 
 			//三角形を生成
-			model_[index].x = heightmap_[index1].x;
-			model_[index].y = heightmap_[index1].y;
-			model_[index].z = heightmap_[index1].z;
-			model_[index].u = 0.0F;
-			model_[index].v = 0.0F;
+			model_[index].position = heightmap_[index1].position;
+			model_[index].texture.x = 0.0F;
+			model_[index].texture.y = 0.0F;
+			model_[index].normal = heightmap_[index1].normal;
 			index++;
 
-			model_[index].x = heightmap_[index2].x;
-			model_[index].y = heightmap_[index2].y;
-			model_[index].z = heightmap_[index2].z;
-			model_[index].u = 1.0F;
-			model_[index].v = 0.0F;
+			model_[index].position = heightmap_[index2].position;
+			model_[index].texture.x = 1.0F;
+			model_[index].texture.y = 0.0F;
+			model_[index].normal = heightmap_[index2].normal;
 			index++;
 
-			model_[index].x = heightmap_[index3].x;
-			model_[index].y = heightmap_[index3].y;
-			model_[index].z = heightmap_[index3].z;
-			model_[index].u = 0.0F;
-			model_[index].v = 1.0F;
+			model_[index].position = heightmap_[index3].position;
+			model_[index].texture.x = 0.0F;
+			model_[index].texture.y = 1.0F;
+			model_[index].normal = heightmap_[index3].normal;
 			index++;
 
-			model_[index].x = heightmap_[index3].x;
-			model_[index].y = heightmap_[index3].y;
-			model_[index].z = heightmap_[index3].z;
-			model_[index].u = 0.0F;
-			model_[index].v = 1.0F;
+			model_[index].position = heightmap_[index3].position;
+			model_[index].texture.x = 0.0F;
+			model_[index].texture.y = 1.0F;
+			model_[index].normal = heightmap_[index3].normal;
 			index++;
 
-			model_[index].x = heightmap_[index2].x;
-			model_[index].y = heightmap_[index2].y;
-			model_[index].z = heightmap_[index2].z;
-			model_[index].u = 1.0F;
-			model_[index].v = 0.0F;
+			model_[index].position = heightmap_[index2].position;
+			model_[index].texture.x = 1.0F;
+			model_[index].texture.y = 0.0F;
+			model_[index].normal = heightmap_[index2].normal;
 			index++;
 
-			model_[index].x = heightmap_[index4].x;
-			model_[index].y = heightmap_[index4].y;
-			model_[index].z = heightmap_[index4].z;
-			model_[index].u = 1.0F;
-			model_[index].v = 1.0F;
+			model_[index].position = heightmap_[index4].position;
+			model_[index].texture.x = 1.0F;
+			model_[index].texture.y = 1.0F;
+			model_[index].normal = heightmap_[index4].normal;
 			index++;
 		}
 	}
+
+	return true;
+}
+
+bool Terrain::calcNormal()
+{
+	int index;
+	int index1;
+	int index2;
+	int index3;
+	float vertex[3][3];
+	float vector[2][3];
+	float sum[3];
+	float length;
+	std::vector<VectorType> normal;
+
+	//配列サイズを変更
+	normal.resize((terrainheight_ - 1) * (terrainwidth_ - 1));
+
+	for (int i = 0; i < terrainheight_; i++)
+	{
+		for (int j = 0; j < terrainwidth_; j++)
+		{
+
+			//三角形を形成
+			index1 = ((i + 1) * terrainwidth_) + j;
+			index2 = ((i + 1) * terrainwidth_) + (j + 1);
+			index3 = (i * terrainwidth_) + j;
+
+			//フェースから頂点を取得
+			vertex[0][0] = heightmap_[index1].position.x;
+			vertex[0][1] = heightmap_[index1].position.y;
+			vertex[0][2] = heightmap_[index1].position.z;
+
+			vertex[1][0] = heightmap_[index2].position.x;
+			vertex[1][1] = heightmap_[index2].position.y;
+			vertex[1][2] = heightmap_[index2].position.z;
+
+			vertex[2][0] = heightmap_[index3].position.x;
+			vertex[2][1] = heightmap_[index3].position.y;
+			vertex[2][2] = heightmap_[index3].position.z;
+
+			//ベクトルを計算
+			vector[0][0] = vertex[0][0] - vertex[2][0];
+			vector[0][1] = vertex[0][1] - vertex[2][1];
+			vector[0][2] = vertex[0][2] - vertex[2][2];
+			vector[1][0] = vertex[2][0] - vertex[1][0];
+			vector[1][1] = vertex[2][1] - vertex[1][1];
+			vector[1][2] = vertex[2][2] - vertex[1][2];
+
+			index = (i * (terrainwidth_ - 1)) + j;
+
+			//外積を計算
+			normal[index].position.x = (vector[0][1] * vector[1][2]) - (vector[0][2] * vector[1][1]);
+			normal[index].position.y = (vector[0][2] * vector[1][0]) - (vector[0][0] * vector[1][2]);
+			normal[index].position.z = (vector[0][0] * vector[1][1]) - (vector[0][1] * vector[1][0]);
+
+			//長さを計算
+			length = static_cast<float>(std::sqrt((normal[index].position.x * normal[index].position.x) + (normal[index].position.y * normal[index].position.y) + (normal[index].position.z * normal[index].position.z)));
+
+			//長さをもとに正規化
+			normal[index].position.x = (normal[index].position.x / length);
+			normal[index].position.y = (normal[index].position.y / length);
+			normal[index].position.z = (normal[index].position.z / length);
+		}
+	}
+
+	//すべての頂点からこの頂点にに接する面法線の合計を取る
+	for (int i = 0; i < terrainheight_; i++)
+	{
+		for (int j = 0; j < terrainwidth_; j++)
+		{
+			//合計数を初期化
+			for (int k = 0; k < 3; k++)
+			{
+				sum[i] = 0.0F;
+			}
+
+			//左下のフェース
+			if (((j - 1) >= 0) && ((i - 1) >= 0))
+			{
+				index = ((i - 1) * (terrainwidth_ - 1)) + (j + 1);
+
+				sum[0] += normal[index].position.x;
+				sum[1] += normal[index].position.y;
+				sum[2] += normal[index].position.z;
+			}
+
+			//右下のフェース
+			if ((i < (terrainwidth_ - 1)) && ((i - 1) >= 0))
+			{
+				index = ((i - 1) * (terrainwidth_ - 1)) + j;
+
+				sum[0] += normal[index].position.x;
+				sum[1] += normal[index].position.y;
+				sum[2] += normal[index].position.z;
+			}
+
+			//左上のフェース
+			if (((j - 1) >= 0) && (i < (terrainheight_ - 1)))
+			{
+				index = (i * (terrainwidth_ - 1)) + (j - 1);
+
+				sum[0] += normal[index].position.x;
+				sum[1] += normal[index].position.y;
+				sum[2] += normal[index].position.z;
+			}
+
+			//右上のフェース
+			if ((j < (terrainwidth_ - 1)) && (i < terrainheight_ - 1))
+			{
+				index = (i * (terrainwidth_ - 1)) + j;
+
+				sum[0] += normal[index].position.x;
+				sum[1] += normal[index].position.y;
+				sum[2] += normal[index].position.z;
+			}
+
+			//法線の長さを計算
+			length = static_cast<float>(std::sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2])));
+
+			//インデックスを計算
+			index = (i * terrainwidth_) + j;
+
+			//正規化
+			heightmap_[index].normal.x = sum[0] / length;
+			heightmap_[index].normal.y = sum[1] / length;
+			heightmap_[index].normal.z = sum[2] / length;
+		}
+	}
+
+	//配列を解放
+	normal.clear();
 
 	return true;
 }

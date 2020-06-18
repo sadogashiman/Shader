@@ -27,6 +27,7 @@ bool Game::init()
 	{
 		return false;
 	}
+
 	camera_->setPosition(Vector3(0.0F, 0.0F, -10.0F));
 	camera_->render();
 	camera_->renderBaseViewMatrix();
@@ -80,6 +81,19 @@ bool Game::init()
 		return false;
 	}
 
+	orthowindow_ = new OrthoWindow;
+	if (!orthowindow_)
+	{
+		return false;
+	}
+
+	result = orthowindow_->init(kWindow_Width, kWindow_Height);
+	if (!result)
+	{
+		Error::showDialog("2Dウィンドウの初期化に失敗");
+		return false;
+	}
+
 	Timer::getInstance()->setTimerStatus(true);
 	Timer::getInstance()->startTimer();
 
@@ -112,15 +126,13 @@ bool Game::render()
 	bool result;
 	Matrix world, view, projection,ortho;
 	Matrix baseview;
-	static float rotation = 0;
-
-	if (rotation < 360.0F)
+	result = renderSceneToTexture();
+	if (!result)
 	{
-		rotation += 0.05F;
+		return false;
 	}
 
-
-	camera_->render();
+	//camera_->render();
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
@@ -130,14 +142,26 @@ bool Game::render()
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
 	baseview = camera_->getBaseViewMatrix();
+	ortho = Direct3D::getInstance()->getOrtho();
+
+
 	if(wire_)
 	Direct3D::getInstance()->wireFrameEnable();
+	
+	//レンダリングは2Dで行うのでZバッファを無効にする
+	Direct3D::getInstance()->turnZbufferOff();
 
-	result = ShaderManager::getInstance()->textureRender(terrain_, world, view, projection,terrain_->getTexture());
+	//描画用の2Dウィンドウを準備
+	orthowindow_->render();
+
+	result = ShaderManager::getInstance()->lightRender(terrain_, world, view, ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_);
 	if (!result)
 	{
 		return false;
 	}
+
+	//2Dレンダリングが終了したのでZバッファを有効にする
+	Direct3D::getInstance()->turnZbufferOn();
 
 	if (wire_)
 	Direct3D::getInstance()->wireFrameDisable();
@@ -153,6 +177,7 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
+	SAFE_DELETE_DESTROY(orthowindow_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
 }
@@ -172,20 +197,7 @@ bool Game::renderSceneToTexture()
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
 
-	//モデルを回転
-	static float rotation = 0.0F;
-	rotation += static_cast<float>(XM_PI * 0.005F);
-	if (rotation > 360.0F)
-	{
-		rotation -= 360;
-	}
-
-	world = XMMatrixRotationY(rotation);
-
-	//モデルをレンダリング
-	model_->render();
-
-	if (!(ShaderManager::getInstance()->deferredRender(model_, world, view, projection, model_->getTexture())))
+	if (!(ShaderManager::getInstance()->deferredRender(terrain_, world, view, projection, terrain_->getTexture())))
 	{
 		return false;
 	}
@@ -204,14 +216,14 @@ void Game::handleMovementInput()
 	//カメラ制御
 	position_.setFrameTime(16.0F);
 
-	position_.turnLeft(Input::getInstance()->keyDown(DIK_LEFT));
-	position_.turnRight(Input::getInstance()->keyDown(DIK_RIGHT));
-	position_.moveForWard(Input::getInstance()->keyDown(DIK_UP));
-	position_.moveBackWard(Input::getInstance()->keyDown(DIK_DOWN));
-	position_.moveUpWard(Input::getInstance()->keyDown(DIK_A));
-	position_.moveDownWard(Input::getInstance()->keyDown(DIK_Z));
-	position_.lookUpWard(Input::getInstance()->keyDown(DIK_PGUP));
-	position_.lookDownWard(Input::getInstance()->keyDown(DIK_PGDN));
+	position_.turnLeft(Input::getInstance()->isKeyState(DIK_LEFT));
+	position_.turnRight(Input::getInstance()->isKeyState(DIK_RIGHT));
+	position_.moveForWard(Input::getInstance()->isKeyState(DIK_UP));
+	position_.moveBackWard(Input::getInstance()->isKeyState(DIK_DOWN));
+	position_.moveUpWard(Input::getInstance()->isKeyState(DIK_A));
+	position_.moveDownWard(Input::getInstance()->isKeyState(DIK_Z));
+	position_.lookUpWard(Input::getInstance()->isKeyState(DIK_PGUP));
+	position_.lookDownWard(Input::getInstance()->isKeyState(DIK_PGDN));
 	
 	camera_->setPosition(position_.getPosition());
 	camera_->setRotation(position_.getRotation());

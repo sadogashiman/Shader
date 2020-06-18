@@ -154,14 +154,9 @@ BOOL Input::staticSetGameControllerAxesRange(LPCDIDEVICEINSTANCE Devobjinst, LPV
 	return DIENUM_CONTINUE;
 }
 
-const bool Input::keyDown(const unsigned int KeyCode) const
+const bool Input::isKeyState(const unsigned int KeyCode) const
 {
 	return keystate_[KeyCode] & DINPUT_VERTION;
-}
-
-const bool Input::KeyUp(const unsigned int KeyCode) const
-{
-	return !(keystate_[KeyCode] & DINPUT_VERTION);
 }
 
 const bool Input::isKeyPressed(const unsigned int KeyCode) const
@@ -212,14 +207,9 @@ const bool Input::anyKeyHeld() const
 	return false;
 }
 
-const bool Input::isBottonDown(const unsigned int BottonCode) const
+const bool Input::isBottonState(const unsigned int BottonCode) const
 {
 	return padstate_.rgbButtons[BottonCode] & DINPUT_VERTION;
-}
-
-const bool Input::isBottonUp(const unsigned int BottonCode) const
-{
-	return !(padstate_.rgbButtons[BottonCode] & DINPUT_VERTION);
 }
 
 const bool Input::isBottonPressed(const unsigned int BottonCode) const
@@ -270,14 +260,9 @@ const bool Input::anyBottonHeld() const
 	return false;
 }
 
-const bool Input::isPOVDown(const unsigned int POVBottonCode) const
+const bool Input::isPOVState(const unsigned int POVBottonCode) const
 {
 	return padstate_.rgdwPOV[0] == 9000 * POVBottonCode;
-}
-
-const bool Input::isPOVUp(const unsigned int POVBottonCode) const
-{
-	return padstate_.rgdwPOV[0] != 9000 * POVBottonCode;
 }
 
 const bool Input::isPOVPressed(const unsigned int POVBottonCode) const

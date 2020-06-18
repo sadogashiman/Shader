@@ -421,12 +421,6 @@
     <FxCompile Include="maskvs.hlsl">
       <Filter>リソース ファイル\Mask</Filter>
     </FxCompile>
-    <FxCompile Include="deferredbuffvs.hlsl">
-      <Filter>リソース ファイル\Deferred</Filter>
-    </FxCompile>
-    <FxCompile Include="deferredbuffps.hlsl">
-      <Filter>リソース ファイル\Deferred</Filter>
-    </FxCompile>
     <FxCompile Include="particleps.hlsl">
       <Filter>リソース ファイル\Particle</Filter>
     </FxCompile>

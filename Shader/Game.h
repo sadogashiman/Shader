@@ -12,6 +12,7 @@
 #include"State.h"
 #include"Terrain.h"
 #include"Timer.h"
+#include"OrthoWindow.h"
 
 class Game :public State
 {
@@ -28,6 +29,7 @@ private:
 	Ray_trace_HW* rayhw_;
 	SkyDome* sky_;
 	Terrain* terrain_;
+	OrthoWindow* orthowindow_;
 	Position position_;
 	void handleMovementInput();
 	bool wire_;
