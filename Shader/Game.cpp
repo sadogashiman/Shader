@@ -124,7 +124,7 @@ State* Game::update()
 bool Game::render()
 {
 	bool result;
-	Matrix world, view, projection,ortho;
+	Matrix world, projection,ortho;
 	Matrix baseview;
 	result = renderSceneToTexture();
 	if (!result)
@@ -132,21 +132,17 @@ bool Game::render()
 		return false;
 	}
 
-	//camera_->render();
-
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
-	view = camera_->getViewMatrix();
 	baseview = camera_->getBaseViewMatrix();
 	ortho = Direct3D::getInstance()->getOrtho();
 
 
-	if(wire_)
-	Direct3D::getInstance()->wireFrameEnable();
+
 	
 	//レンダリングは2Dで行うのでZバッファを無効にする
 	Direct3D::getInstance()->turnZbufferOff();
@@ -154,7 +150,7 @@ bool Game::render()
 	//描画用の2Dウィンドウを準備
 	orthowindow_->render();
 
-	result = ShaderManager::getInstance()->lightRender(terrain_, world, view, ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_);
+	result = ShaderManager::getInstance()->lightRender(orthowindow_->getIndexCount(), world, baseview, ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_);
 	if (!result)
 	{
 		return false;
@@ -163,8 +159,7 @@ bool Game::render()
 	//2Dレンダリングが終了したのでZバッファを有効にする
 	Direct3D::getInstance()->turnZbufferOn();
 
-	if (wire_)
-	Direct3D::getInstance()->wireFrameDisable();
+
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -196,12 +191,15 @@ bool Game::renderSceneToTexture()
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
-
+	camera_->render();
+	if (wire_)
+		Direct3D::getInstance()->wireFrameEnable();
 	if (!(ShaderManager::getInstance()->deferredRender(terrain_, world, view, projection, terrain_->getTexture())))
 	{
 		return false;
 	}
-
+	if (wire_)
+		Direct3D::getInstance()->wireFrameDisable();
 	//バックバッファにレンダリングターゲットを移す
 	Direct3D::getInstance()->setBackBufferRenderTarget();
 

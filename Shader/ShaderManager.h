@@ -61,7 +61,7 @@ public:
 	//デプスマップを使用するときのレンダー(モデルのポインタ、各行列)
 	bool depthRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection);
 
-	//ライトシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ、ライトのパラメーター)
+	//ライトシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ、ライトのパラメーター)	※Deferredレンダリング前提
 	bool lightRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2, Light* LightData);
 	bool lightRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, Light* LightData);
 

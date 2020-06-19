@@ -109,8 +109,8 @@ void Camera::renderBaseViewMatrix()
 	lookat = XMVector3TransformCoord(lookat, rotationmatrix);
 	up = XMVector3TransformCoord(up, rotationmatrix);
 
-	//開店したカメラの位置をビューアーの位置に変換
-	lookat += position + lookat;
+	//回転したカメラの位置をビューアーの位置に変換
+	lookat = position + lookat;
 
 	//更新されたベクトルからビュー行列を作成
 	baseview_ = XMMatrixLookAtLH(position, lookat, up);

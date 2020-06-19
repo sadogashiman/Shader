@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "Position.h"
+const float kMovespeed = 1.0F;
+const float kTurnspeed = 0.5F;
+const float kLookspeed = 0.3F;
 
 Position::Position()
 {
@@ -13,7 +16,7 @@ void Position::moveForWard(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		forwardspeed_ = 0.01F;
+		forwardspeed_ = kMovespeed;
 	}
 	else
 	{
@@ -34,7 +37,7 @@ void Position::moveBackWard(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		backwardspeed_ = 0.01F;
+		backwardspeed_ = kMovespeed;
 	}
 	else
 	{
@@ -53,7 +56,7 @@ void Position::moveUpWard(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		upwardspeed_ = 0.05F;
+		upwardspeed_ = kMovespeed;
 	}
 	else
 	{
@@ -68,7 +71,7 @@ void Position::moveDownWard(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		downwardspeed_ = 0.05F;
+		downwardspeed_ = kMovespeed;
 	}
 	else
 	{
@@ -84,7 +87,7 @@ void Position::turnLeft(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		leftturnspeed_ = 0.05F;
+		leftturnspeed_ = kTurnspeed;
 	}
 	else
 	{
@@ -105,7 +108,7 @@ void Position::turnRight(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		rightturnspeed_ = 0.05F;
+		rightturnspeed_ = kTurnspeed;
 	}
 	else
 	{
@@ -125,7 +128,7 @@ void Position::lookUpWard(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		lookupspeed_ = 0.16F;
+		lookupspeed_ = kLookspeed;
 	}
 	else
 	{
@@ -145,7 +148,7 @@ void Position::lookDownWard(bool KeyDown)
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		lookdownspeed_ = 0.16F;
+		lookdownspeed_ = kLookspeed;
 	}
 	else
 	{

@@ -36,7 +36,7 @@ float4 main(PixelInputType input) : SV_TARGET
 	lightIntensity = saturate(dot(normals.xyz, lightDir));
 
 	//ピクセルの色と光の強度を組み合わせて最終的な拡散色を決定
-	outputColor = saturate(colors * lightIntensity);
+	outputColor = saturate(colors + lightIntensity);
 
 	return outputColor;
 }

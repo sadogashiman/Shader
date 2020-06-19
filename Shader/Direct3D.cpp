@@ -302,7 +302,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	//深度ステンシルの状態を設定
 	cpdevicecontext_.Get()->OMSetDepthStencilState(cpdepthstate_.Get(), 1);
 
-	//弐番目のステンシルを初期化
+	//2番目のステンシルを初期化
 	ZeroMemory(&depthdisabledstencildesc, sizeof(depthdisabledstencildesc));
 
 	//ステンシルの設定
