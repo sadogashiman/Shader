@@ -140,9 +140,6 @@ bool Game::render()
 	projection = Direct3D::getInstance()->getProjection();
 	baseview = camera_->getBaseViewMatrix();
 	ortho = Direct3D::getInstance()->getOrtho();
-
-
-
 	
 	//レンダリングは2Dで行うのでZバッファを無効にする
 	Direct3D::getInstance()->turnZbufferOff();
@@ -180,6 +177,7 @@ void Game::destroy()
 bool Game::renderSceneToTexture()
 {
 	Matrix world, view, projection;
+	Matrix skyworld;
 
 	//レンダーターゲットを作成
 	defbuffer_->setRenderTargets();
@@ -191,15 +189,32 @@ bool Game::renderSceneToTexture()
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
+	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
+
 	camera_->render();
+
+	Direct3D::getInstance()->turnCullingOff();
+	Direct3D::getInstance()->turnZbufferOff();
+
+	if (!(ShaderManager::getInstance()->skyDomeRender(sky_, skyworld, view, projection)))
+	{
+		return false;
+	}
+
+	Direct3D::getInstance()->turnZbufferOn();
+	Direct3D::getInstance()->turnCullingOn();
+
 	if (wire_)
 		Direct3D::getInstance()->wireFrameEnable();
+
 	if (!(ShaderManager::getInstance()->deferredRender(terrain_, world, view, projection, terrain_->getTexture())))
 	{
 		return false;
 	}
+
 	if (wire_)
 		Direct3D::getInstance()->wireFrameDisable();
+
 	//バックバッファにレンダリングターゲットを移す
 	Direct3D::getInstance()->setBackBufferRenderTarget();
 

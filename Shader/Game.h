@@ -6,8 +6,6 @@
 #include"Deferredshader.h"
 #include"Camera.h"
 #include"Light.h"
-#include"RayTrace.h"
-#include"Ray_trace_HW.h"
 #include"SkyDome.h"
 #include"State.h"
 #include"Terrain.h"
@@ -18,20 +16,19 @@ class Game :public State
 {
 private:
 
-	bool renderSceneToTexture();
 	Light* light_;
 	Model* model_;
 	Camera* camera_;
 	OrthoWindow* ortho_;
 	Deferredbuffers* defbuffer_;
 	LightShader* lightshader_;
-	RayTrace* raytrace_;
-	Ray_trace_HW* rayhw_;
 	SkyDome* sky_;
 	Terrain* terrain_;
 	OrthoWindow* orthowindow_;
 	Position position_;
 	void handleMovementInput();
+	bool renderSceneToTexture();
+
 	bool wire_;
 public:
 	Game();

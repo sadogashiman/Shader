@@ -121,18 +121,6 @@
     <Filter Include="リソース ファイル\Multi">
       <UniqueIdentifier>{cc4391c3-00f9-4001-a6db-b3c9c8b5094f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RayTrace">
-      <UniqueIdentifier>{5263637d-7801-453e-a200-c6c68ac4665b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RayTrace\Software">
-      <UniqueIdentifier>{110543bd-1738-46ea-bff0-2508e5c4a2e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\Raytrace">
-      <UniqueIdentifier>{6f1cdd80-8cd2-4709-83b6-e8249ca39e03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RayTrace\Hardware">
-      <UniqueIdentifier>{66e2e458-2e96-4d5d-90ae-df3843be3d6a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3DModel\Terrain">
       <UniqueIdentifier>{607baa90-e0a7-4638-aab5-2d0b13b73104}</UniqueIdentifier>
     </Filter>
@@ -242,12 +230,6 @@
     </ClCompile>
     <ClCompile Include="Tree.cpp">
       <Filter>3DModel\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="RayTrace.cpp">
-      <Filter>RayTrace\Software</Filter>
-    </ClCompile>
-    <ClCompile Include="Ray_trace_HW.cpp">
-      <Filter>RayTrace\Hardware</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>3DModel\Terrain</Filter>
@@ -359,12 +341,6 @@
     <ClInclude Include="Tree.h">
       <Filter>3DModel\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="RayTrace.h">
-      <Filter>RayTrace\Software</Filter>
-    </ClInclude>
-    <ClInclude Include="Ray_trace_HW.h">
-      <Filter>RayTrace\Hardware</Filter>
-    </ClInclude>
     <ClInclude Include="State.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -450,15 +426,6 @@
     </FxCompile>
     <FxCompile Include="multitextureps.hlsl">
       <Filter>リソース ファイル\Multi</Filter>
-    </FxCompile>
-    <FxCompile Include="raytracecs.hlsl">
-      <Filter>リソース ファイル\Raytrace</Filter>
-    </FxCompile>
-    <FxCompile Include="raytraceps.hlsl">
-      <Filter>リソース ファイル\Raytrace</Filter>
-    </FxCompile>
-    <FxCompile Include="raytracevs.hlsl">
-      <Filter>リソース ファイル\Raytrace</Filter>
     </FxCompile>
     <FxCompile Include="skydomeps.hlsl">
       <Filter>リソース ファイル\Skydome</Filter>

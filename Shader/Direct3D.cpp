@@ -306,10 +306,10 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	ZeroMemory(&depthdisabledstencildesc, sizeof(depthdisabledstencildesc));
 
 	//ステンシルの設定
-	depthdisabledstencildesc.DepthEnable = true;
+	depthdisabledstencildesc.DepthEnable = false;
 	depthdisabledstencildesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	depthdisabledstencildesc.DepthFunc = D3D11_COMPARISON_LESS;
-	depthdisabledstencildesc.StencilEnable = true;
+	depthdisabledstencildesc.StencilEnable = false;
 	depthdisabledstencildesc.StencilReadMask = 0xFF;
 	depthdisabledstencildesc.StencilWriteMask = 0xFF;
 
@@ -381,7 +381,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 		return false;
 	}
 
-	//2番目のラスタライザの状態を設定
+	//ラスタライザを設定
 	cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get());
 
 	//2番目のラスタライザの設定
