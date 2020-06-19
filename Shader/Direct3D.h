@@ -58,7 +58,6 @@ public:
 	void setVideoCardInfo(char* CardName, int& Memory);
 	void setBackBufferRenderTarget();
 	inline void setRenderTarget(){cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());}
-	inline void setViewPort() { cpdevicecontext_.Get()->RSSetViewports(1, &viewport_); }
 
 	//reset
 	inline void resetViewPort() { cpdevicecontext_.Get()->RSSetViewports(1, &viewport_); }

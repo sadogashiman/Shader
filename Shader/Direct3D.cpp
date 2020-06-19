@@ -431,7 +431,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	viewport_.TopLeftY = 0.0F;
 
 	//ビューポートの作成
-	setViewPort();
+	resetViewPort();
 
 	//射影行列の作成
 	fieldofview = XM_PI / 14.0F;

@@ -13,6 +13,7 @@ struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
+	float3 normal : NORMAL;
 };
 
 float4 main(PixelInputType input) : SV_TARGET
@@ -26,17 +27,17 @@ float4 main(PixelInputType input) : SV_TARGET
 	//ポイントサンプラーを使用してカラーレンダリングテクスチャから色をサンプリング
 	colors = colorTexture.Sample(SampleTypePoint, input.tex);
 
-	//ポイントサンプラーを使用して通常のレンダリングテクスチャから法線をサンプリング
-	normals = normalTexture.Sample(SampleTypePoint, input.tex);
-
 	//計算のためにライトの方向を反転
 	lightDir = -lightDirection;
 
 	//このピクセルの光量を計算
-	lightIntensity = saturate(dot(normals.xyz, lightDir));
+	lightIntensity = saturate(dot(input.normal, lightDir));
 
 	//ピクセルの色と光の強度を組み合わせて最終的な拡散色を決定
 	outputColor = saturate(colors + lightIntensity);
 
+	//最終的なピクセルカラーを取得
+	outputColor = outputColor * colors;
+	
 	return outputColor;
 }

@@ -40,7 +40,7 @@ bool Game::init()
 	}
 
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
-	light_->setDirection(0.0F, 0.0F, 1.0F);
+	light_->setDirection(-0.5F, -1.0F, -0.5F);
 
 	//バッファを作成
 	defbuffer_ = new Deferredbuffers;
@@ -124,8 +124,10 @@ State* Game::update()
 bool Game::render()
 {
 	bool result;
-	Matrix world, projection,ortho;
+	Matrix world, projection, ortho;
 	Matrix baseview;
+
+	//描画用ポリゴンにレンダリング
 	result = renderSceneToTexture();
 	if (!result)
 	{
@@ -140,14 +142,15 @@ bool Game::render()
 	projection = Direct3D::getInstance()->getProjection();
 	baseview = camera_->getBaseViewMatrix();
 	ortho = Direct3D::getInstance()->getOrtho();
-	
+
 	//レンダリングは2Dで行うのでZバッファを無効にする
 	Direct3D::getInstance()->turnZbufferOff();
 
 	//描画用の2Dウィンドウを準備
 	orthowindow_->render();
 
-	result = ShaderManager::getInstance()->lightRender(orthowindow_->getIndexCount(), world, baseview, ortho,defbuffer_->getShaderResourceView(0),defbuffer_->getShaderResourceView(1),light_);
+	//描画用ポリゴンをレンダリング
+	result = ShaderManager::getInstance()->lightRender(orthowindow_->getIndexCount(), world, baseview, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_);
 	if (!result)
 	{
 		return false;
@@ -155,8 +158,6 @@ bool Game::render()
 
 	//2Dレンダリングが終了したのでZバッファを有効にする
 	Direct3D::getInstance()->turnZbufferOn();
-
-
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -193,6 +194,7 @@ bool Game::renderSceneToTexture()
 
 	camera_->render();
 
+	//Zバッファ・カリングをオフ
 	Direct3D::getInstance()->turnCullingOff();
 	Direct3D::getInstance()->turnZbufferOff();
 
@@ -201,6 +203,7 @@ bool Game::renderSceneToTexture()
 		return false;
 	}
 
+	//Zバッファ・カリングをオン
 	Direct3D::getInstance()->turnZbufferOn();
 	Direct3D::getInstance()->turnCullingOn();
 
@@ -237,7 +240,7 @@ void Game::handleMovementInput()
 	position_.moveDownWard(Input::getInstance()->isKeyState(DIK_Z));
 	position_.lookUpWard(Input::getInstance()->isKeyState(DIK_PGUP));
 	position_.lookDownWard(Input::getInstance()->isKeyState(DIK_PGDN));
-	
+
 	camera_->setPosition(position_.getPosition());
 	camera_->setRotation(position_.getRotation());
 	Input::getInstance()->anyKeyUp();
