@@ -14,11 +14,11 @@ private:
 	//TextureLoader‚ª‘Î‰ž‚µ‚Ä‚¢‚éŠg’£Žq
 	const wchar_t* extensionarray[kExtensionTypeNum] =
 	{
-		L"dds",
-		L"png",
-		L"tiff",
-		L"gif",
-		L"tga"
+		L".dds",
+		L".png",
+		L".tiff",
+		L".gif",
+		L".tga"
 	};
 
 	struct TargaHeader

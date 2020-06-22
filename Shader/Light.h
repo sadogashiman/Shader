@@ -17,12 +17,18 @@ public:
 
 	//set
 	inline void setDiffuseColor(const float Red, const float Green, const float Blue, const float Alpha) { diffusecolor_ = Vector4(Red, Blue, Green, Alpha); }
+	inline void setDiffuseColor(const Vector4 DiffuseColor) { diffusecolor_ = DiffuseColor; }
 	inline void setDirection(const float X, const float Y, const float Z) { direction_ = Vector3(X, Y, Z); }
+	inline void setDirection(const Vector3 Direction) { direction_ = Direction; }
 	inline void setAmbientColor(const float Red, const float Green, const float Blue, const float Alpha) { ambientcolor_ = Vector4(Red, Blue, Green, Alpha); }
+	inline void setAmbientColor(const Vector4 AmbientColor) { ambientcolor_ = AmbientColor; }
 	inline void setSpecularColor(const float Red, const float Green, const float Blue, const float Alpha) { specularcolor_ = Vector4(Red, Blue, Green, Alpha); }
+	inline void setSpecularColor(const Vector4 SpecularColor) { specularcolor_ = SpecularColor; }
 	inline void setSpecularPower(const float SpecularPower) { specularpower_ = SpecularPower; }
 	inline void setLookAt(const float X, const float Y, const float Z) { lookat_ = Vector3(X, Y, Z); }
+	inline void setLookAt(const Vector3 Lookat) { lookat_ = Lookat; }
 	inline void setPosition(const float X,const float Y,const float Z) { position_ = Vector3(X, Y, Z); }
+	inline void setPosition(const Vector3 Position) { position_ = Position; }
 	
 	//get
 	inline Vector4 getAmbientColor()const {return ambientcolor_;}

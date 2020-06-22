@@ -37,6 +37,7 @@ PixelInputType main(VertexInputType input)
 	//ワールド行列にのみ法線を計算
     output.normal = mul(input.normal, (float3x3) worldMatrix);
 	
+	//法線を正規化
     output.normal = normalize(output.normal);
 
 	return output;

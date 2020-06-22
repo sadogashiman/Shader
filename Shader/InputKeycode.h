@@ -3,6 +3,9 @@
 //		    DirectInput
 //*******************************
 
+/*同時押しの判定を取りたいときはビット和演算をすれば取れます*/
+
+//version
 #define DINPUT_VERTION 0x80		//バージョン指定マクロ
 
 //BOTTON						[Xbox]			[PS4]

@@ -145,6 +145,15 @@
     <Filter Include="Input">
       <UniqueIdentifier>{8909b097-2751-40d1-9ca1-5a566be31c9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3DModel\SkyPlane">
+      <UniqueIdentifier>{d59131b2-48cd-4b40-8c8e-94b96c3a9f6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\Skyplane">
+      <UniqueIdentifier>{1ee832d8-0e85-4c6d-9eac-2ea4285939ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Skyplane">
+      <UniqueIdentifier>{727a6256-5e76-42c3-9542-3ccd5a7a773a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -245,6 +254,12 @@
     </ClCompile>
     <ClCompile Include="Colorshader.cpp">
       <Filter>ShaderManager\Shader\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Skyplane.cpp">
+      <Filter>3DModel\SkyPlane</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyplaneShader.cpp">
+      <Filter>ShaderManager\Shader\Skyplane</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -365,6 +380,12 @@
     <ClInclude Include="InputKeycode.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="Skyplane.h">
+      <Filter>3DModel\SkyPlane</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyplaneShader.h">
+      <Filter>ShaderManager\Shader\Skyplane</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="transparentdepthps.hlsl">
@@ -438,6 +459,12 @@
     </FxCompile>
     <FxCompile Include="colorps.hlsl">
       <Filter>リソース ファイル\Color</Filter>
+    </FxCompile>
+    <FxCompile Include="skyplanevs.hlsl">
+      <Filter>リソース ファイル\Skyplane</Filter>
+    </FxCompile>
+    <FxCompile Include="skyplaneps.hlsl">
+      <Filter>リソース ファイル\Skyplane</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

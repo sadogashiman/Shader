@@ -193,9 +193,9 @@ bool Texture::init(const wchar_t* TextureName)
 			Error::showDialog("テクスチャローダーが対応していない拡張子です");
 			return false;
 		}
-
 		//tgaファイルは別のローダーのため事前に判定
-		if (wcscmp(TextureName, extensionarray[kTga]))
+		auto tga = wcsrchr(TextureName,L'.');
+		if (wcscmp(tga, extensionarray[kTga])==0)
 		{
 			if (loadTargaFile(TextureName, width, height))
 			{

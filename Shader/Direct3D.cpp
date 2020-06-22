@@ -35,6 +35,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthstencilviewdesc;
 	D3D11_RASTERIZER_DESC rasterdesc;
 	D3D11_BLEND_DESC blendstatedesc;
+	D3D11_BLEND_DESC addalphablenddesc;
 	unsigned int nummodes = 0;
 	unsigned int numerator = 0;
 	unsigned int denominator = 0;
@@ -334,11 +335,51 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	//ブレンドの状態をクリア
 	ZeroMemory(&blendstatedesc, sizeof(D3D11_BLEND_DESC));
 
+
+
+	//アルファブレンドオンの場合のブレンドステート
+	ZeroMemory(&blendstatedesc, sizeof(D3D11_BLEND_DESC));
+	blendstatedesc.RenderTarget[0].BlendEnable = TRUE;
+	blendstatedesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendstatedesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendstatedesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendstatedesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendstatedesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendstatedesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendstatedesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
+
+	//アルファブレンドステートの作成
+	hr = cpdevice_.Get()->CreateBlendState(&blendstatedesc, cpenabledalphablendstate_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
 	//設定を変更してアルファを無効化
 	blendstatedesc.RenderTarget[0].BlendEnable = FALSE;
 
 	//設定を使用してブレンドステートを作成
-	hr = cpdevice_.Get()->CreateBlendState(&blendstatedesc, cpenabledalphablendstate_.GetAddressOf());
+	hr = cpdevice_.Get()->CreateBlendState(&blendstatedesc, cpdisabledalphablendstate_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	//加算合成用ブレンドステートの初期化
+	ZeroMemory(&addalphablenddesc, sizeof(D3D11_BLEND_DESC));
+
+	//加算合成用ブレンドステートの設定
+	addalphablenddesc.RenderTarget[0].BlendEnable = TRUE;
+	addalphablenddesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	addalphablenddesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	addalphablenddesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	addalphablenddesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	addalphablenddesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	addalphablenddesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	addalphablenddesc.RenderTarget[0].RenderTargetWriteMask = 0x0F;
+
+	//ブレンドステートの作成
+	hr = cpdevice_.Get()->CreateBlendState(&addalphablenddesc, cpaddalphablendstate_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -511,4 +552,46 @@ void Direct3D::setBackBufferRenderTarget()
 
 	//レンダーターゲットビューと深度ステンシルバッファをパイプラインにバインド
 	setRenderTarget();
+}
+
+void Direct3D::turnAddBlendEnable()
+{
+	float blendfactor[4];
+
+	//係数を設定
+	blendfactor[0] = 0.0F;
+	blendfactor[1] = 0.0F;
+	blendfactor[2] = 0.0F;
+	blendfactor[3] = 0.0F;
+
+	//アルファブレンドオン
+	cpdevicecontext_->OMSetBlendState(cpaddalphablendstate_.Get(), blendfactor, 0xffffff);
+}
+
+void Direct3D::turnAlphaBlendEnable()
+{
+	float blendfactor[4];
+
+	//係数を設定
+	blendfactor[0] = 0.0F;
+	blendfactor[1] = 0.0F;
+	blendfactor[2] = 0.0F;
+	blendfactor[3] = 0.0F;
+
+	//ブレンドステートをセット
+	cpdevicecontext_->OMSetBlendState(cpenabledalphablendstate_.Get(), blendfactor, 0xffffff);
+}
+
+void Direct3D::turnAlphablendDisable()
+{
+	float blendfactor[4];
+
+	//係数を設定
+	blendfactor[0] = 0.0F;
+	blendfactor[1] = 0.0F;
+	blendfactor[2] = 0.0F;
+	blendfactor[3] = 0.0F;
+
+	//ブレンドステートをセット
+	cpdevicecontext_->OMSetBlendState(cpdisabledalphablendstate_.Get(), blendfactor, 0xffffff);
 }

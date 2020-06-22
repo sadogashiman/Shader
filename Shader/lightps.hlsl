@@ -19,7 +19,6 @@ struct PixelInputType
 float4 main(PixelInputType input) : SV_TARGET
 {
 	float4 colors;
-	float4 normals;
 	float3 lightDir;
 	float lightIntensity;
 	float4 outputColor;

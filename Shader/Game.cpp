@@ -75,7 +75,7 @@ bool Game::init()
 		return false;
 	}
 
-	result = terrain_->init(L"Resource/setup.txt", L"Resource/dirt.tga");
+	result = terrain_->init(L"Resource/setup.txt", L"Resource/test.tga");
 	if (!result)
 	{
 		return false;
@@ -100,10 +100,21 @@ bool Game::init()
 	position_.setPosition(Vector3(128.0F, 10.0F, -10.0F));
 	position_.setRotation(Vector3::Zero);
 
+	skyplane_ = new Skyplane;
+	if (!skyplane_)
+	{
+		return false;
+	}
+
+	result = skyplane_->init(L"Resource/cloud001.dds",L"Resource/cloud002.dds");
+	if (!result)
+	{
+		Error::showDialog("skyplaneの初期化に失敗");
+		return false;
+	}
 	wire_ = false;
 
 	return true;
-
 }
 
 State* Game::update()
@@ -144,7 +155,7 @@ bool Game::render()
 	ortho = Direct3D::getInstance()->getOrtho();
 
 	//レンダリングは2Dで行うのでZバッファを無効にする
-	Direct3D::getInstance()->turnZbufferOff();
+	Direct3D::getInstance()->turnZbufferDisable();
 
 	//描画用の2Dウィンドウを準備
 	orthowindow_->render();
@@ -157,7 +168,7 @@ bool Game::render()
 	}
 
 	//2Dレンダリングが終了したのでZバッファを有効にする
-	Direct3D::getInstance()->turnZbufferOn();
+	Direct3D::getInstance()->turnZbufferEnable();
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -171,6 +182,7 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE_DESTROY(orthowindow_);
+	SAFE_DELETE_DESTROY(skyplane_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
 }
@@ -195,8 +207,8 @@ bool Game::renderSceneToTexture()
 	camera_->render();
 
 	//Zバッファ・カリングをオフ
-	Direct3D::getInstance()->turnCullingOff();
-	Direct3D::getInstance()->turnZbufferOff();
+	Direct3D::getInstance()->turnCullingDisable();
+	Direct3D::getInstance()->turnZbufferDisable();
 
 	if (!(ShaderManager::getInstance()->skyDomeRender(sky_, skyworld, view, projection)))
 	{
@@ -204,8 +216,20 @@ bool Game::renderSceneToTexture()
 	}
 
 	//Zバッファ・カリングをオン
-	Direct3D::getInstance()->turnZbufferOn();
-	Direct3D::getInstance()->turnCullingOn();
+	Direct3D::getInstance()->turnCullingEnable();
+
+	Direct3D::getInstance()->turnAddBlendEnable();
+
+	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, world, view, projection)))
+	{
+		return false;
+	}
+
+	Direct3D::getInstance()->turnAlphablendDisable();
+
+	Direct3D::getInstance()->turnZbufferEnable();
+
+
 
 	if (wire_)
 		Direct3D::getInstance()->wireFrameEnable();

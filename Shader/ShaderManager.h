@@ -12,11 +12,13 @@
 #include"Multitexture.h"
 #include"Skydomeshader.h"
 #include"Colorshader.h"
+#include"SkyplaneShader.h"
 
 //モデル
 #include"Model3D.h"
 #include"Model.h"
 #include"SkyDome.h"
+#include"Skyplane.h"
 
 
 class ShaderManager
@@ -34,11 +36,12 @@ private:
 	std::unique_ptr<Maskshader> maskshader_;
 	std::unique_ptr<Shadowshader> shadowshader_;
 	std::unique_ptr<Depthshader> depthshader_;
-	std::unique_ptr<Textureshader>textureshader_;
-	std::unique_ptr<Deferredshader>deferredshader_;
-	std::unique_ptr<Multitexture>multitexshader_;
+	std::unique_ptr<Textureshader> textureshader_;
+	std::unique_ptr<Deferredshader> deferredshader_;
+	std::unique_ptr<Multitexture> multitexshader_;
 	std::unique_ptr<Skydomeshader> skydomeshader_;
-	std::unique_ptr<Colorshader>colorshader_;
+	std::unique_ptr<Colorshader> colorshader_;
+	std::unique_ptr<SkyplaneShader> skyplaneshader_;
 public:
 
 	bool init();
@@ -79,5 +82,8 @@ public:
 
 	//スカイドーム専用レンダー
 	bool skyDomeRender(SkyDome* Skydome, Matrix World, Matrix View, Matrix Projection);
+
+	//スカイドーム用雲専用レンダー
+	bool skyPlaneRender(Skyplane* Skyplane, Matrix World, Matrix View, Matrix Projection);
 };
 

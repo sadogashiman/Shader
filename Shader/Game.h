@@ -11,6 +11,7 @@
 #include"Terrain.h"
 #include"Timer.h"
 #include"OrthoWindow.h"
+#include"Skyplane.h"
 
 class Game :public State
 {
@@ -26,6 +27,7 @@ private:
 	Terrain* terrain_;
 	OrthoWindow* orthowindow_;
 	Position position_;
+	Skyplane* skyplane_;
 	void handleMovementInput();
 	bool renderSceneToTexture();
 

@@ -125,6 +125,18 @@ bool ShaderManager::init()
 		Error::showDialog("カラーシェーダーの初期化に失敗");
 		return false;
 	}
+
+	skyplaneshader_.reset(new SkyplaneShader);
+	if (!skyplaneshader_.get())
+	{
+		return false;
+	}
+
+	if (!skyplaneshader_.get()->init())
+	{
+		Error::showDialog("SkyPlaneシェーダーの初期化に失敗");
+		return false;
+	}
 	
 	return true;
 }
@@ -192,4 +204,10 @@ bool ShaderManager::skyDomeRender(SkyDome* Skydome, Matrix World, Matrix View, M
 {
 	Skydome->render();
 	return skydomeshader_.get()->render(Skydome->getIndexCount(),World,View,Projection,Skydome->getApexColor(),Skydome->getCenterColor());
+}
+
+bool ShaderManager::skyPlaneRender(Skyplane* Skyplane, Matrix World, Matrix View, Matrix Projection)
+{
+	Skyplane->render();
+	return skyplaneshader_.get()->render(Skyplane->getIndexCount(), World, View, Projection, Skyplane->getTexture1(), Skyplane->getTexture2(), Skyplane->getTranslation(0), Skyplane->getTranslation(1), Skyplane->getTranslation(2), Skyplane->getTranslation(3), Skyplane->getCloudBright());
 }

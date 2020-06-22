@@ -23,6 +23,7 @@ private:
 	ComPtr<ID3D11Texture2D> cpdepthstencilbuffer_;
 	ComPtr<ID3D11BlendState> cpenabledalphablendstate_;
 	ComPtr<ID3D11BlendState> cpdisabledalphablendstate_;
+	ComPtr<ID3D11BlendState> cpaddalphablendstate_;
 	ComPtr<ID3D11DepthStencilState> cpdepthdisabledstate_;
 	ComPtr<ID3D11Debug> cpdebug_;
 	ComPtr<IDXGISwapChain> cpswapchain_;
@@ -63,16 +64,21 @@ public:
 	inline void resetViewPort() { cpdevicecontext_.Get()->RSSetViewports(1, &viewport_); }
 
 	//Zbuffer切り替え関数
-	inline void turnZbufferOn() { cpdevicecontext_.Get()->OMSetDepthStencilState(cpdepthstate_.Get(), 1); }
-	inline void turnZbufferOff() { cpdevicecontext_.Get()->OMSetDepthStencilState(cpdepthdisabledstate_.Get(), 1); }
+	inline void turnZbufferEnable() { cpdevicecontext_.Get()->OMSetDepthStencilState(cpdepthstate_.Get(), 1); }
+	inline void turnZbufferDisable() { cpdevicecontext_.Get()->OMSetDepthStencilState(cpdepthdisabledstate_.Get(), 1); }
 
 	//Culling切り替え関数
-	inline void turnCullingOn() { cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get()); }
-	inline void turnCullingOff() { cpdevicecontext_.Get()->RSSetState(cprasterstatenoculling_.Get()); }
+	inline void turnCullingEnable() { cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get()); }
+	inline void turnCullingDisable() { cpdevicecontext_.Get()->RSSetState(cprasterstatenoculling_.Get()); }
 
 	//WireFrameレンダリング切り替え関数
 	inline void wireFrameEnable() { cpdevicecontext_.Get()->RSSetState(cprasterstatewireframe_.Get()); }
 	inline void wireFrameDisable() { cpdevicecontext_.Get()->RSSetState(cprasterstate_.Get()); }
+
+	//ブレンド切り替え関数
+	void turnAddBlendEnable();
+	void turnAlphaBlendEnable();
+	void turnAlphablendDisable();
 
 	//static
 	static inline Direct3D* getInstance()
