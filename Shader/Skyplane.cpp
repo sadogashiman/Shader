@@ -59,7 +59,7 @@ bool Skyplane::init(const wchar_t* TextureFileName1, const wchar_t* TextureFileN
 	}
 
 	//平面を作成
-	result = initskyPlane(skyresolution, planewidth, planetop, planetop, texrepeat);
+	result = initskyPlane(skyresolution, planewidth, planetop, planebottom, texrepeat);
 	if (!result)
 	{
 		Error::showDialog("平面の作成に失敗");
@@ -235,12 +235,12 @@ bool Skyplane::initskyPlane(const int PlaneResolution, const float PlaneWidth, c
 
 	for (int i = 0; i <= PlaneResolution; i++)
 	{
+		position.z = (-0.5F * PlaneWidth) + (static_cast<float>(i) * quadsize);
 		for (int j = 0; j <= PlaneResolution; j++)
 		{
 			//頂点座標を計算
-			position.x = (-0.5F * PlaneWidth) + (static_cast<float>(i) * quadsize);
-			position.z = (-0.5F * PlaneWidth) + (static_cast<float>(i) * quadsize);
-			position.x = PlaneTop - (constant * ((position.x * position.x) + (position.z * position.z)));
+			position.x = (-0.5F * PlaneWidth) + (static_cast<float>(j) * quadsize);
+			position.y = PlaneTop - (constant * ((position.x * position.x) + (position.z * position.z)));
 
 			//テクスチャ座標を計算
 			texuv.x = static_cast<float>(j) - texdelta;

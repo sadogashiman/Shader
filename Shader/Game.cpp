@@ -42,18 +42,6 @@ bool Game::init()
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
 	light_->setDirection(-0.5F, -1.0F, -0.5F);
 
-	//バッファを作成
-	defbuffer_ = new Deferredbuffers;
-	if (!defbuffer_)
-	{
-		return false;
-	}
-
-	if (!defbuffer_->init(System::getWindowWidth(), System::getWindowHeight(), kScreen_depth, kScreen_near))
-	{
-		return false;
-	}
-
 	sky_ = new SkyDome;
 	if (!sky_)
 	{
@@ -81,19 +69,6 @@ bool Game::init()
 		return false;
 	}
 
-	orthowindow_ = new OrthoWindow;
-	if (!orthowindow_)
-	{
-		return false;
-	}
-
-	result = orthowindow_->init(kWindow_Width, kWindow_Height);
-	if (!result)
-	{
-		Error::showDialog("2Dウィンドウの初期化に失敗");
-		return false;
-	}
-
 	Timer::getInstance()->setTimerStatus(true);
 	Timer::getInstance()->startTimer();
 
@@ -106,7 +81,7 @@ bool Game::init()
 		return false;
 	}
 
-	result = skyplane_->init(L"Resource/cloud001.dds",L"Resource/cloud002.dds");
+	result = skyplane_->init(L"Resource/cloud001.dds", L"Resource/cloud002.dds");
 	if (!result)
 	{
 		Error::showDialog("skyplaneの初期化に失敗");
@@ -134,16 +109,9 @@ State* Game::update()
 
 bool Game::render()
 {
-	bool result;
-	Matrix world, projection, ortho;
-	Matrix baseview;
-
-	//描画用ポリゴンにレンダリング
-	result = renderSceneToTexture();
-	if (!result)
-	{
-		return false;
-	}
+	Matrix world, projection;
+	Matrix skyworld;
+	Matrix view;
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
@@ -151,21 +119,47 @@ bool Game::render()
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
-	baseview = camera_->getBaseViewMatrix();
-	ortho = Direct3D::getInstance()->getOrtho();
+	view = camera_->getViewMatrix();
+	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
 
-	//レンダリングは2Dで行うのでZバッファを無効にする
+	camera_->render();
+
+	//Zバッファ・カリングをオフ
+	Direct3D::getInstance()->turnCullingDisable();
 	Direct3D::getInstance()->turnZbufferDisable();
 
-	//描画用の2Dウィンドウを準備
-	orthowindow_->render();
-
-	//描画用ポリゴンをレンダリング
-	result = ShaderManager::getInstance()->lightRender(orthowindow_->getIndexCount(), world, baseview, ortho, defbuffer_->getShaderResourceView(0), defbuffer_->getShaderResourceView(1), light_);
-	if (!result)
+	if (!(ShaderManager::getInstance()->skyDomeRender(sky_, skyworld, view, projection)))
 	{
 		return false;
 	}
+
+	//Zバッファ・カリングをオン
+	Direct3D::getInstance()->turnCullingEnable();
+
+	Direct3D::getInstance()->turnAddBlendEnable();
+	world = Direct3D::getInstance()->getWorld();
+
+	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, skyworld, view, projection)))
+	{
+		return false;
+	}
+
+	Direct3D::getInstance()->turnAlphablendDisable();
+
+	Direct3D::getInstance()->turnZbufferEnable();
+
+
+
+	if (wire_)
+		Direct3D::getInstance()->wireFrameEnable();
+
+	if (!(ShaderManager::getInstance()->textureRender(terrain_, world, view, projection, terrain_->getTexture())))
+	{
+		return false;
+	}
+
+	if (wire_)
+		Direct3D::getInstance()->wireFrameDisable();
 
 	//2Dレンダリングが終了したのでZバッファを有効にする
 	Direct3D::getInstance()->turnZbufferEnable();
@@ -178,10 +172,8 @@ bool Game::render()
 
 void Game::destroy()
 {
-	SAFE_DELETE_DESTROY(defbuffer_);
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
-	SAFE_DELETE_DESTROY(orthowindow_);
 	SAFE_DELETE_DESTROY(skyplane_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
@@ -219,8 +211,9 @@ bool Game::renderSceneToTexture()
 	Direct3D::getInstance()->turnCullingEnable();
 
 	Direct3D::getInstance()->turnAddBlendEnable();
+	world = Direct3D::getInstance()->getWorld();
 
-	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, world, view, projection)))
+	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, skyworld, view, projection)))
 	{
 		return false;
 	}
