@@ -154,6 +154,12 @@
     <Filter Include="リソース ファイル\Skyplane">
       <UniqueIdentifier>{727a6256-5e76-42c3-9542-3ccd5a7a773a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\Terrain">
+      <UniqueIdentifier>{b9ff1b26-1cbf-4227-aa4d-ea6ebcc4f379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\Terrain">
+      <UniqueIdentifier>{13e26043-9ba3-4070-82a7-a955788e70c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -260,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="SkyplaneShader.cpp">
       <Filter>ShaderManager\Shader\Skyplane</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>ShaderManager\Shader\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -386,85 +395,94 @@
     <ClInclude Include="SkyplaneShader.h">
       <Filter>ShaderManager\Shader\Skyplane</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>ShaderManager\Shader\Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="transparentdepthps.hlsl">
+    <FxCompile Include="terrain_vs.hlsl">
+      <Filter>リソース ファイル\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="transparentdepth_vs.hlsl">
       <Filter>リソース ファイル\Trans</Filter>
     </FxCompile>
-    <FxCompile Include="transparentdepthvs.hlsl">
+    <FxCompile Include="transparentdepth_ps.hlsl">
       <Filter>リソース ファイル\Trans</Filter>
     </FxCompile>
-    <FxCompile Include="bumpmapps.hlsl">
-      <Filter>リソース ファイル\Bump</Filter>
-    </FxCompile>
-    <FxCompile Include="bumpmapvs.hlsl">
-      <Filter>リソース ファイル\Bump</Filter>
-    </FxCompile>
-    <FxCompile Include="lightps.hlsl">
-      <Filter>リソース ファイル\Light</Filter>
-    </FxCompile>
-    <FxCompile Include="lightvs.hlsl">
-      <Filter>リソース ファイル\Light</Filter>
-    </FxCompile>
-    <FxCompile Include="depthps.hlsl">
-      <Filter>リソース ファイル\Depth</Filter>
-    </FxCompile>
-    <FxCompile Include="depthvs.hlsl">
-      <Filter>リソース ファイル\Depth</Filter>
-    </FxCompile>
-    <FxCompile Include="maskps.hlsl">
-      <Filter>リソース ファイル\Mask</Filter>
-    </FxCompile>
-    <FxCompile Include="maskvs.hlsl">
-      <Filter>リソース ファイル\Mask</Filter>
-    </FxCompile>
-    <FxCompile Include="particleps.hlsl">
-      <Filter>リソース ファイル\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="particlevs.hlsl">
-      <Filter>リソース ファイル\Particle</Filter>
-    </FxCompile>
-    <FxCompile Include="texturevs.hlsl">
+    <FxCompile Include="texture_vs.hlsl">
       <Filter>リソース ファイル\Texture</Filter>
     </FxCompile>
-    <FxCompile Include="textureps.hlsl">
+    <FxCompile Include="texture_ps.hlsl">
       <Filter>リソース ファイル\Texture</Filter>
     </FxCompile>
-    <FxCompile Include="shadowps.hlsl">
-      <Filter>リソース ファイル\Shadow</Filter>
-    </FxCompile>
-    <FxCompile Include="shadowvs.hlsl">
-      <Filter>リソース ファイル\Shadow</Filter>
-    </FxCompile>
-    <FxCompile Include="deferredps.hlsl">
-      <Filter>リソース ファイル\Deferred</Filter>
-    </FxCompile>
-    <FxCompile Include="deferredvs.hlsl">
-      <Filter>リソース ファイル\Deferred</Filter>
-    </FxCompile>
-    <FxCompile Include="multitexturevs.hlsl">
-      <Filter>リソース ファイル\Multi</Filter>
-    </FxCompile>
-    <FxCompile Include="multitextureps.hlsl">
-      <Filter>リソース ファイル\Multi</Filter>
-    </FxCompile>
-    <FxCompile Include="skydomeps.hlsl">
-      <Filter>リソース ファイル\Skydome</Filter>
-    </FxCompile>
-    <FxCompile Include="skydomevs.hlsl">
-      <Filter>リソース ファイル\Skydome</Filter>
-    </FxCompile>
-    <FxCompile Include="colorvs.hlsl">
-      <Filter>リソース ファイル\Color</Filter>
-    </FxCompile>
-    <FxCompile Include="colorps.hlsl">
-      <Filter>リソース ファイル\Color</Filter>
-    </FxCompile>
-    <FxCompile Include="skyplanevs.hlsl">
+    <FxCompile Include="skyplane_vs.hlsl">
       <Filter>リソース ファイル\Skyplane</Filter>
     </FxCompile>
-    <FxCompile Include="skyplaneps.hlsl">
+    <FxCompile Include="skyplane_ps.hlsl">
       <Filter>リソース ファイル\Skyplane</Filter>
+    </FxCompile>
+    <FxCompile Include="skydome_vs.hlsl">
+      <Filter>リソース ファイル\Skydome</Filter>
+    </FxCompile>
+    <FxCompile Include="skydome_ps.hlsl">
+      <Filter>リソース ファイル\Skydome</Filter>
+    </FxCompile>
+    <FxCompile Include="shadow_vs.hlsl">
+      <Filter>リソース ファイル\Shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="shadow_ps.hlsl">
+      <Filter>リソース ファイル\Shadow</Filter>
+    </FxCompile>
+    <FxCompile Include="particle_vs.hlsl">
+      <Filter>リソース ファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="particle_ps.hlsl">
+      <Filter>リソース ファイル\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="multitexture_vs.hlsl">
+      <Filter>リソース ファイル\Multi</Filter>
+    </FxCompile>
+    <FxCompile Include="multitexture_ps.hlsl">
+      <Filter>リソース ファイル\Multi</Filter>
+    </FxCompile>
+    <FxCompile Include="mask_vs.hlsl">
+      <Filter>リソース ファイル\Mask</Filter>
+    </FxCompile>
+    <FxCompile Include="mask_ps.hlsl">
+      <Filter>リソース ファイル\Mask</Filter>
+    </FxCompile>
+    <FxCompile Include="light_vs.hlsl">
+      <Filter>リソース ファイル\Light</Filter>
+    </FxCompile>
+    <FxCompile Include="light_ps.hlsl">
+      <Filter>リソース ファイル\Light</Filter>
+    </FxCompile>
+    <FxCompile Include="depth_vs.hlsl">
+      <Filter>リソース ファイル\Depth</Filter>
+    </FxCompile>
+    <FxCompile Include="depth_ps.hlsl">
+      <Filter>リソース ファイル\Depth</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_vs.hlsl">
+      <Filter>リソース ファイル\Deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="deferred_ps.hlsl">
+      <Filter>リソース ファイル\Deferred</Filter>
+    </FxCompile>
+    <FxCompile Include="color_vs.hlsl">
+      <Filter>リソース ファイル\Color</Filter>
+    </FxCompile>
+    <FxCompile Include="color_ps.hlsl">
+      <Filter>リソース ファイル\Color</Filter>
+    </FxCompile>
+    <FxCompile Include="bumpmap_vs.hlsl">
+      <Filter>リソース ファイル\Bump</Filter>
+    </FxCompile>
+    <FxCompile Include="bumpmap_ps.hlsl">
+      <Filter>リソース ファイル\Bump</Filter>
+    </FxCompile>
+    <FxCompile Include="terrain_ps.hlsl">
+      <Filter>リソース ファイル\Terrain</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

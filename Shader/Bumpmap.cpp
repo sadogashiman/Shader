@@ -29,17 +29,15 @@ bool Bumpmap::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"bumpmapvs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"bumpmap_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"bumpmapps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"bumpmap_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
@@ -91,7 +89,6 @@ bool Bumpmap::init()
 	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
 

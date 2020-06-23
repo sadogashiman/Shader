@@ -25,17 +25,15 @@ bool Colorshader::init()
 		return false;
 	}
 
-	hr = support_.get()->createVertexData(L"colorvs.cso", vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"color_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"colorps.cso", pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"color_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
@@ -63,7 +61,6 @@ bool Colorshader::init()
 	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements, layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
 

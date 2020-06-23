@@ -186,12 +186,14 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName, ID3D11Ver
 		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, vertexshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
+			Error::showDialog("頂点シェーダーの動的コンパイルに失敗");
 			return hr;
 		}
 
 		hr = Direct3D::getInstance()->getDevice()->CreateVertexShader(vertexshaderbuffer_.Get()->GetBufferPointer(), vertexshaderbuffer_.Get()->GetBufferSize(), nullptr, VertexShader);
 		if (FAILED(hr))
 		{
+			Error::showDialog("頂点シェーダーの作成に失敗");
 			return hr;
 		}
 
@@ -258,12 +260,14 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName, ID3D11Pixel
 		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, pixelshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
+			Error::showDialog("ピクセルシェーダーの動的コンパイルに失敗");
 			return hr;
 		}
 
 		hr = Direct3D::getInstance()->getDevice()->CreatePixelShader(pixelshaderbuffer_.Get()->GetBufferPointer(), pixelshaderbuffer_.Get()->GetBufferSize(), nullptr, PixelShader);
 		if (FAILED(hr))
 		{
+			Error::showDialog("ピクセルシェーダーの作成に失敗");
 			return hr;
 		}
 
@@ -330,12 +334,14 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName, ID3D11C
 		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "cs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, computeshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
+			Error::showDialog("コンピュートシェーダーの動的コンパイルに失敗");
 			return hr;
 		}
 
 		hr = Direct3D::getInstance()->getDevice()->CreateComputeShader(computeshaderbuffer_.Get()->GetBufferPointer(), computeshaderbuffer_.Get()->GetBufferSize(), nullptr, ComputeShader);
 		if (FAILED(hr))
 		{
+			Error::showDialog("コンピュートシェーダーの作成に失敗");
 			return hr;
 		}
 
@@ -360,6 +366,7 @@ HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayout
 	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(PolygonLayoutArray, NumElements, vertexblob_, vertexsize_, InputLayout);
 	if (FAILED(hr))
 	{
+		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return hr;
 	}
 

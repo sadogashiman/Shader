@@ -30,17 +30,15 @@ bool Shadowshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"shadowvs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"shadow_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"shadowps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"shadow_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
@@ -76,7 +74,6 @@ bool Shadowshader::init()
 	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
 

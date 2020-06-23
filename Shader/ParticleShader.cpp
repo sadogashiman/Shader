@@ -27,14 +27,13 @@ bool ParticleShader::init()
 	}
 
 	//シェーダーコンパイル
-	hr = support_.get()->createVertexData(L"particlevs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"particle_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"particleps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"particle_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -72,7 +71,6 @@ bool ParticleShader::init()
 	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
 

@@ -18,10 +18,10 @@ private:
 		Vector3 normalpos;
 	};
 
-	ID3D11Buffer* trunkvertexbuffer_;
-	ID3D11Buffer* trunkindexbuffer_;
-	ID3D11Buffer* leafvertexbuffer_;
-	ID3D11Buffer* leafindexbuffer_;
+	ComPtr<ID3D11Buffer> trunkvertexbuffer_;
+	ComPtr<ID3D11Buffer> trunkindexbuffer_;
+	ComPtr<ID3D11Buffer> leafvertexbuffer_;
+	ComPtr<ID3D11Buffer> leafindexbuffer_;
 	int vertexcount_;
 	int indexcount_;
 	int trunkindexcount_;
@@ -30,7 +30,7 @@ private:
 	wchar_t trunkfilename_[MAX_PATH];
 	wchar_t leaffilename_[MAX_PATH];
 	Vector3 position_;
-	ModelType* model_;
+	std::vector<ModelType> model_;
 	std::unique_ptr<Support> support_;
 
 	bool initTrunkBuffer();

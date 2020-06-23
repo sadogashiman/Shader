@@ -28,17 +28,15 @@ bool Textureshader::init()
 	}
 
 	//シェーダー作成
-	hr = support_.get()->createVertexData(L"texturevs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"texture_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"textureps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"texture_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
@@ -67,7 +65,6 @@ bool Textureshader::init()
 	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
 

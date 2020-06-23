@@ -31,13 +31,13 @@ bool Multitexture::init()
 	vertexshaderbuffer_ = nullptr;
 	pixelshaderbuffer_ = nullptr;
 
-	hr = support_.get()->createVertexData(L"multitexturevs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"multitexture_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"multitextureps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"multitexture_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -66,7 +66,6 @@ bool Multitexture::init()
 	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
 

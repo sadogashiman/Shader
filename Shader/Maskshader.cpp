@@ -27,17 +27,15 @@ bool Maskshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"maskvs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"mask_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"maskps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"mask_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 
@@ -65,7 +63,6 @@ bool Maskshader::init()
 	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点入力レイアウトの作成に失敗");
 		return false;
 	}
 

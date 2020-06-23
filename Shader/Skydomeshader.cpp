@@ -28,17 +28,15 @@ bool Skydomeshader::init()
 	}
 
 	//シェーダーを読み込み
-	hr = support_.get()->createVertexData(L"skydomevs.cso", vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"skydome_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("頂点シェーダーの作成に失敗");
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"skydomeps.cso", pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"skydome_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Error::showDialog("ピクセルシェーダーの作成に失敗");
 		return false;
 	}
 

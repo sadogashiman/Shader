@@ -33,7 +33,7 @@ bool Skyplane::init(const wchar_t* TextureFileName1, const wchar_t* TextureFileN
 	int index4;
 
 	//パラメーターの設定
-	scale_ = 0.3F;
+	scale_ = 0.5F;
 	bright_ = 0.5F;
 
 	//変化量をゼロに
