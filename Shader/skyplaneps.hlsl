@@ -1,15 +1,13 @@
-Texture2D cloud1 : register(t0);
-Texture2D cloud2 : register(t1);
+Texture2D cloud : register(t0);
+Texture2D perturb : register(t1);
 SamplerState sampletype;
 
 cbuffer SkyBuffer
 {
-    float firsttransx;
-    float firsttransz;
-    float secondtransx;
-    float secondtransz;
+    float translation;
+    float scale;
     float bright;
-    float3 padding;
+    float padding;
 };
 
 struct PixelInputType
@@ -20,30 +18,26 @@ struct PixelInputType
 
 float4 main(PixelInputType input) : SV_TARGET
 {
-    float2 samplelocation;
-    float4 texcolor1;
-    float4 texcolor2;
-    float4 finalcolor;
+    float4 perturbvalue;
+    float4 cloudcolor;
     
-    //ピクセルサンプリングの座標を計算
-    samplelocation.x = input.tex.x + firsttransx;
-    samplelocation.y = input.tex.y + firsttransz;
+    //移動量でサンプル場所を変える
+    input.tex.x = input.tex.x + translation;
+   
+    //移動後の座標でサンプリング
+    perturbvalue = perturb.Sample(sampletype, input.tex);
     
-    //サンプリング
-    texcolor1 = cloud1.Sample(sampletype, samplelocation);
+    //スケールを適応
+    perturbvalue = perturbvalue * scale;
     
-    //2番目のサンプリング
-    samplelocation.x = input.tex.x + secondtransx;
-    samplelocation.y = input.tex.y + secondtransz;
+    //サンプリング位置を決定
+    perturbvalue.xy = perturbvalue.xy + input.tex.xy + translation;
     
-    //サンプリング
-    texcolor2 = cloud2.Sample(sampletype, samplelocation);
-    
-    //二つの画像を線形補間で補間する
-    finalcolor = lerp(texcolor1, texcolor2, 0.5F);
+    //雲をサンプリング
+    cloudcolor = cloud.Sample(sampletype, perturbvalue.xy);
     
     //明るさを乗算
-    finalcolor = finalcolor * bright;
+    cloudcolor = cloudcolor * bright;
     
-    return finalcolor;
+    return cloudcolor;
 }

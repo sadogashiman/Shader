@@ -32,9 +32,16 @@ bool Skyplane::init(const wchar_t* TextureFileName1, const wchar_t* TextureFileN
 	int index3;
 	int index4;
 
+	//パラメーターの設定
+	scale_ = 0.3F;
+	bright_ = 0.5F;
+
+	//変化量をゼロに
+	transition_ = 0.0F;
+
 	//テクスチャファイル名をメンバに保存
-	wcscpy(texfilename1_, TextureFileName1);
-	wcscpy(texfilename2_, TextureFileName2);
+	wcscpy(cloudtexfilename_, TextureFileName1);
+	wcscpy(perturbtexfilename_, TextureFileName2);
 
 	//各パラメータ設定
 	skyresolution = 10;
@@ -42,21 +49,6 @@ bool Skyplane::init(const wchar_t* TextureFileName1, const wchar_t* TextureFileN
 	planetop = 0.5F;
 	planebottom = 0.0F;
 	texrepeat = 4;
-
-	//雲の明るさ
-	bright_ = 0.65F;
-
-	//雲の移動速度を設定
-	transspeed_[0] = 0.0003F;  //テクスチャ一枚目X軸移動速度
-	transspeed_[1] = 0.0F;    //テクスチャ一枚目Z軸移動速度
-	transspeed_[2] = 0.00015F;//テクスチャ二枚目X軸移動速度
-	transspeed_[3] = 0.0F;    //テクスチャ二枚目Z軸移動速度
-
-	//テクスチャ変換値を初期化
-	for (int i = 0; i < 4; i++)
-	{
-		texposition_[i] = 0.0F;
-	}
 
 	//平面を作成
 	result = initskyPlane(skyresolution, planewidth, planetop, planebottom, texrepeat);
@@ -181,13 +173,10 @@ bool Skyplane::init(const wchar_t* TextureFileName1, const wchar_t* TextureFileN
 void Skyplane::render()
 {
 	//雲を移動
-	for (int i = 0; i < 4; i++)
+	transition_ += 0.0001F;
+	if (transition_ > 1.0F)
 	{
-		texposition_[i] += transspeed_[i];
-
-		//0~1の範囲に値を維持
-		if (texposition_[i] > 1.0F)
-			texposition_[i] -= 1.0F;
+		transition_ -= 1.0F;
 	}
 
 	unsigned int stride = sizeof(VertexType);

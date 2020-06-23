@@ -63,7 +63,7 @@ bool Game::init()
 		return false;
 	}
 
-	result = terrain_->init(L"Resource/setup.txt", L"Resource/test.tga");
+	result = terrain_->init(L"Resource/setup.txt", L"Resource/dirt01.dds");
 	if (!result)
 	{
 		return false;
@@ -81,7 +81,7 @@ bool Game::init()
 		return false;
 	}
 
-	result = skyplane_->init(L"Resource/cloud001.dds", L"Resource/cloud002.dds");
+	result = skyplane_->init(L"Resource/cloud001.dds", L"Resource/perturb001.dds");
 	if (!result)
 	{
 		Error::showDialog("skyplane‚Ì‰Šú‰»‚É¸”s");

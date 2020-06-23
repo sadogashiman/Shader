@@ -121,12 +121,12 @@ bool SkyplaneShader::init()
 	return true;
 }
 
-bool SkyplaneShader::render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, float FirsttransX, float FirsttransZ, float SecondtransX, float SecondtransZ, float Bright)
+bool SkyplaneShader::render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, float Transition, float Scale, float Bright)
 {
 	bool result;
 
 	//シェーダーパラメーターの設定
-	result = setShaderParameters(World, View, Projection, Texture1, Texture2, FirsttransX, FirsttransZ, SecondtransX, SecondtransZ, Bright);
+	result = setShaderParameters(World, View, Projection, Texture1, Texture2,Transition,Scale,Bright);
 	if (!result)
 	{
 		Error::showDialog("シェーダーパラメーターの設定に失敗");
@@ -139,7 +139,7 @@ bool SkyplaneShader::render(const int IndexCount, Matrix World, Matrix View, Mat
 	return true;
 }
 
-bool SkyplaneShader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, float FirsttransX, float FirsttransZ, float SecondtransX, float SecondtransZ, float Bright)
+bool SkyplaneShader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, float Transition, float Scale, float Bright)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresource;
@@ -189,12 +189,10 @@ bool SkyplaneShader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 	dataptr2 = (SkyBufferType*)mappedresource.pData;
 
 	//定数バッファにコピー
-	dataptr2->firsttransx = FirsttransX;
-	dataptr2->firsttransz = FirsttransZ;
-	dataptr2->secondtransx = SecondtransX;
-	dataptr2->secondtransz = SecondtransZ;
-	dataptr2->bright = Bright;
-	dataptr2->padding = Vector3::Zero;
+	dataptr2->transition = Transition;
+	dataptr2->scale = Scale;
+	dataptr2->btight = Bright;
+	dataptr2->padding = 0.0F;
 
 	//ロック解除
 	Direct3D::getInstance()->getContext()->Unmap(skybuffer_.Get(), 0);

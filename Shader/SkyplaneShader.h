@@ -5,12 +5,10 @@ class SkyplaneShader
 private:
 	struct SkyBufferType
 	{
-		float firsttransx;
-		float firsttransz;
-		float secondtransx;
-		float secondtransz;
-		float bright;
-		Vector3 padding;
+		float transition;
+		float scale;
+		float btight;
+		float padding;
 	};
 
 	struct MatrixBufferType
@@ -28,10 +26,10 @@ private:
 	ComPtr<ID3D11Buffer> skybuffer_;
 	std::unique_ptr<Support> support_;
 
-	bool setShaderParameters(Matrix World,Matrix View,Matrix Projection,ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2,float FirsttransX,float FirsttransZ,float SecondtransX,float SecondtransZ,float Bright);
+	bool setShaderParameters(Matrix World,Matrix View,Matrix Projection,ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2,float Transition,float Scale,float Bright);
 	void renderShader(const int IndexCount);
 public:
 	bool init();
-	bool render(const int IndexCount,Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, float FirsttransX, float FirsttransZ, float SecondtransX, float SecondtransZ, float Bright);
+	bool render(const int IndexCount,Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, float Transition, float Scale, float Bright);
 };
 

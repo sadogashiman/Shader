@@ -21,11 +21,11 @@ private:
 	int vertexcount_;
 	ComPtr<ID3D11Buffer> vertexbuffer_;
 	ComPtr<ID3D11Buffer> indexbuffer_;
-	wchar_t texfilename1_[MAX_PATH];
-	wchar_t texfilename2_[MAX_PATH];
+	wchar_t cloudtexfilename_[MAX_PATH];
+	wchar_t perturbtexfilename_[MAX_PATH];
 	float bright_;
-	float transspeed_[4];
-	float texposition_[4];
+	float scale_;
+	float transition_;
 
 	bool initskyPlane(const int PlaneResolution, const float PlaneWidth, const float PlaneTop, const float PlaneBottom, const int texRepeat);
 
@@ -37,11 +37,16 @@ public:
 	void render();
 	void destroy();
 
+	//set
+	inline void setCloudBrightness(const float Brightness) { bright_ = Brightness; }
+	inline void setCloudScale(const float CloudScale) { scale_ = CloudScale; }
+
 	//get
 	inline const int getIndexCount()const { return indexcount_; }
-	inline const float getCloudBright()const { return bright_; }
-	inline const float getTranslation(const int Index) { return texposition_[Index]; }
-	inline ID3D11ShaderResourceView* getTexture1() { return TextureFactory::getInstance()->getTexture(texfilename1_); }
-	inline ID3D11ShaderResourceView* getTexture2() { return TextureFactory::getInstance()->getTexture(texfilename2_); }
+	inline const float getBrightness()const { return bright_; }
+	inline const float getTransition()const { return transition_; }
+	inline const float getScale()const { return scale_; }
+	inline ID3D11ShaderResourceView* getCloudTexture() { return TextureFactory::getInstance()->getTexture(cloudtexfilename_); }
+	inline ID3D11ShaderResourceView* getPerturbTexture() { return TextureFactory::getInstance()->getTexture(perturbtexfilename_); }
 };
 

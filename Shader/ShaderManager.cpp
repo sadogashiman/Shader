@@ -209,5 +209,5 @@ bool ShaderManager::skyDomeRender(SkyDome* Skydome, Matrix World, Matrix View, M
 bool ShaderManager::skyPlaneRender(Skyplane* Skyplane, Matrix World, Matrix View, Matrix Projection)
 {
 	Skyplane->render();
-	return skyplaneshader_.get()->render(Skyplane->getIndexCount(), World, View, Projection, Skyplane->getTexture1(), Skyplane->getTexture2(), Skyplane->getTranslation(0), Skyplane->getTranslation(1), Skyplane->getTranslation(2), Skyplane->getTranslation(3), Skyplane->getCloudBright());
+	return skyplaneshader_.get()->render(Skyplane->getIndexCount(), World, View, Projection, Skyplane->getCloudTexture(), Skyplane->getPerturbTexture(),Skyplane->getTransition(),Skyplane->getScale(),Skyplane->getBrightness());
 }
