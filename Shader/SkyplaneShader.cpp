@@ -199,7 +199,6 @@ bool SkyplaneShader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 	//ロック解除
 	Direct3D::getInstance()->getContext()->Unmap(skybuffer_.Get(), 0);
 
-
 	//スロット番号を設定
 	buffernumber = 0;
 

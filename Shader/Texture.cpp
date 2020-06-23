@@ -194,8 +194,7 @@ bool Texture::init(const wchar_t* TextureName)
 			return false;
 		}
 		//tgaファイルは別のローダーのため事前に判定
-		auto tga = wcsrchr(TextureName,L'.');
-		if (wcscmp(tga, extensionarray[kTga])==0)
+		if (wcscmp(wcsrchr(TextureName, L'.'), extensionarray[kTga])==0)
 		{
 			if (loadTargaFile(TextureName, width, height))
 			{

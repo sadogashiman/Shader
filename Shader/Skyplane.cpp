@@ -191,7 +191,7 @@ void Skyplane::render()
 	}
 
 	unsigned int stride = sizeof(VertexType);
-	unsigned int offset;
+	unsigned int offset = 0;
 
 	//頂点バッファをセット
 	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
