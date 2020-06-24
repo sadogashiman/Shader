@@ -20,12 +20,7 @@ private:
 
 	//3Dƒ‚ƒfƒ‹
 	Model* texmodel_;
-	Model* bumpmodel_;
-	Model* lightmodel_;
-	Model* maskmodel_;
-	Model* multitexmodel_;
-	Model* colormodel_;
-	Tree* transmodel_;
+
 
 	void switchWireFrame();
 	bool wire_;

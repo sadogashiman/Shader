@@ -26,6 +26,7 @@ PixelInputType main(VertexInputType Input)
 
 	Input.position.w = 1.0F;
 
+	//í∏ì_ç¿ïWÇåvéZ
 	output.position = mul(Input.position, world);
 	output.position = mul(output.position, view);
 	output.position = mul(output.position, projection);

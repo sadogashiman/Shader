@@ -19,6 +19,7 @@ struct PixelInputType
 PixelInputType main( VertexInputType Input )
 {
 	PixelInputType output;
+	
 	//4’PˆÊ‚É•ÏŠ·
 	Input.position.w = 1.0F;
 	

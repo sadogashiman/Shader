@@ -1,13 +1,12 @@
 #include "stdafx.h"
 #include "Game.h"
-#include"Direct3D.h"
-#include"release.h"
-#include"Input.h"
-#include"ShaderManager.h"
-#include"System.h"
-#include"Timer.h"
-#include"SkyDome.h"
-
+#include "Direct3D.h"
+#include "Input.h"
+#include "ShaderManager.h"
+#include "System.h"
+#include "Timer.h"
+#include "SkyDome.h"
+#include "Support.h"
 
 Game::Game()
 {
@@ -80,7 +79,7 @@ bool Game::init()
 	Timer::getInstance()->setTimerStatus(true);
 	Timer::getInstance()->startTimer();
 
-	position_.setPosition(Vector3(128.0F, 10.0F, -10.0F));
+	position_.setPosition(Vector3(123.0F, 10.0F, -10.0F));
 	position_.setRotation(Vector3::Zero);
 
 	skyplane_ = new Skyplane;
@@ -95,6 +94,17 @@ bool Game::init()
 		Error::showDialog("skyplaneの初期化に失敗");
 		return false;
 	}
+
+	//モデル生成
+	texmodel_ = new Model;
+	result = texmodel_->init(L"Resource/cube.txt", L"Resource/ice.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	texmodel_->setPosition(Vector3(55.0F, 1.5F, 20.0F));
+
 	wire_ = false;
 
 	return true;
@@ -118,8 +128,6 @@ State* Game::update()
 
 bool Game::render()
 {
-
-
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
@@ -128,8 +136,10 @@ bool Game::render()
 		return false;
 	}
 
-
-	
+	if (!modelRender())
+	{
+		return false;
+	}
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -142,6 +152,7 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE_DESTROY(skyplane_);
+	SAFE_DELETE_DESTROY(texmodel_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
 }
@@ -163,6 +174,28 @@ void Game::switchWireFrame()
 
 bool Game::modelRender()
 {
+	Matrix world, projection;
+	Matrix skyworld;
+	Matrix view;
+
+	static float rotation = 0;
+
+	if (rotation < 360.0F)
+	{
+		rotation += 0.6F;
+	}
+	rotation -= 360.0F;
+
+
+	//行列を取得
+	world = Direct3D::getInstance()->getWorld();
+	projection = Direct3D::getInstance()->getProjection();
+	view = camera_->getViewMatrix();
+	
+	//ワールド上のモデル座標を計算
+	world = Support::worldPosition(texmodel_);
+	if (!(ShaderManager::getInstance()->textureRender(texmodel_, world, view, projection, texmodel_->getTexture())))
+		return false;
 	return true;
 }
 

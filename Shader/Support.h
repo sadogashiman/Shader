@@ -2,6 +2,7 @@
 
 #include"error.h"
 #include"release.h"
+#include"Model.h"
 
 
 class Support
@@ -25,6 +26,9 @@ private:
 public:
 	Support();
 	~Support();
+
+	//Matrix
+	static Matrix worldPosition(Model* Model);
 
 	//Check
 	static bool checkInputLayoutData(const void* shadercode, size_t codesize,

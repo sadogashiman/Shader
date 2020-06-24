@@ -22,14 +22,18 @@ PixelInputType main(VertexInputType Input)
 {
 	PixelInputType output;
 
+	//計算のために代入
 	Input.position.w = 1.0F;
-
+	
+	//頂点座標を計算
 	output.position = mul(Input.position, world);
 	output.position = mul(output.position, view);
 	output.position = mul(output.position, projection);
 
+	//深度値を保存
 	output.depthposition = output.position;
 
+	//テクスチャを保存
 	output.tex = Input.tex;
 
 	return output;

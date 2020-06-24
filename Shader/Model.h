@@ -1,6 +1,14 @@
 #pragma once
 #include"TextureFactory.h"
 #include"Model3D.h"
+const int kMaxTexture = 2;
+enum 
+{
+	kBumpMap,
+	kMulti,
+
+}; 
+
 class Model:public Model3D
 {
 private:
@@ -42,35 +50,33 @@ private:
 	bool initBuffer();
 
 	//load
-	void loadTexture(const wchar_t* FileName);
 	bool loadModel(const wchar_t* ModelFileName);
-
-	//release
-	void releaseTexture();
 
 	//render
 	void renderBuffer();
 
 	std::vector<ModelType> model_;
-	float positionx_, positiony_, positionz_;
-	wchar_t texturefilename_[MAX_PATH];
+	Vector3 position_;
+	wchar_t texturefilename_[2][MAX_PATH];
 	wchar_t mapfilename_[MAX_PATH];
-	ID3D11ShaderResourceView* texturearray_[3];
 public:
 	Model();
 	~Model();
 	bool init(const wchar_t* ModelFileName,const wchar_t* TextureFileName = nullptr);
+	bool init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, const wchar_t* TextureFileName2);
+	bool init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, const wchar_t* TextureFileName2, const wchar_t* MaskFileName);
+
 	void destroy();
 	void render();
 
 	//set
-	void setPosition(const float X, const float Y, const float Z);
-
+	inline void setPosition(const float X, const float Y, const float Z) { position_ = Vector3(X, Y, Z); }
+	inline void setPosition(const Vector3& Position) {position_ = Position;}
+	inline void setNormalTexture(const wchar_t* NormalTextureFileName) { wcscpy(mapfilename_, NormalTextureFileName); } //マッピング用のテクスチャファイルは別途指定
 	//get
-	void getPosition(float& X, float& Y, float& Z);
+	inline Vector3 getPosition() { return position_; }
 	inline const int getIndexCount()const { return indexcount_; }
-	inline const ID3D11ShaderResourceView* const getTexture()const { return TextureFactory::getInstance()->getTexture(texturefilename_); }
+	inline ID3D11ShaderResourceView* getTexture(const int TextureNumber = 0)const { return TextureFactory::getInstance()->getTexture(texturefilename_[TextureNumber]); }
 	inline ID3D11ShaderResourceView* getNormalTexture()const { return TextureFactory::getInstance()->getTexture(mapfilename_); }
-	inline ID3D11ShaderResourceView** getTextureMapArray() { return texturearray_; }
 };
 

@@ -8,6 +8,8 @@
 
 Model::Model()
 {
+	ZeroMemory(&texturefilename_, sizeof(texturefilename_));
+	ZeroMemory(&mapfilename_, sizeof(mapfilename_));
 }
 
 Model::~Model()
@@ -22,11 +24,8 @@ bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 		return false;
 	}
 
-	//モデルファイルの拡張子を変更
-	wcscpy(texturefilename_, Support::renameExtension(ModelFileName,"jpeg"));
-
-	//テクスチャ読み込み
-	loadTexture(texturefilename_);
+	//ファイル名を保存
+	wcscpy(texturefilename_[0], TextureFileName);
 
 	if (!initBuffer())
 	{
@@ -37,10 +36,61 @@ bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 	return true;
 }
 
+bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, const wchar_t* TextureFileName2)
+{
+	//モデルデータ読み込み
+	if (!loadModel(ModelFileName))
+	{
+		return false;
+	}
+
+	//ファイル名を保存
+	wcscpy(texturefilename_[0], TextureFileName1);
+	wcscpy(texturefilename_[1], TextureFileName2);
+
+	if (!initBuffer())
+	{
+		Error::showDialog("バッファの初期化に失敗");
+		return false;
+	}
+	return false;
+}
+
+bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, const wchar_t* TextureFileName2, const wchar_t* MaskFileName)
+{
+	//モデルデータ読み込み
+	if (!loadModel(ModelFileName))
+	{
+		return false;
+	}
+
+	//ファイル名を保存
+	wcscpy(texturefilename_[0], TextureFileName1);
+	wcscpy(texturefilename_[1], TextureFileName2);
+	wcscpy(mapfilename_, MaskFileName);
+
+	if (!initBuffer())
+	{
+		Error::showDialog("バッファの初期化に失敗");
+		return false;
+	}
+	return false;
+}
+
 void Model::destroy()
 {
-	//モデルテクスチャを解放
-	releaseTexture();
+	//このモデルが使用したテクスチャを解放させる
+	for (int i = 0; i < kMaxTexture; i++)
+	{
+		if (texturefilename_[i] != NULL)
+			TextureFactory::getInstance()->deleteTexture(texturefilename_[0]);
+	}
+
+	if (mapfilename_ != NULL)
+	{
+		TextureFactory::getInstance()->deleteTexture(mapfilename_);
+	}
+
 }
 
 void Model::render()
@@ -136,12 +186,6 @@ void Model::renderBuffer()
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void Model::loadTexture(const wchar_t* FileName)
-{
-
-	TextureFactory::getInstance()->getTexture(FileName);
-}
-
 bool Model::loadModel(const wchar_t* ModelFileName)
 {
 	std::fstream fp;
@@ -199,23 +243,4 @@ bool Model::loadModel(const wchar_t* ModelFileName)
 	fp.close();
 
 	return true;
-}
-
-void Model::releaseTexture()
-{
-	TextureFactory::getInstance()->deleteTexture(texturefilename_);
-}
-
-void Model::setPosition(const float X, const float Y, const float Z)
-{
-	positionx_ = X;
-	positiony_ = Y;
-	positionz_ = Z;
-}
-
-void Model::getPosition(float& X, float& Y, float& Z)
-{
-	X = positionx_;
-	Y = positiony_;
-	Z = positionz_;
 }

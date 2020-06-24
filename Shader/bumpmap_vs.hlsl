@@ -29,10 +29,12 @@ PixelInputType main(VertexInputType Input)
 
     Input.position.w = 1.0F;
 
+    //頂点座標を計算
     output.position = mul(Input.position, world);
     output.position = mul(output.position, view);
     output.position = mul(output.position, projection);
 
+    //テクスチャを保存
     output.tex = Input.tex;
 
     //ワールドマトリックスのみに対して法線ベクトルを計算して最終的な値を正規化

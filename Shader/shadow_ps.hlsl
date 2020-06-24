@@ -34,10 +34,11 @@ float4 main(PixelInputType input) : SV_TARGET
 
     bias = 0.001f;
 
+    //アンビエントを設定
     color = ambientColor;
 
-    projectTexCoord.x = input.lightViewPosition.x / input.lightViewPosition.w / 2.0f + 0.5f;
-    projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w / 2.0f + 0.5f;
+    projectTexCoord.x = input.lightViewPosition.x / input.lightViewPosition.w *0.5F + 0.5f;
+    projectTexCoord.y = -input.lightViewPosition.y / input.lightViewPosition.w * 0.5F + 0.5f;
 
     if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
     {
