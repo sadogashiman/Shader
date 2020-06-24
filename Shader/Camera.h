@@ -8,17 +8,17 @@ private:
 	Matrix view_;
 	Matrix reflectionview_;
 	Matrix baseview_;
-	Position poscontroller_;
+	std::unique_ptr<Position> poscontroller_;
 public:
 	Camera();
 	~Camera();
+	bool init();
 
 	//Move
-	void moveCamera();
+	void update();
 
 	//Render
 	void render();
-	void renderReflection(const float Height);
 	void renderBaseViewMatrix();
 
 	//Set

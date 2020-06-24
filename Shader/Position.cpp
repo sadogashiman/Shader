@@ -7,6 +7,8 @@ const float kLookspeed = 0.3F;
 Position::Position()
 {
 	ZeroMemory(this, sizeof(Position));
+	position_.y = 2.0F;
+	position_.x = 50.0F;
 }
 
 void Position::moveForWard(bool KeyDown)

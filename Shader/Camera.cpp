@@ -12,9 +12,34 @@ Camera::~Camera()
 {
 }
 
-void Camera::moveCamera()
+bool Camera::init()
 {
+	//座標管理クラスを生成
+	poscontroller_.reset(new Position);
+	if (!poscontroller_.get())
+	{
+		return false;
+	}
 
+	return true;
+}
+
+void Camera::update()
+{
+	//カメラ制御
+	poscontroller_.get()->setFrameTime(16.0F);
+
+	poscontroller_.get()->turnLeft(Input::getInstance()->isKeyState(DIK_LEFT));
+	poscontroller_.get()->turnRight(Input::getInstance()->isKeyState(DIK_RIGHT));
+	poscontroller_.get()->moveForWard(Input::getInstance()->isKeyState(DIK_UP));
+	poscontroller_.get()->moveBackWard(Input::getInstance()->isKeyState(DIK_DOWN));
+	poscontroller_.get()->moveUpWard(Input::getInstance()->isKeyState(DIK_A));
+	poscontroller_.get()->moveDownWard(Input::getInstance()->isKeyState(DIK_Z));
+	poscontroller_.get()->lookUpWard(Input::getInstance()->isKeyState(DIK_PGUP));
+	poscontroller_.get()->lookDownWard(Input::getInstance()->isKeyState(DIK_PGDN));
+
+	setPosition(poscontroller_.get()->getPosition());
+	setRotation(poscontroller_.get()->getRotation());
 }
 
 void Camera::render()
@@ -53,32 +78,6 @@ void Camera::render()
 
 	//更新されたベクトルからビュー行列を作成
 	view_ = XMMatrixLookAtLH(position, lookat, up);
-}
-
-void Camera::renderReflection(const float Height)
-{
-	Vector3 up, position, lookat;
-	float radian;
-
-	//上向きのベクトルを計算
-	up.x = 0.0F;
-	up.y = 1.0F;
-	up.z = 0.0F;
-
-	//平面反射の場合カメラの位置を反転
-	position.x = position_.x;
-	position.y = -position_.y + (Height * 2.0F);
-	position.z = position_.z;
-
-	//ラジアン単位で回転を計算
-	radian = XMConvertToRadians(rotation_.y);
-
-	lookat.x = sinf(radian) + position_.x;
-	lookat.y = position_.y;
-	lookat.z = cosf(radian) + position_.z;
-
-	//3つのベクトルからビュー行列を作成
-	reflectionview_ = XMMatrixLookAtLH(position_, lookat, up);
 }
 
 void Camera::renderBaseViewMatrix()

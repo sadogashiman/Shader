@@ -1,37 +1,36 @@
 #pragma once
-#include"Lightshader.h"
 #include"model.h"
-#include"OrthoWindow.h"
-#include"Deferredbuffers.h"
-#include"Deferredshader.h"
 #include"Camera.h"
 #include"Light.h"
 #include"SkyDome.h"
 #include"State.h"
 #include"Terrain.h"
-#include"Timer.h"
-#include"OrthoWindow.h"
 #include"Skyplane.h"
+#include"Tree.h"
 
 class Game :public State
 {
 private:
-
 	Light* light_;
-	Model* model_;
 	Camera* camera_;
-	OrthoWindow* ortho_;
-	Deferredbuffers* defbuffer_;
-	LightShader* lightshader_;
 	SkyDome* sky_;
 	Terrain* terrain_;
-	OrthoWindow* orthowindow_;
 	Position position_;
 	Skyplane* skyplane_;
-	void handleMovementInput();
-	bool renderSceneToTexture();
 
+	//3Dƒ‚ƒfƒ‹
+	Model* texmodel_;
+	Model* bumpmodel_;
+	Model* lightmodel_;
+	Model* maskmodel_;
+	Model* multitexmodel_;
+	Model* colormodel_;
+	Tree* transmodel_;
+
+	void switchWireFrame();
 	bool wire_;
+	bool modelRender();
+	bool worldRender();
 public:
 	Game();
 	~Game();

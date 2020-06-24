@@ -28,7 +28,14 @@ bool Game::init()
 		return false;
 	}
 
-	camera_->setPosition(Vector3(0.0F, 0.0F, -10.0F));
+	result = camera_->init();
+	if (!result)
+	{
+		Error::showDialog("カメラの初期化に失敗");
+		return false;
+	}
+
+	camera_->setPosition(Vector3(0.0F, 3.0F, 10.0F));
 	camera_->render();
 	camera_->renderBaseViewMatrix();
 
@@ -96,7 +103,8 @@ bool Game::init()
 State* Game::update()
 {
 	bool result;
-	handleMovementInput();
+	camera_->update();
+	switchWireFrame();
 
 	result = render();
 	if (!result)
@@ -110,58 +118,18 @@ State* Game::update()
 
 bool Game::render()
 {
-	Matrix world, projection;
-	Matrix skyworld;
-	Matrix view;
+
 
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
-	//行列を取得
-	world = Direct3D::getInstance()->getWorld();
-	projection = Direct3D::getInstance()->getProjection();
-	view = camera_->getViewMatrix();
-	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
-
-	camera_->render();
-
-	//Zバッファ・カリングをオフ
-	Direct3D::getInstance()->turnCullingDisable();
-	Direct3D::getInstance()->turnZbufferDisable();
-
-	if (!(ShaderManager::getInstance()->skyDomeRender(sky_, skyworld, view, projection)))
+	if (!worldRender())
 	{
 		return false;
 	}
 
-	//Zバッファ・カリングをオン
-	Direct3D::getInstance()->turnCullingEnable();
 
-	Direct3D::getInstance()->turnAddBlendEnable();
-	world = Direct3D::getInstance()->getWorld();
-
-	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, skyworld, view, projection)))
-	{
-		return false;
-	}
-
-	Direct3D::getInstance()->turnAlphablendDisable();
-
-	Direct3D::getInstance()->turnZbufferEnable();
-
-	if (wire_)
-		Direct3D::getInstance()->wireFrameEnable();
-
-	if (!(ShaderManager::getInstance()->terrainRender(terrain_, world, view, projection,light_)))
-	{
-		return false;
-	}
-
-	if (wire_)
-		Direct3D::getInstance()->wireFrameDisable();
-
-	//2Dレンダリングが終了したのでZバッファを有効にする
-	Direct3D::getInstance()->turnZbufferEnable();
+	
 
 	//描画終了
 	Direct3D::getInstance()->end();
@@ -178,88 +146,8 @@ void Game::destroy()
 	SAFE_DELETE(camera_);
 }
 
-bool Game::renderSceneToTexture()
+void Game::switchWireFrame()
 {
-	Matrix world, view, projection;
-	Matrix skyworld;
-
-	//レンダーターゲットを作成
-	defbuffer_->setRenderTargets();
-
-	//レンダーバッファをクリア
-	defbuffer_->clearRenderTargets(Colors::Black);
-
-	//行列を取得
-	world = Direct3D::getInstance()->getWorld();
-	projection = Direct3D::getInstance()->getProjection();
-	view = camera_->getViewMatrix();
-	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
-
-	camera_->render();
-
-	//Zバッファ・カリングをオフ
-	Direct3D::getInstance()->turnCullingDisable();
-	Direct3D::getInstance()->turnZbufferDisable();
-
-	if (!(ShaderManager::getInstance()->skyDomeRender(sky_, skyworld, view, projection)))
-	{
-		return false;
-	}
-
-	//Zバッファ・カリングをオン
-	Direct3D::getInstance()->turnCullingEnable();
-
-	Direct3D::getInstance()->turnAddBlendEnable();
-	world = Direct3D::getInstance()->getWorld();
-
-	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, skyworld, view, projection)))
-	{
-		return false;
-	}
-
-	Direct3D::getInstance()->turnAlphablendDisable();
-
-	Direct3D::getInstance()->turnZbufferEnable();
-
-
-
-	if (wire_)
-		Direct3D::getInstance()->wireFrameEnable();
-
-	if (!(ShaderManager::getInstance()->deferredRender(terrain_, world, view, projection, terrain_->getTexture())))
-	{
-		return false;
-	}
-
-	if (wire_)
-		Direct3D::getInstance()->wireFrameDisable();
-
-	//バックバッファにレンダリングターゲットを移す
-	Direct3D::getInstance()->setBackBufferRenderTarget();
-
-	//ビューポートをリセット
-	Direct3D::getInstance()->resetViewPort();
-
-	return true;
-}
-
-void Game::handleMovementInput()
-{
-	//カメラ制御
-	position_.setFrameTime(16.0F);
-
-	position_.turnLeft(Input::getInstance()->isKeyState(DIK_LEFT));
-	position_.turnRight(Input::getInstance()->isKeyState(DIK_RIGHT));
-	position_.moveForWard(Input::getInstance()->isKeyState(DIK_UP));
-	position_.moveBackWard(Input::getInstance()->isKeyState(DIK_DOWN));
-	position_.moveUpWard(Input::getInstance()->isKeyState(DIK_A));
-	position_.moveDownWard(Input::getInstance()->isKeyState(DIK_Z));
-	position_.lookUpWard(Input::getInstance()->isKeyState(DIK_PGUP));
-	position_.lookDownWard(Input::getInstance()->isKeyState(DIK_PGDN));
-
-	camera_->setPosition(position_.getPosition());
-	camera_->setRotation(position_.getRotation());
-	Input::getInstance()->anyKeyUp();
 	if (Input::getInstance()->isKeyPressed(DIK_F2))
 	{
 		if (wire_)
@@ -271,4 +159,71 @@ void Game::handleMovementInput()
 			wire_ = true;
 		}
 	}
+}
+
+bool Game::modelRender()
+{
+	return true;
+}
+
+bool Game::worldRender()
+{
+	Matrix world, projection;
+	Matrix skyworld;
+	Matrix view;
+
+	//行列を取得
+	world = Direct3D::getInstance()->getWorld();
+	projection = Direct3D::getInstance()->getProjection();
+	view = camera_->getViewMatrix();
+	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
+
+	//カメラ視点をレンダリング
+	camera_->render();
+
+	//Zバッファ・カリングをオフ
+	Direct3D::getInstance()->turnCullingDisable();
+	Direct3D::getInstance()->turnZbufferDisable();
+
+	//スカイドームをレンダリング
+	if (!(ShaderManager::getInstance()->skyDomeRender(sky_, skyworld, view, projection)))
+	{
+		return false;
+	}
+
+	//カリングをオン
+	Direct3D::getInstance()->turnCullingEnable();
+
+	//加算合成オン
+	Direct3D::getInstance()->turnAddBlendEnable();
+
+	//雲をレンダリング
+	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, skyworld, view, projection)))
+	{
+		return false;
+	}
+
+	//合成オフ
+	Direct3D::getInstance()->turnAlphablendDisable();
+
+	//Zバッファオン
+	Direct3D::getInstance()->turnZbufferEnable();
+	//ワイヤーフレーム切り替え
+
+	if (wire_)
+		Direct3D::getInstance()->wireFrameEnable();
+
+	//テレインをレンダリング
+	if (!(ShaderManager::getInstance()->terrainRender(terrain_, world, view, projection, light_)))
+	{
+		return false;
+	}
+
+	if (wire_)
+		Direct3D::getInstance()->wireFrameDisable();
+
+	//2Dレンダリングが終了したのでZバッファを有効にする
+	Direct3D::getInstance()->turnZbufferEnable();
+
+	return true;
 }
