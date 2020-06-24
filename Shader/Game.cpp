@@ -39,8 +39,9 @@ bool Game::init()
 		return false;
 	}
 
+	light_->setAmbientColor(0.05F, 0.05F, 0.05F, 1.0F);
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
-	light_->setDirection(-0.5F, -1.0F, -0.5F);
+	light_->setDirection(-0.5F, -1.0F, 0.0F);
 
 	sky_ = new SkyDome;
 	if (!sky_)
@@ -148,12 +149,10 @@ bool Game::render()
 
 	Direct3D::getInstance()->turnZbufferEnable();
 
-
-
 	if (wire_)
 		Direct3D::getInstance()->wireFrameEnable();
 
-	if (!(ShaderManager::getInstance()->textureRender(terrain_, world, view, projection, terrain_->getTexture())))
+	if (!(ShaderManager::getInstance()->terrainRender(terrain_, world, view, projection,light_)))
 	{
 		return false;
 	}

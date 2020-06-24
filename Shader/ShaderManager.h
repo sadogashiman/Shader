@@ -13,12 +13,14 @@
 #include"Skydomeshader.h"
 #include"Colorshader.h"
 #include"SkyplaneShader.h"
+#include"TerrainShader.h"
 
 //モデル
 #include"Model3D.h"
 #include"Model.h"
 #include"SkyDome.h"
 #include"Skyplane.h"
+#include"Terrain.h"
 
 
 class ShaderManager
@@ -42,6 +44,7 @@ private:
 	std::unique_ptr<Skydomeshader> skydomeshader_;
 	std::unique_ptr<Colorshader> colorshader_;
 	std::unique_ptr<SkyplaneShader> skyplaneshader_;
+	std::unique_ptr<TerrainShader> terrainshader_;
 public:
 
 	bool init();
@@ -85,5 +88,8 @@ public:
 
 	//スカイドーム用雲専用レンダー
 	bool skyPlaneRender(Skyplane* Skyplane, Matrix World, Matrix View, Matrix Projection);
+
+	//テレイン専用レンダー
+	bool terrainRender(Terrain* Model, Matrix World, Matrix View, Matrix Projection, Light* Light);
 };
 

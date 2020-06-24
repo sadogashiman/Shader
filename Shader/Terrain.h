@@ -46,9 +46,9 @@ private:
 	bool loadBitmapHeightMap();
 	void setTerrainCoordinate();
 	bool buildTerrainModel();
-	bool calcNormal();
 	void destroyHightMap();
 	void destroyTerrainModel();
+	bool calcNormal();
 public:
 	Terrain();
 	~Terrain();

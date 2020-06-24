@@ -34,6 +34,12 @@ bool Terrain::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 
 	//読み込んだ設定をテレインに反映
 	setTerrainCoordinate();
+	result = calcNormal();
+	if (!result)
+	{
+		Error::showDialog("法線の計算に失敗");
+		return false;
+	}
 
 	//地形情報を生成
 	result = buildTerrainModel();
@@ -461,9 +467,9 @@ bool Terrain::calcNormal()
 	//配列サイズを変更
 	normal.resize((terrainheight_ - 1) * (terrainwidth_ - 1));
 
-	for (int i = 0; i < terrainheight_; i++)
+	for (int i = 0; i < terrainheight_-1; i++)
 	{
-		for (int j = 0; j < terrainwidth_; j++)
+		for (int j = 0; j < terrainwidth_-1; j++)
 		{
 
 			//三角形を形成
@@ -514,16 +520,15 @@ bool Terrain::calcNormal()
 	{
 		for (int j = 0; j < terrainwidth_; j++)
 		{
-			//合計数を初期化
-			for (int k = 0; k < 3; k++)
-			{
-				sum[i] = 0.0F;
-			}
+			//合計値を初期化
+			sum[0] = 0.0F;
+			sum[1] = 0.0F;
+			sum[2] = 0.0F;
 
 			//左下のフェース
 			if (((j - 1) >= 0) && ((i - 1) >= 0))
 			{
-				index = ((i - 1) * (terrainwidth_ - 1)) + (j + 1);
+				index = ((i - 1) * (terrainwidth_ - 1)) + (j - 1);
 
 				sum[0] += normal[index].position.x;
 				sum[1] += normal[index].position.y;
@@ -531,7 +536,7 @@ bool Terrain::calcNormal()
 			}
 
 			//右下のフェース
-			if ((i < (terrainwidth_ - 1)) && ((i - 1) >= 0))
+			if ((j < (terrainwidth_ - 1)) && ((i - 1) >= 0))
 			{
 				index = ((i - 1) * (terrainwidth_ - 1)) + j;
 
@@ -543,7 +548,7 @@ bool Terrain::calcNormal()
 			//左上のフェース
 			if (((j - 1) >= 0) && (i < (terrainheight_ - 1)))
 			{
-				index = (i * (terrainwidth_ - 1)) + (j - 1);
+				index = (i * (terrainheight_ - 1)) + (j - 1);
 
 				sum[0] += normal[index].position.x;
 				sum[1] += normal[index].position.y;
@@ -561,15 +566,15 @@ bool Terrain::calcNormal()
 			}
 
 			//法線の長さを計算
-			length = static_cast<float>(std::sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2])));
+			length = std::sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2]));
 
 			//インデックスを計算
 			index = (i * terrainwidth_) + j;
 
 			//正規化
-			heightmap_[index].normal.x = sum[0] / length;
-			heightmap_[index].normal.y = sum[1] / length;
-			heightmap_[index].normal.z = sum[2] / length;
+			heightmap_[index].normal.x = (sum[0] / length);
+			heightmap_[index].normal.y = (sum[1] / length);
+			heightmap_[index].normal.z = (sum[2] / length);
 		}
 	}
 

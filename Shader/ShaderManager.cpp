@@ -137,6 +137,18 @@ bool ShaderManager::init()
 		Error::showDialog("SkyPlaneシェーダーの初期化に失敗");
 		return false;
 	}
+
+	terrainshader_.reset(new TerrainShader);
+	if (!terrainshader_.get())
+	{
+		return false;
+	}
+
+	if (!terrainshader_.get()->init())
+	{
+		Error::showDialog("テレインシェーダーの初期化に失敗");
+		return false;
+	}
 	
 	return true;
 }
@@ -210,4 +222,10 @@ bool ShaderManager::skyPlaneRender(Skyplane* Skyplane, Matrix World, Matrix View
 {
 	Skyplane->render();
 	return skyplaneshader_.get()->render(Skyplane->getIndexCount(), World, View, Projection, Skyplane->getCloudTexture(), Skyplane->getPerturbTexture(),Skyplane->getTransition(),Skyplane->getScale(),Skyplane->getBrightness());
+}
+
+bool ShaderManager::terrainRender(Terrain* Model, Matrix World, Matrix View, Matrix Projection, Light* Light)
+{
+	Model->render();
+	return terrainshader_.get()->render(Model->getIndexCount(), World, View, Projection, Light->getAmbientColor(), Light->getDiffuseColor(), Light->getDirection(),Model->getTexture());
 }

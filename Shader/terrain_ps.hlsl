@@ -1,3 +1,6 @@
+Texture2D shadertexture;
+SamplerState sampletype;
+
 cbuffer LightBuffer
 {
     float4 ambient;
@@ -9,14 +12,19 @@ cbuffer LightBuffer
 struct PixelInputType
 {
     float4 position : SV_POSITION;
-    float3 normal : NORMA;
+    float2 tex : TEXCOORD;
+    float3 normal : NORMAL;
 };
 
 float4 main(PixelInputType input):SV_TARGET
 {
+    float4 texturecolor;
     float3 lightdir;
     float lightintensity;
     float4 color;
+    
+    //テクスチャサンプリング
+    texturecolor = shadertexture.Sample(sampletype, input.tex);
     
     //環境光を設定
     color = ambient;
@@ -35,6 +43,8 @@ float4 main(PixelInputType input):SV_TARGET
     
     //色を飽和
     color = saturate(color);
+    
+    color = color * texturecolor;
     
     return color;
     

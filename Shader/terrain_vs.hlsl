@@ -8,12 +8,14 @@ cbuffer Matrixbuffer
 struct VertexInputType
 {
     float4 position : POSITION;
+    float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
 };
 
 struct PixelInputType
 {
     float4 position : SV_POSITION;
+    float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
 };
 
@@ -28,6 +30,9 @@ PixelInputType main(VertexInputType input)
     output.position = mul(input.position, world);
     output.position = mul(output.position, view);
     output.position = mul(output.position, projection);
+    
+    //テクスチャUVを保存
+    output.tex = input.tex;
     
     //法線にワールド行列のみ計算をかける
     output.normal = mul(input.normal, (float3x3) world);

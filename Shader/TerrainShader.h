@@ -27,12 +27,12 @@ private:
 	std::unique_ptr<Support> support_;
 
 
-	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection);
+	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection, ID3D11ShaderResourceView* Texture);
 	void renderShader(const int IndexCount);
 
 public:
 	bool init();
-	bool render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection);
+	bool render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection,ID3D11ShaderResourceView* Texture);
 
 };
 

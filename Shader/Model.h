@@ -69,7 +69,7 @@ public:
 	//get
 	void getPosition(float& X, float& Y, float& Z);
 	inline const int getIndexCount()const { return indexcount_; }
-	inline ID3D11ShaderResourceView* getTexture()const { return TextureFactory::getInstance()->getTexture(texturefilename_); }
+	inline const ID3D11ShaderResourceView* const getTexture()const { return TextureFactory::getInstance()->getTexture(texturefilename_); }
 	inline ID3D11ShaderResourceView* getNormalTexture()const { return TextureFactory::getInstance()->getTexture(mapfilename_); }
 	inline ID3D11ShaderResourceView** getTextureMapArray() { return texturearray_; }
 };

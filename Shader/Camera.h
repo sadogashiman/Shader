@@ -8,7 +8,7 @@ private:
 	Matrix view_;
 	Matrix reflectionview_;
 	Matrix baseview_;
-	Position poscontroller;
+	Position poscontroller_;
 public:
 	Camera();
 	~Camera();

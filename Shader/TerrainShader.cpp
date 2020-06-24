@@ -5,7 +5,7 @@
 bool TerrainShader::init()
 {
 	HRESULT hr;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
+	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
 	unsigned int numelements;
 	D3D11_SAMPLER_DESC sampledesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
@@ -41,13 +41,21 @@ bool TerrainShader::init()
 	polygonlayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[0].InstanceDataStepRate = 0;
 
-	polygonlayout[1].SemanticName = "NORMAL";
+	polygonlayout[1].SemanticName = "TEXCOORD";
 	polygonlayout[1].SemanticIndex = 0;
-	polygonlayout[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonlayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	polygonlayout[1].InputSlot = 0;
 	polygonlayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[1].InstanceDataStepRate = 0;
+
+	polygonlayout[2].SemanticName = "NORMAL";
+	polygonlayout[2].SemanticIndex = 0;
+	polygonlayout[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonlayout[2].InputSlot = 0;
+	polygonlayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonlayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonlayout[2].InstanceDataStepRate = 0;
 
 	//要素数を算出
 	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
@@ -117,11 +125,11 @@ bool TerrainShader::init()
 	return true;
 }
 
-bool TerrainShader::render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection)
+bool TerrainShader::render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection, ID3D11ShaderResourceView* Texture)
 {
 	bool result;
 
-	result = setShaderParameters(World, View, Projection, AmbientColor, DiffuseColor, LightDirection);
+	result = setShaderParameters(World, View, Projection, AmbientColor, DiffuseColor, LightDirection,Texture);
 	if (!result)
 	{
 		Error::showDialog("シェーダーパラメーターの設定に失敗");
@@ -133,7 +141,7 @@ bool TerrainShader::render(const int IndexCount, Matrix World, Matrix View, Matr
 	return true;
 }
 
-bool TerrainShader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection)
+bool TerrainShader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection, ID3D11ShaderResourceView* Texture)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresource;
@@ -179,6 +187,7 @@ bool TerrainShader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 		return false;
 	}
 
+	//ポインタをキャスト
 	dataptr2 = (LightBufferType*)mappedresource.pData;
 
 	//ポインタキャスト
@@ -196,6 +205,8 @@ bool TerrainShader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 	//定数バッファをセット
 	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffernumber, 1, lightbuffer_.GetAddressOf());
 
+	//テクスチャセット
+	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
 	return true;
 }
 
