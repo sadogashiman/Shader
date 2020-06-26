@@ -75,9 +75,10 @@ bool ParticleShader::init()
 	}
 
 	//動的定数バッファの設定
-	matrixbufferdesc.Usage = D3D11_USAGE_DEFAULT;
+	matrixbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
 	matrixbufferdesc.ByteWidth = sizeof(MatrixBufferType);
 	matrixbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	matrixbufferdesc.MiscFlags = 0;
 	matrixbufferdesc.StructureByteStride = 0;
 
@@ -92,7 +93,7 @@ bool ParticleShader::init()
 	//サンプラーの設定
 	samplerdesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerdesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;;
+	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerdesc.MipLODBias = 0.0F;
 	samplerdesc.MaxAnisotropy = 1;
@@ -105,7 +106,7 @@ bool ParticleShader::init()
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	//サンプラーを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, &samplerstate_);
+	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplerstate_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("サンプラーの作成に失敗");
@@ -134,9 +135,6 @@ bool ParticleShader::render(const int IndexCount, Matrix World, Matrix View, Mat
 
 void ParticleShader::destroy()
 {
-	SAFE_RELEASE(layout_);
-	SAFE_RELEASE(pixelshader_);
-	SAFE_RELEASE(vertexshader_);
 }
 
 void ParticleShader::renderrShader(const int IndexCount)

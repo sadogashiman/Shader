@@ -77,6 +77,6 @@ public:
 	inline Vector3 getPosition() { return position_; }
 	inline const int getIndexCount()const { return indexcount_; }
 	inline ID3D11ShaderResourceView* getTexture(const int TextureNumber = 0)const { return TextureFactory::getInstance()->getTexture(texturefilename_[TextureNumber]); }
-	inline ID3D11ShaderResourceView* getNormalTexture()const { return TextureFactory::getInstance()->getTexture(mapfilename_); }
+	inline ID3D11ShaderResourceView* getMapTexture()const { return TextureFactory::getInstance()->getTexture(mapfilename_); }
 };
 

@@ -4,7 +4,6 @@
 
 ParticleSystem::ParticleSystem()
 {
-	ZeroMemory(this, sizeof(ParticleSystem));
 }
 
 ParticleSystem::~ParticleSystem()
@@ -37,7 +36,7 @@ bool ParticleSystem::init(const wchar_t* FileName)
 	return true;
 }
 
-bool ParticleSystem::update(const float FrameTime)
+bool ParticleSystem::update()
 {
 	bool result;
 
@@ -45,10 +44,10 @@ bool ParticleSystem::update(const float FrameTime)
 	killParticle();
 
 	//新しいパーティクルを放出
-	emitParticle(FrameTime);
+	emitParticle();
 
 	//パーティクルを更新
-	updateParticle(FrameTime);
+	updateParticle();
 
 	//動的頂点バッファを更新
 	result = updateBuffer();
@@ -69,12 +68,6 @@ void ParticleSystem::render()
 
 void ParticleSystem::destroy()
 {
-	//バッファを破棄
-	destroyBuffer();
-
-	//パーティクルシステムを停止
-	destroyParticleSystem();
-
 	//テクスチャを解放
 	TextureFactory::getInstance()->deleteTexture(filename_);
 }
@@ -98,17 +91,14 @@ bool ParticleSystem::initParticleSystem()
 	data_.perSecond = 250.0F;
 
 	//パーティクルの最大数を設定
-	data_.max = 5000;
+	data_.max = 2;
 
 	//リストを作成
-	particlelist_.resize(data_.max);
+	particlevector_.resize(data_.max);
 
-	std::list<std::unique_ptr<ParticleType>>::iterator itr;
-
-	//リスト内のパーティクルの状態を初期化
-	for (itr = particlelist_.begin(); itr != particlelist_.end(); itr++)
+	for (auto& itr : particlevector_)
 	{
-		(*itr)->active = false;
+		itr.active = false;
 	}
 
 	//現在放出されているパーティクルの数を0にする
@@ -118,10 +108,6 @@ bool ParticleSystem::initParticleSystem()
 	accumulatedtime_ = 0.0F;
 
 	return true;
-}
-
-void ParticleSystem::destroyParticleSystem()
-{
 }
 
 bool ParticleSystem::initbuffer()
@@ -170,12 +156,12 @@ bool ParticleSystem::initbuffer()
 	vertexbufferdesc.StructureByteStride = 0;
 
 	//サブリソースへのポインタを作成
-	vertexdata.pSysMem = &vertices_;
+	vertexdata.pSysMem = &vertices_[0];
 	vertexdata.SysMemPitch = 0;
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, &vertexbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -190,12 +176,12 @@ bool ParticleSystem::initbuffer()
 	indexbufferdesc.StructureByteStride = 0;
 
 	//サブリソースへのポインタを作成
-	indexdata.pSysMem = &indices;
+	indexdata.pSysMem = &indices[0];
 	indexdata.SysMemPitch = 0;
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, &indexbuffer_);
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -214,53 +200,52 @@ bool ParticleSystem::updateBuffer()
 	VertexType* verticesptr;
 	int index;
 
+	ZeroMemory(&vertices_[0], sizeof(VertexType)*vertexcnt_);
+
 	//インデックスを初期化
 	index = 0;
-
-	std::list<std::unique_ptr<ParticleType>>::iterator itr;
-
-	for (itr = particlelist_.begin();itr!=particlelist_.end();itr++)
+	for (int i = 0;i<currentcnt_;i++)
 	{
 		//左下
-		vertices_[index].position = Vector3(itr->get()->position.x - data_.size, itr->get()->position.y - data_.size, itr->get()->position.z);
+		vertices_[index].position = Vector3(particlevector_[i].position.x - data_.size, particlevector_[i].position.y - data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(0.0F, 1.0F);
-		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
 		index++;
 
 		//左上
-		vertices_[index].position = Vector3(itr->get()->position.x - data_.size, itr->get()->position.y + data_.size, itr->get()->position.z);
+		vertices_[index].position = Vector3(particlevector_[i].position.x - data_.size, particlevector_[i].position.y + data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(0.0F, 0.0F);
-		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
 		index++;
 
 		//右下
-		vertices_[index].position = Vector3(itr->get()->position.x + data_.size, itr->get()->position.y - data_.size, itr->get()->position.z);
+		vertices_[index].position = Vector3(particlevector_[i].position.x + data_.size, particlevector_[i].position.y - data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(1.0F, 1.0F);
-		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
 		index++;
 
 		//右下
-		vertices_[index].position = Vector3(itr->get()->position.x + data_.size, itr->get()->position.y - data_.size, itr->get()->position.z);
+		vertices_[index].position = Vector3(particlevector_[i].position.x + data_.size, particlevector_[i].position.y - data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(1.0F, 1.0F);
-		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
 		index++;
 
 		//左上
-		vertices_[index].position = Vector3(itr->get()->position.x - data_.size, itr->get()->position.y + data_.size, itr->get()->position.z);
+		vertices_[index].position = Vector3(particlevector_[i].position.x - data_.size, particlevector_[i].position.y + data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(0.0F, 0.0F);
-		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
 		index++;
 
-		vertices_[index].position = Vector3(itr->get()->position.x + data_.size, itr->get()->position.y + data_.size, itr->get()->position.z);
+		//右上
+		vertices_[index].position = Vector3(particlevector_[i].position.x + data_.size, particlevector_[i].position.y + data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(1.0F, 0.0F);
-		vertices_[index].color = Vector4(itr->get()->color.x, itr->get()->color.y, itr->get()->color.z, 1.0F);
+		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
 		index++;
 
-		itr++;
 	}
 
 	//頂点バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(vertexbuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = Direct3D::getInstance()->getContext()->Map(vertexbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点バッファのロックに失敗");
@@ -271,10 +256,10 @@ bool ParticleSystem::updateBuffer()
 	verticesptr = (VertexType*)mappedresource.pData;
 
 	//頂点バッファをコピー
-	memcpy(verticesptr, (void*)&vertices_, sizeof(VertexType*) * vertexcnt_);
+	memcpy(verticesptr, (void*)vertices_.data(), sizeof(VertexType) * vertexcnt_);
 
 	//頂点バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(vertexbuffer_, 0);
+	Direct3D::getInstance()->getContext()->Unmap(vertexbuffer_.Get(), 0);
 
 	return true;
 }
@@ -289,21 +274,16 @@ void ParticleSystem::renderBuffer()
 	offset = 0;
 
 	//頂点バッファを入力アセンブラでアクティブに設定
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, &vertexbuffer_, &stride, &offset);
+	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
 
 	//インデックスバッファを入力アセンブラでアクティブに設定
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_, DXGI_FORMAT_R32_UINT, 0);
+	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//頂点のプリミティブタイプを設定
 	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ParticleSystem::destroyBuffer()
-{
-
-}
-
-void ParticleSystem::emitParticle(const float FrameTime)
+void ParticleSystem::emitParticle()
 {
 	bool emit;
 	Vector3 position;
@@ -311,10 +291,10 @@ void ParticleSystem::emitParticle(const float FrameTime)
 	std::random_device seed;
 	std::mt19937 engine(seed());
 	std::normal_distribution<> dist(1.0, 0.5);
-	std::unique_ptr<ParticleType> newparticle;
+	ParticleType newparticle;
 
 	//フレーム時間を加算
-	accumulatedtime_ += FrameTime;
+	accumulatedtime_ += kFrameTime;
 
 	//フラグをオフに設定
 	emit = false;
@@ -327,54 +307,53 @@ void ParticleSystem::emitParticle(const float FrameTime)
 	}
 
 	//放出するパーティクルがある場合フレームごとに1つ放出
-	if (emit && (accumulatedtime_ < (data_.max - 1)))
+	if (emit && (currentcnt_ < (data_.max - 1)))
 	{
-		//総数を加算
-		currentcnt_++;
-
 		//ランダムにプロパティを設定し生成
-		newparticle.get()->position.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX)* data_.deviation.x;
-		newparticle.get()->position.y = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX)* data_.deviation.y;
-		newparticle.get()->position.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX)* data_.deviation.z;
+		newparticle.position.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.x;
+		newparticle.position.y = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.y;
+		newparticle.position.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.z;
 
 		//速度を設定
-		newparticle.get()->velocity = data_.velocity + (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX)* data_.velocityVariation;
+		newparticle.velocity = data_.velocity + (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.velocityVariation;
 
 		//色を設定
-		newparticle.get()->color.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
-		newparticle.get()->color.y = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
-		newparticle.get()->color.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
+		newparticle.color.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
+		newparticle.color.y = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
+		newparticle.color.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
 
 		//設定したデータを末尾に追加
-		particlelist_.push_back(std::move(newparticle));
+		particlevector_[currentcnt_++] = newparticle;
 
-		//Z軸を基準にlistをソート
-		std::sort(particlelist_.begin()->get(), particlelist_.end()->get());
+		//Z軸を基準にソート
+		std::sort(particlevector_.begin(), particlevector_.end(), [](const ParticleType& First, const ParticleType& Second) {return First.position.z < Second.position.z; });
 	}
 }
 
-void ParticleSystem::updateParticle(const float FrameTime)
+void ParticleSystem::updateParticle()
 {
-	std::list<std::unique_ptr<ParticleType>>::iterator itr;
-
-	//すべてのパーティクルを更新
-	for (itr = particlelist_.begin(); itr != particlelist_.end(); itr++)
+	for (auto& itr : particlevector_)
 	{
-		itr->get()->position.y -= itr->get()->velocity * FrameTime * 0.001F;
+		itr.position.y -= itr.velocity * kFrameTime * 0.001F;
 	}
+
 }
 
 void ParticleSystem::killParticle()
 {
-	std::list<std::unique_ptr<ParticleType>>::iterator itr;
-
-	for (itr = particlelist_.begin(); itr != particlelist_.end(); itr++)
+	for (auto itr = particlevector_.begin(); itr != particlevector_.end();)
 	{
-		//一定の座標に行ったら要素を削除
-		if (itr->get()->active && itr->get()->position.y < -3.0F)
+		if (itr->active && itr->position.y < -3.0F)
 		{
-			particlelist_.erase(itr);
+			itr->active = false;
+			currentcnt_--;
+			itr = particlevector_.erase(itr);
 		}
+		else
+			++itr;
 	}
+
+
+	particlevector_.resize(data_.max);
 
 }

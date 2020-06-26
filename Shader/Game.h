@@ -6,8 +6,8 @@
 #include"State.h"
 #include"Terrain.h"
 #include"Skyplane.h"
-#include"Tree.h"
-
+#include"Rendertexture.h"
+#include"ParticleSystem.h"
 class Game :public State
 {
 private:
@@ -17,13 +17,22 @@ private:
 	Terrain* terrain_;
 	Position position_;
 	Skyplane* skyplane_;
+	Rendertexture* rendertexture_;
 
 	//3Dモデル
 	Model* texmodel_;
+	Model* bumpmodel_;
+	Model* shadowmodel_;
+	Model* maskmodel_;
+	Model* multimodel_;
 
+	//パーティクル
+	ParticleSystem* particle_;
 
-	void switchWireFrame();
 	bool wire_;
+
+	bool renderToScene();
+	void switchWireFrame();
 	bool modelRender();
 	bool worldRender();
 public:

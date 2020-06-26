@@ -149,7 +149,19 @@ bool ShaderManager::init()
 		Error::showDialog("テレインシェーダーの初期化に失敗");
 		return false;
 	}
-	
+
+	particleshader_.reset(new ParticleShader);
+	if (!particleshader_.get())
+	{
+		return false;
+	}
+
+	if (!particleshader_.get()->init())
+	{
+		Error::showDialog("パーティクルシェーダーの初期化に失敗");
+		return false;
+	}
+
 	return true;
 }
 
@@ -175,6 +187,11 @@ bool ShaderManager::depthRender(Model3D* Model, Matrix World, Matrix View, Matri
 {
 	Model->render();
 	return depthshader_.get()->render(Model->getIndexCount(), World, View, Projection);
+}
+
+bool ShaderManager::depthRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection)
+{
+	return depthshader_.get()->render(IndexCount, World, View, Projection);
 }
 
 bool ShaderManager::lightRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1, ID3D11ShaderResourceView* Texture2, Light* LightData)
@@ -228,4 +245,10 @@ bool ShaderManager::terrainRender(Terrain* Model, Matrix World, Matrix View, Mat
 {
 	Model->render();
 	return terrainshader_.get()->render(Model->getIndexCount(), World, View, Projection, Light->getAmbientColor(), Light->getDiffuseColor(), Light->getDirection(),Model->getTexture());
+}
+
+bool ShaderManager::particleRender(ParticleSystem* ParticleSystem, Matrix World, Matrix View, Matrix Projection)
+{
+	ParticleSystem->render();
+	return particleshader_.get()->render(ParticleSystem->getIndexCount(), World, View, Projection, ParticleSystem->getTexture());
 }

@@ -1,9 +1,9 @@
 Texture2D shadertexture;
-SamplerState sampletype;
+SamplerState sampletype : register(s0);
 
 struct PixelInputType
 {
-	float4 position:POSITION;
+	float4 position:SV_POSITION;
 	float2 tex:TEXCOORD;
 	float4 color:COLOR;
 };

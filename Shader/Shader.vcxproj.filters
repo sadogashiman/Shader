@@ -91,9 +91,6 @@
     <Filter Include="3DModel\Tree">
       <UniqueIdentifier>{33d20330-616a-47c8-84d8-c6b3704db175}</UniqueIdentifier>
     </Filter>
-    <Filter Include="リソース ファイル\Trans">
-      <UniqueIdentifier>{8a1b3f97-f9a3-4d4a-99e3-1d0d97cdbadf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="リソース ファイル\Bump">
       <UniqueIdentifier>{0185520d-a261-4547-9fb3-7e0059400c6e}</UniqueIdentifier>
     </Filter>
@@ -402,12 +399,6 @@
   <ItemGroup>
     <FxCompile Include="terrain_vs.hlsl">
       <Filter>リソース ファイル\Terrain</Filter>
-    </FxCompile>
-    <FxCompile Include="transparentdepth_vs.hlsl">
-      <Filter>リソース ファイル\Trans</Filter>
-    </FxCompile>
-    <FxCompile Include="transparentdepth_ps.hlsl">
-      <Filter>リソース ファイル\Trans</Filter>
     </FxCompile>
     <FxCompile Include="texture_vs.hlsl">
       <Filter>リソース ファイル\Texture</Filter>

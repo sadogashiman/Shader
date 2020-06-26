@@ -18,6 +18,7 @@ Matrix Support::worldPosition(Model* Model)
 	return XMMatrixTranslation(Model->getPosition().x, Model->getPosition().y, Model->getPosition().z);
 }
 
+
 bool Support::checkInputLayoutData(const void* shadercode, size_t codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum)
 {
 	ID3D11ShaderReflection* vsref;
@@ -188,7 +189,7 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName, ID3D11Ver
 		wcharfilename = renameExtension(VertexShaderFileName, ".hlsl");
 
 		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, vertexshaderbuffer_.GetAddressOf(), NULL);
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "vs_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, vertexshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
 			Error::showDialog("頂点シェーダーの動的コンパイルに失敗");

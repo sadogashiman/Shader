@@ -14,6 +14,7 @@
 #include"Colorshader.h"
 #include"SkyplaneShader.h"
 #include"TerrainShader.h"
+#include"ParticleShader.h"
 
 //モデル
 #include"Model3D.h"
@@ -21,6 +22,7 @@
 #include"SkyDome.h"
 #include"Skyplane.h"
 #include"Terrain.h"
+#include"ParticleSystem.h"
 
 
 class ShaderManager
@@ -45,6 +47,7 @@ private:
 	std::unique_ptr<Colorshader> colorshader_;
 	std::unique_ptr<SkyplaneShader> skyplaneshader_;
 	std::unique_ptr<TerrainShader> terrainshader_;
+	std::unique_ptr<ParticleShader> particleshader_;
 public:
 
 	bool init();
@@ -66,6 +69,7 @@ public:
 
 	//デプスマップを使用するときのレンダー(モデルのポインタ、各行列)
 	bool depthRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection);
+	bool depthRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection);
 
 	//ライトシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ、ライトのパラメーター)	※Deferredレンダリング前提
 	bool lightRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture1,ID3D11ShaderResourceView* Texture2, Light* LightData);
@@ -91,5 +95,8 @@ public:
 
 	//テレイン専用レンダー
 	bool terrainRender(Terrain* Model, Matrix World, Matrix View, Matrix Projection, Light* Light);
+
+	//パーティクル専用シェーダー
+	bool particleRender(ParticleSystem* ParticleSystem, Matrix World, Matrix View, Matrix Projection);
 };
 

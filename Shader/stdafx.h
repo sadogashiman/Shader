@@ -35,6 +35,7 @@
 #include<list>
 #include<random>
 #include<algorithm>
+#include<functional>
 
 //******************************
 //@@		ƒŠƒ“ƒN

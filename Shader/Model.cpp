@@ -53,10 +53,11 @@ bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, 
 		Error::showDialog("バッファの初期化に失敗");
 		return false;
 	}
-	return false;
+
+	return true;
 }
 
-bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, const wchar_t* TextureFileName2, const wchar_t* MaskFileName)
+bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, const wchar_t* TextureFileName2, const wchar_t* MapFileName)
 {
 	//モデルデータ読み込み
 	if (!loadModel(ModelFileName))
@@ -67,14 +68,15 @@ bool Model::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName1, 
 	//ファイル名を保存
 	wcscpy(texturefilename_[0], TextureFileName1);
 	wcscpy(texturefilename_[1], TextureFileName2);
-	wcscpy(mapfilename_, MaskFileName);
+	wcscpy(mapfilename_, MapFileName);
 
 	if (!initBuffer())
 	{
 		Error::showDialog("バッファの初期化に失敗");
 		return false;
 	}
-	return false;
+
+	return true;
 }
 
 void Model::destroy()

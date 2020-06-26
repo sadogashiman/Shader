@@ -31,7 +31,6 @@ private:
 	wchar_t leaffilename_[MAX_PATH];
 	Vector3 position_;
 	std::vector<ModelType> model_;
-	std::unique_ptr<Support> support_;
 
 	bool initTrunkBuffer();
 	bool initLeafBuffer();

@@ -13,14 +13,6 @@ bool Tree::init(const wchar_t* TrunkModelFileName, const wchar_t* LeafModelFileN
 {
 	bool result;
 
-	//サポートクラスを生成
-	support_.reset(new Support);
-	if (!support_.get())
-	{
-		Error::showDialog("サポートクラスのメモリ確保に失敗");
-		return false;
-	}
-
 	//モデルの読み込み
 	result = loadModel(trunkfilename_);
 	if (!result)
@@ -66,8 +58,8 @@ bool Tree::init(const wchar_t* TrunkModelFileName, const wchar_t* LeafModelFileN
 	releaseModel();
 
 	//モデルファイル名から拡張子違いの画像ファイル名を生成
-	wcscpy(trunkfilename_, support_.get()->renameToJPEG(TrunkModelFileName));
-	wcscpy(leaffilename_, support_.get()->renameToJPEG(LeafModelFileName));
+	wcscpy(trunkfilename_, Support::renameExtension(TrunkModelFileName, "dds"));
+	wcscpy(leaffilename_, Support::renameExtension(LeafModelFileName, "dds"));
 
 	return true;
 }
@@ -120,12 +112,12 @@ bool Tree::initTrunkBuffer()
 
 	//頂点バッファの設定
 	vertexbufferdesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexbufferdesc.ByteWidth = sizeof(VertexType)*vertexcount_;
+	vertexbufferdesc.ByteWidth = sizeof(VertexType) * vertexcount_;
 	vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexbufferdesc.CPUAccessFlags = 0;
 	vertexbufferdesc.MiscFlags = 0;
 	vertexbufferdesc.StructureByteStride = 0;
-	
+
 	//ポインタを作成
 	vertexdata.pSysMem = &vertices[0];
 	vertexdata.SysMemPitch = 0;
@@ -141,7 +133,7 @@ bool Tree::initTrunkBuffer()
 
 	//インデックスバッファの設定
 	indexbufferdesc.Usage = D3D11_USAGE_DEFAULT;
-	indexbufferdesc.ByteWidth= sizeof(unsigned long) * indexcount_;
+	indexbufferdesc.ByteWidth = sizeof(unsigned long) * indexcount_;
 	indexbufferdesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexbufferdesc.CPUAccessFlags = 0;
 	indexbufferdesc.MiscFlags = 0;

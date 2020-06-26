@@ -1,5 +1,6 @@
 #pragma once
 #include"TextureFactory.h"
+const int kFrameTime = 16;
 class ParticleSystem
 {
 private:
@@ -10,11 +11,7 @@ private:
 		float velocity;
 		bool active;
 
-		bool operator<(const ParticleType &particle)const
-		{
-			//ZŽ²‚ðŠî€‚É‘å¬‚ð”»’è
-			return position.z < particle.position.z;
-		}
+
 	};
 
 	struct VertexType
@@ -34,33 +31,33 @@ private:
 		int max;
 	};
 
+
+
 	bool initParticleSystem();
-	void destroyParticleSystem();
 
 	bool initbuffer();
 	bool updateBuffer();
 	void renderBuffer();
-	void destroyBuffer();
 
-	void emitParticle(const float FrameTime);
-	void updateParticle(const float FrameTime);
+	void emitParticle();
+	void updateParticle();
 	void killParticle();
 
 	int currentcnt_;
 	float accumulatedtime_;
-	std::list<std::unique_ptr<ParticleType>> particlelist_;
+	std::vector<ParticleType> particlevector_;
 	int vertexcnt_;
 	int indexcnt_;
 	std::vector<VertexType> vertices_;
-	ID3D11Buffer* vertexbuffer_;
-	ID3D11Buffer* indexbuffer_;
+	ComPtr<ID3D11Buffer> vertexbuffer_;
+	ComPtr<ID3D11Buffer> indexbuffer_;
 	ParticleData data_;
 	wchar_t filename_[MAX_PATH];
 public:
 	ParticleSystem();
 	~ParticleSystem();
 	bool init(const wchar_t* FileName);
-	bool update(const float FrameTime);
+	bool update();
 	void render();
 	void destroy();
 

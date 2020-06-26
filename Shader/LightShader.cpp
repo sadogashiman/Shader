@@ -132,12 +132,12 @@ bool LightShader::init()
 	return true;
 }
 
-bool LightShader::render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* NormalTexture, Vector3 LightDirection)
+bool LightShader::render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* NormalTexture, Vector3 LightDirection)
 {
 	bool result;
 
 	//レンダリングに関するシェーダーパラメータを設定
-	result = SetShaderParameters(World, View, Projection,texture,NormalTexture,LightDirection);
+	result = SetShaderParameters(World, View, Projection,Texture,NormalTexture,LightDirection);
 
 	if (!result)
 	{
@@ -150,7 +150,7 @@ bool LightShader::render(const int Indexcound, const Matrix World, const Matrix 
 	return true;
 }
 
-bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* NormalTexture, Vector3 LightDirection)
+bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* NormalTexture, Vector3 LightDirection)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresouce;
@@ -188,7 +188,7 @@ bool LightShader::SetShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
 
 	//ピクセルシェーダーでテクスチャリソースを設定
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &texture);
+	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(1, 1, &NormalTexture);	//ライト定数バッファをロックして書き込み可能に
 
 	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);

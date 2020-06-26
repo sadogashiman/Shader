@@ -193,7 +193,8 @@ bool Texture::init(const wchar_t* TextureName)
 			Error::showDialog("テクスチャローダーが対応していない拡張子です");
 			return false;
 		}
-		//tgaファイルは別のローダーのため事前に判定
+
+		//ファイル拡張子から適切なローダーを判別して使用
 		if (wcscmp(wcsrchr(TextureName, L'.'), extensionarray[kTga])==0)
 		{
 			if (loadTargaFile(TextureName, width, height))
@@ -214,23 +215,29 @@ bool Texture::init(const wchar_t* TextureName)
 				return false;
 			}
 		}
-
-		hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName, &textureresource_, &texture_);
-		if (FAILED(hr))
+		else if (wcscmp(wcsrchr(TextureName, L'.'), extensionarray[kDds]) == 0)
 		{
-			//DDSで読めない場合WICを使う
+			hr = CreateDDSTextureFromFile(Direct3D::getInstance()->getDevice(), TextureName, &textureresource_, &texture_);
+			if (FAILED(hr))
+			{
+				Error::showDialog("DDSテクスチャの作成に失敗しました");
+				return false;
+			}
+
+		}
+		else if (wcscmp(wcsrchr(TextureName, L'.'), extensionarray[kDds]) == 0)
+		{
 			hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
 			if (FAILED(hr))
 			{
-				Error::showDialog("テクスチャの読み込みに失敗しました");
+				Error::showDialog("WICテクスチャの作成に失敗しました");
 				return false;
 			}
-			return false;
 		}
 	}
 	else
 	{
-		Error::showDialog("ファイル名に拡張子がありません");
+		Error::showDialog("ファイルパスが無効です");
 		return false;
 	}
 

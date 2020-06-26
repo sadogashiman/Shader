@@ -174,7 +174,7 @@ void Maskshader::rendershader(int Indexcount)
 	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラー状態をピクセルシェーダーに設定
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, &samplestate_);
+	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplestate_.GetAddressOf());
 
 	//三角形をレンダリング
 	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
