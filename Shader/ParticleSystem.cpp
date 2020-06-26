@@ -4,6 +4,22 @@
 
 ParticleSystem::ParticleSystem()
 {
+	//各パラメーターのデフォルトを設定
+	//出現位置
+	data_.deviation = Vector3::Zero;
+
+	//加速度を設定
+	data_.velocity = 1.0F;
+	data_.velocityVariation = 0.2F;
+
+	//サイズを設定
+	data_.size = 0.2F;
+
+	//1秒あたりの放出数を設定
+	data_.perSecond = 25.0F;
+
+	//パーティクルの最大数を設定
+	data_.max = 200;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -74,24 +90,6 @@ void ParticleSystem::destroy()
 
 bool ParticleSystem::initParticleSystem()
 {
-
-	//放出位置を設定
-	data_.deviation.x = 0.5F;
-	data_.deviation.y = 0.1F;
-	data_.deviation.z = 2.0F;
-
-	//加速度を設定
-	data_.velocity = 1.0F;
-	data_.velocityVariation = 0.2F;
-
-	//サイズを設定
-	data_.size = 0.2F;
-
-	//1秒あたりの放出数を設定
-	data_.perSecond = 250.0F;
-
-	//パーティクルの最大数を設定
-	data_.max = 2;
 
 	//リストを作成
 	particlevector_.resize(data_.max);
@@ -290,7 +288,7 @@ void ParticleSystem::emitParticle()
 	Vector3 color;
 	std::random_device seed;
 	std::mt19937 engine(seed());
-	std::normal_distribution<> dist(1.0, 0.5);
+	std::normal_distribution<> dist(0.5F, 0.005F);
 	ParticleType newparticle;
 
 	//フレーム時間を加算
@@ -307,7 +305,7 @@ void ParticleSystem::emitParticle()
 	}
 
 	//放出するパーティクルがある場合フレームごとに1つ放出
-	if (emit && (currentcnt_ < (data_.max - 1)))
+	if (emit && (currentcnt_ < data_.max))
 	{
 		//ランダムにプロパティを設定し生成
 		newparticle.position.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.x;
@@ -315,13 +313,14 @@ void ParticleSystem::emitParticle()
 		newparticle.position.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.z;
 
 		//速度を設定
-		newparticle.velocity = data_.velocity + (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.velocityVariation;
+		newparticle.velocity = data_.velocity + (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine))/RAND_MAX) * data_.velocityVariation;
 
 		//色を設定
 		newparticle.color.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
 		newparticle.color.y = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
 		newparticle.color.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
 
+		newparticle.active = true;
 		//設定したデータを末尾に追加
 		particlevector_[currentcnt_++] = newparticle;
 
@@ -336,7 +335,6 @@ void ParticleSystem::updateParticle()
 	{
 		itr.position.y -= itr.velocity * kFrameTime * 0.001F;
 	}
-
 }
 
 void ParticleSystem::killParticle()
@@ -353,7 +351,5 @@ void ParticleSystem::killParticle()
 			++itr;
 	}
 
-
 	particlevector_.resize(data_.max);
-
 }

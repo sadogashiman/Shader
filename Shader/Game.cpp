@@ -160,6 +160,8 @@ bool Game::init()
 	{
 		return false;
 	}
+	particle_->setEmitMax(100);
+	particle_->setEmitPosition(50.0F, 1.5F, 15.0F);
 
 	wire_ = false;
 
@@ -330,12 +332,13 @@ bool Game::modelRender()
 
 	//アルファブレンドオン
 	Direct3D::getInstance()->turnAlphaBlendEnable();
+	Direct3D::getInstance()->turnZbufferDisable();
 
 	world = Direct3D::getInstance()->getWorld();
 	if (!(ShaderManager::getInstance()->particleRender(particle_, world, view, projection)))
 		return false;
 	Direct3D::getInstance()->turnAlphablendDisable();
-
+	Direct3D::getInstance()->turnZbufferEnable();
 	return true;
 }
 

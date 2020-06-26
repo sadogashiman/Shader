@@ -199,11 +199,7 @@ bool Texture::init(const wchar_t* TextureName)
 		{
 			if (loadTargaFile(TextureName, width, height))
 			{
-				if (createTargaTexture(width, height))
-				{
-					return true;
-				}
-				else
+				if (!createTargaTexture(width, height))
 				{
 					Error::showDialog("Targa画像データの作成");
 					return false;
@@ -223,7 +219,6 @@ bool Texture::init(const wchar_t* TextureName)
 				Error::showDialog("DDSテクスチャの作成に失敗しました");
 				return false;
 			}
-
 		}
 		else if (wcscmp(wcsrchr(TextureName, L'.'), extensionarray[kDds]) == 0)
 		{
