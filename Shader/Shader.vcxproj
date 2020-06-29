@@ -151,7 +151,6 @@
     <ClCompile Include="Colorshader.cpp" />
     <ClCompile Include="Maskshader.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Bumpmap.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Deferredbuffers.cpp" />
     <ClCompile Include="Deferredshader.cpp" />
@@ -196,7 +195,6 @@
     <ClInclude Include="InputKeycode.h" />
     <ClInclude Include="Maskshader.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Bumpmap.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Deferredbuffers.h" />
     <ClInclude Include="Deferredshader.h" />
@@ -209,7 +207,6 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Multitexture.h" />
-    <ClInclude Include="namespace.h" />
     <ClInclude Include="OrthoWindow.h" />
     <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="ParticleSystem.h" />
@@ -261,20 +258,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="mask_vs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="bumpmap_ps.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="bumpmap_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>

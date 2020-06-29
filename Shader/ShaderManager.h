@@ -3,7 +3,6 @@
 //シェーダー
 #include"Shadowshader.h"
 #include"Maskshader.h"
-#include"Bumpmap.h"
 #include"Depthshader.h"
 #include"Lightshader.h"
 #include"Light.h"
@@ -36,7 +35,6 @@ private:
 	ShaderManager& operator=(ShaderManager&&) = delete;
 
 	std::unique_ptr<LightShader> lightshader_;
-	std::unique_ptr<Bumpmap> bumpshader_;
 	std::unique_ptr<Maskshader> maskshader_;
 	std::unique_ptr<Shadowshader> shadowshader_;
 	std::unique_ptr<Depthshader> depthshader_;
@@ -63,9 +61,6 @@ public:
 
 	//マスクを使用するときのレンダー(モデルのポインタ、各行列、テクスチャ二枚とアルファマップの入ったテクスチャ配列)
 	bool maskRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray);
-
-	//バンプマップを使用するときのレンダー(モデルのポインタ、各行列、テクスチャ二枚と法線マップの入ったテクスチャ配列、ライトのパラメーター)
-	bool bumpRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, Light* Lightdata);
 
 	//デプスマップを使用するときのレンダー(モデルのポインタ、各行列)
 	bool depthRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection);

@@ -31,9 +31,6 @@
     <Filter Include="MainSystem\2D">
       <UniqueIdentifier>{16fb15f2-c53e-44d8-b5cc-161e934915a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Namespace">
-      <UniqueIdentifier>{1739837b-8a35-4866-85a3-4e1b8cab3f77}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{6fd6c1e0-0e83-438e-8c8d-73be4ef3ca9e}</UniqueIdentifier>
     </Filter>
@@ -45,9 +42,6 @@
     </Filter>
     <Filter Include="ShaderManager\Shader">
       <UniqueIdentifier>{905a3028-c829-4ca5-8cf3-591eac907a2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ShaderManager\Shader\bumpmap">
-      <UniqueIdentifier>{7461442a-12da-456d-ad76-06330930e4a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="ShaderManager\Shader\deferred">
       <UniqueIdentifier>{14baf429-0741-439e-8863-d91e78900548}</UniqueIdentifier>
@@ -90,9 +84,6 @@
     </Filter>
     <Filter Include="3DModel\Tree">
       <UniqueIdentifier>{33d20330-616a-47c8-84d8-c6b3704db175}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="リソース ファイル\Bump">
-      <UniqueIdentifier>{0185520d-a261-4547-9fb3-7e0059400c6e}</UniqueIdentifier>
     </Filter>
     <Filter Include="リソース ファイル\Light">
       <UniqueIdentifier>{37912831-1e2f-44ec-9911-b811bfd4b778}</UniqueIdentifier>
@@ -188,9 +179,6 @@
     </ClCompile>
     <ClCompile Include="Support.cpp">
       <Filter>support</Filter>
-    </ClCompile>
-    <ClCompile Include="Bumpmap.cpp">
-      <Filter>ShaderManager\Shader\bumpmap</Filter>
     </ClCompile>
     <ClCompile Include="Deferredbuffers.cpp">
       <Filter>ShaderManager\Shader\deferred</Filter>
@@ -305,9 +293,6 @@
     <ClInclude Include="Support.h">
       <Filter>support</Filter>
     </ClInclude>
-    <ClInclude Include="Bumpmap.h">
-      <Filter>ShaderManager\Shader\bumpmap</Filter>
-    </ClInclude>
     <ClInclude Include="Deferredbuffers.h">
       <Filter>ShaderManager\Shader\deferred</Filter>
     </ClInclude>
@@ -334,9 +319,6 @@
     </ClInclude>
     <ClInclude Include="Multitexture.h">
       <Filter>ShaderManager\Shader\Multi</Filter>
-    </ClInclude>
-    <ClInclude Include="namespace.h">
-      <Filter>Namespace</Filter>
     </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>ShaderManager</Filter>
@@ -465,12 +447,6 @@
     </FxCompile>
     <FxCompile Include="color_ps.hlsl">
       <Filter>リソース ファイル\Color</Filter>
-    </FxCompile>
-    <FxCompile Include="bumpmap_vs.hlsl">
-      <Filter>リソース ファイル\Bump</Filter>
-    </FxCompile>
-    <FxCompile Include="bumpmap_ps.hlsl">
-      <Filter>リソース ファイル\Bump</Filter>
     </FxCompile>
     <FxCompile Include="terrain_ps.hlsl">
       <Filter>リソース ファイル\Terrain</Filter>

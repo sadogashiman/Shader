@@ -40,7 +40,6 @@ public:
 	static bool searchFile(const std::string FileName);
 
 	//Rename
-	static wchar_t* renameToJPEG(const wchar_t* ModelFileName);			//渡されたファイル名の拡張子をディレクトリ内に存在する同名の画像ファイル拡張子に変更する
 	static wchar_t* renameExtension(const wchar_t* SorcePath,const char* RenameExtension); //渡されたファイルパスの拡張子を変換する関数 ※拡張子は[.jpg]のようにドットを付ける
 	
 	//Create

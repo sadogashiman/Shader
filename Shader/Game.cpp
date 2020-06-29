@@ -116,17 +116,7 @@ bool Game::init()
 		return false;
 	}
 
-	texmodel_->setPosition(Vector3(55.0F, 1.5F, 20.0F));
-
-	bumpmodel_ = new Model;
-	result = bumpmodel_->init(L"Resource/cube.txt", L"Resource/stone.dds");
-	if (!result)
-	{
-		return false;
-	}
-
-	bumpmodel_->setNormalTexture(L"Resource/stone_n.dds");
-	bumpmodel_->setPosition(Vector3(50.0F, 1.5F, 20.0F));
+	texmodel_->setPosition(58.0F, 1.5F, 50.0F);
 
 	shadowmodel_ = new Model;
 	result = shadowmodel_->init(L"Resource/cube.txt", L"Resource/stone.dds");
@@ -134,7 +124,7 @@ bool Game::init()
 	{
 		return false;
 	}
-	shadowmodel_->setPosition(Vector3(45.0F, 1.5F, 20.0F));
+	shadowmodel_->setPosition(46.0F, 1.5F, 50.0F);
 
 	maskmodel_ = new Model;
 	result = maskmodel_->init(L"Resource/cube.txt", L"Resource/dirt.dds", L"Resource/stone.dds",L"Resource/alpha.dds");
@@ -143,7 +133,7 @@ bool Game::init()
 		return false;
 	}
 
-	maskmodel_->setPosition(Vector3(40.0F, 1.5F, 20.0F));
+	maskmodel_->setPosition(42.0F, 1.5F, 50.0F);
 
 	multimodel_ = new Model;
 	result = multimodel_->init(L"Resource/cube.txt", L"Resource/stone.dds", L"Resource/dirt.dds");
@@ -152,16 +142,17 @@ bool Game::init()
 		return false;
 	}
 
-	multimodel_->setPosition(35.0F, 1.5F, 20.0F);
+	multimodel_->setPosition(54.0F, 1.5F, 50.0F);
 
 	particle_ = new ParticleSystem;
+	particle_->setEmitMax(100000);
+	particle_->setEmitPosition(50.0F, 1.5F, 50.0F);
+	particle_->setVelcity(0.01F);
 	result = particle_->init(L"Resource/star.dds");
 	if(!result)
 	{
 		return false;
 	}
-	particle_->setEmitMax(100);
-	particle_->setEmitPosition(50.0F, 1.5F, 15.0F);
 
 	wire_ = false;
 
@@ -172,7 +163,8 @@ State* Game::update()
 {
 	bool result;
 	camera_->update();
-	switchWireFrame(); particle_->update();
+	switchWireFrame();
+	particle_->update();
 
 	result = render();
 	if (!result)
@@ -215,7 +207,6 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE_DESTROY(skyplane_);
 	SAFE_DELETE_DESTROY(texmodel_);
-	SAFE_DELETE_DESTROY(bumpmodel_);
 	SAFE_DELETE_DESTROY(shadowmodel_);
 	SAFE_DELETE_DESTROY(rendertexture_);
 	SAFE_DELETE_DESTROY(maskmodel_);
@@ -302,13 +293,6 @@ bool Game::modelRender()
 	//ワールド上のモデル座標を計算
 	world = Support::worldPosition(texmodel_);
 	if (!(ShaderManager::getInstance()->textureRender(texmodel_, world, view, projection, texmodel_->getTexture())))
-		return false;
-
-	world = Support::worldPosition(bumpmodel_);
-	ID3D11ShaderResourceView* srv[2];
-	srv[0] = bumpmodel_->getTexture();
-	srv[1] = bumpmodel_->getMapTexture();
-	if (!(ShaderManager::getInstance()->bumpRender(bumpmodel_, world, view, projection, srv, light_)))
 		return false;
 
 	world = Support::worldPosition(shadowmodel_);

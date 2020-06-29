@@ -340,7 +340,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	//アルファブレンドオンの場合のブレンドステート
 	ZeroMemory(&blendstatedesc, sizeof(D3D11_BLEND_DESC));
 	blendstatedesc.RenderTarget[0].BlendEnable = TRUE;
-	blendstatedesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendstatedesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendstatedesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
 	blendstatedesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendstatedesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;

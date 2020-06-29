@@ -7,6 +7,10 @@ ParticleSystem::ParticleSystem()
 	//各パラメーターのデフォルトを設定
 	//出現位置
 	data_.deviation = Vector3::Zero;
+	data_.deviationrange = 0.5F;
+	
+	//削除位置
+	data_.deleteline = 0.0F;
 
 	//加速度を設定
 	data_.velocity = 1.0F;
@@ -20,6 +24,18 @@ ParticleSystem::ParticleSystem()
 
 	//パーティクルの最大数を設定
 	data_.max = 200;
+
+	//色の基準を設定
+	data_.colorbase = 0.5F;
+
+	//色の範囲を設定
+	data_.colorrange = 0.5F;
+
+	//アルファの基準を設定
+	data_.alphabase = 0.5F;
+
+	//アルファの範囲を設定
+	data_.alpharange = 0.5F;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -38,14 +54,6 @@ bool ParticleSystem::init(const wchar_t* FileName)
 	if (!result)
 	{
 		Error::showDialog("パーティクルシステムの初期化に失敗");
-		return false;
-	}
-
-	//バッファの初期化
-	result = initbuffer();
-	if (!result)
-	{
-		Error::showDialog("バッファの初期化に失敗");
 		return false;
 	}
 
@@ -90,20 +98,18 @@ void ParticleSystem::destroy()
 
 bool ParticleSystem::initParticleSystem()
 {
-
-	//リストを作成
-	particlevector_.resize(data_.max);
-
-	for (auto& itr : particlevector_)
-	{
-		itr.active = false;
-	}
-
-	//現在放出されているパーティクルの数を0にする
-	currentcnt_ = 0;
+	bool result;
 
 	//1秒あたりのパーティクルの放出率の累積時間を初期化
 	accumulatedtime_ = 0.0F;
+
+	//バッファの初期化
+	result = initbuffer();
+	if (!result)
+	{
+		Error::showDialog("バッファの初期化に失敗");
+		return false;
+	}
 
 	return true;
 }
@@ -202,44 +208,43 @@ bool ParticleSystem::updateBuffer()
 
 	//インデックスを初期化
 	index = 0;
-	for (int i = 0;i<currentcnt_;i++)
+	for (unsigned int i = 0;i<particlevector_.size();i++)
 	{
 		//左下
 		vertices_[index].position = Vector3(particlevector_[i].position.x - data_.size, particlevector_[i].position.y - data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(0.0F, 1.0F);
-		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
+		vertices_[index].color = particlevector_[i].color;
 		index++;
 
 		//左上
 		vertices_[index].position = Vector3(particlevector_[i].position.x - data_.size, particlevector_[i].position.y + data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(0.0F, 0.0F);
-		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
+		vertices_[index].color = particlevector_[i].color;
 		index++;
 
 		//右下
 		vertices_[index].position = Vector3(particlevector_[i].position.x + data_.size, particlevector_[i].position.y - data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(1.0F, 1.0F);
-		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
+		vertices_[index].color = particlevector_[i].color;
 		index++;
 
 		//右下
 		vertices_[index].position = Vector3(particlevector_[i].position.x + data_.size, particlevector_[i].position.y - data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(1.0F, 1.0F);
-		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
+		vertices_[index].color = particlevector_[i].color;
 		index++;
 
 		//左上
 		vertices_[index].position = Vector3(particlevector_[i].position.x - data_.size, particlevector_[i].position.y + data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(0.0F, 0.0F);
-		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
+		vertices_[index].color = particlevector_[i].color;
 		index++;
 
 		//右上
 		vertices_[index].position = Vector3(particlevector_[i].position.x + data_.size, particlevector_[i].position.y + data_.size, particlevector_[i].position.z);
 		vertices_[index].texture = Vector2(1.0F, 0.0F);
-		vertices_[index].color = Vector4(particlevector_[i].color.x, particlevector_[i].color.y, particlevector_[i].color.z, 1.0F);
+		vertices_[index].color = particlevector_[i].color;
 		index++;
-
 	}
 
 	//頂点バッファをロック
@@ -285,44 +290,51 @@ void ParticleSystem::emitParticle()
 {
 	bool emit;
 	Vector3 position;
-	Vector3 color;
+	Vector4 color;
 	std::random_device seed;
 	std::mt19937 engine(seed());
-	std::normal_distribution<> dist(0.5F, 0.005F);
+	std::normal_distribution<> colordist(data_.colorbase, data_.colorrange);
+	std::normal_distribution<> xdist(data_.deviation.x, data_.deviationrange);
+	std::normal_distribution<> ydist(data_.deviation.y, data_.deviationrange);
+	std::normal_distribution<> zdist(data_.deviation.z, data_.deviationrange);
+	std::normal_distribution<> alphadist(data_.alphabase, data_.alpharange);
+	std::normal_distribution<> velodist(data_.velocity, data_.velocityVariation);
 	ParticleType newparticle;
 
 	//フレーム時間を加算
 	accumulatedtime_ += kFrameTime;
 
 	//フラグをオフに設定
-	emit = false;
+	emit = true;
 
-	//パーティクルを放出するタイミングかを判断
-	if (accumulatedtime_ > (1000.0F / data_.perSecond))
-	{
-		accumulatedtime_ = 0.0F;
-		emit = true;
-	}
+	////パーティクルを放出するタイミングかを判断
+	//if (accumulatedtime_ > (1000.0F / data_.perSecond))
+	//{
+	//	accumulatedtime_ = 0.0F;
+	//	emit = true;
+	//}
 
 	//放出するパーティクルがある場合フレームごとに1つ放出
-	if (emit && (currentcnt_ < data_.max))
+	if (emit && (particlevector_.size() < data_.max))
 	{
 		//ランダムにプロパティを設定し生成
-		newparticle.position.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.x;
-		newparticle.position.y = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.y;
-		newparticle.position.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) * data_.deviation.z;
-
+		newparticle.position.x = static_cast<float>(xdist(engine));
+		newparticle.position.y = static_cast<float>(ydist(engine));
+		newparticle.position.z = static_cast<float>(zdist(engine));
+		
 		//速度を設定
-		newparticle.velocity = data_.velocity + (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine))/RAND_MAX) * data_.velocityVariation;
+		newparticle.velocity = data_.velocity + static_cast<float>(velodist(engine));
 
 		//色を設定
-		newparticle.color.x = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
-		newparticle.color.y = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
-		newparticle.color.z = (static_cast<float>(dist(engine)) - static_cast<float>(dist(engine)) / RAND_MAX) + 0.5F;
-
+		newparticle.color.x = static_cast<float>(colordist(engine));
+		newparticle.color.y = static_cast<float>(colordist(engine));
+		newparticle.color.z = static_cast<float>(colordist(engine));
+		newparticle.color.w = static_cast<float>(alphadist(engine));
+		
 		newparticle.active = true;
+
 		//設定したデータを末尾に追加
-		particlevector_[currentcnt_++] = newparticle;
+		particlevector_.push_back(newparticle);
 
 		//Z軸を基準にソート
 		std::sort(particlevector_.begin(), particlevector_.end(), [](const ParticleType& First, const ParticleType& Second) {return First.position.z < Second.position.z; });
@@ -333,7 +345,8 @@ void ParticleSystem::updateParticle()
 {
 	for (auto& itr : particlevector_)
 	{
-		itr.position.y -= itr.velocity * kFrameTime * 0.001F;
+		itr.position.y -= itr.velocity * kFrameTime * kPositionAttenuation;
+		itr.color.w -= kFrameTime * kAlphaAttenuation;
 	}
 }
 
@@ -341,15 +354,12 @@ void ParticleSystem::killParticle()
 {
 	for (auto itr = particlevector_.begin(); itr != particlevector_.end();)
 	{
-		if (itr->active && itr->position.y < -3.0F)
+		if (itr->active && (itr->position.y<data_.deleteline||itr->color.w<=0.0F))
 		{
 			itr->active = false;
-			currentcnt_--;
 			itr = particlevector_.erase(itr);
 		}
 		else
-			++itr;
+			itr++;
 	}
-
-	particlevector_.resize(data_.max);
 }

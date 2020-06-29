@@ -16,18 +16,6 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	bumpshader_.reset(new Bumpmap);
-	if (!bumpshader_.get())
-	{
-		return false;
-	}
-
-	if (!(bumpshader_.get()->init()))
-	{
-		Error::showDialog("バンプシェーダーの初期化に失敗");
-
-		return false;
-	}
 	maskshader_.reset(new Maskshader);
 	if (!maskshader_.get())
 	{
@@ -175,12 +163,6 @@ bool ShaderManager::maskRender(Model3D* Model, Matrix World, Matrix View, Matrix
 {
 	Model->render();
 	return maskshader_.get()->render(Model->getIndexCount(), World, View, Projection, TextureArray);
-}
-
-bool ShaderManager::bumpRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray, Light* Lightdata)
-{
-	Model->render();
-	return bumpshader_.get()->render(Model->getIndexCount(), World, View, Projection, TextureArray, Lightdata->getDirection(), Lightdata->getDiffuseColor());
 }
 
 bool ShaderManager::depthRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection)

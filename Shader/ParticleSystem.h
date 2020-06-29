@@ -1,14 +1,22 @@
 #pragma once
 #include"TextureFactory.h"
 const int kFrameTime = 16;
+const float kAlphaAttenuation = 0.001F;
+const float kPositionAttenuation = 0.001F;
 struct ParticleData
 {
 	Vector3 deviation;
+	float deviationrange;
 	float velocity;
 	float velocityVariation;
 	float size;
 	float perSecond;
-	int max;
+	unsigned int max;
+	float colorbase;
+	float colorrange;
+	float alphabase;
+	float alpharange;
+	float deleteline;
 };
 
 class ParticleSystem
@@ -17,11 +25,9 @@ private:
 	struct ParticleType
 	{
 		Vector3 position;
-		Vector3 color;
+		Vector4 color;
 		float velocity;
 		bool active;
-
-
 	};
 
 	struct VertexType
@@ -30,9 +36,6 @@ private:
 		Vector2 texture;
 		Vector4 color;
 	};
-
-
-
 
 	bool initParticleSystem();
 
@@ -44,12 +47,10 @@ private:
 	void updateParticle();
 	void killParticle();
 
-	int currentcnt_;
 	int vertexcnt_;
 	int indexcnt_;
 
 	float accumulatedtime_;
-	float emitpos_;
 
 	std::vector<VertexType> vertices_;
 	std::vector<ParticleType> particlevector_;

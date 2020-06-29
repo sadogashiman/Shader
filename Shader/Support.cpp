@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Support.h"
 #include"Direct3D.h"
-#include"namespace.h"
 wchar_t Support::filename_[MAX_PATH];
 wchar_t Support::mtlfilename[MAX_PATH];
 
@@ -103,29 +102,6 @@ bool Support::searchFile(const std::string FileName)
 	}
 
 	return false;
-}
-
-wchar_t* Support::renameToJPEG(const wchar_t* ModelFileName)
-{
-	//メンバに文字列を保存
-	wcscpy(filename_, ModelFileName);
-
-	char tmp[MAX_PATH] = " ";
-	wcstombs(tmp, filename_, MAX_PATH);
-
-	for (int i = 0; i < kExtensionTypeNum; i++)
-	{
-		PathRenameExtension(tmp, Extension::kExtension[i]);
-
-		//有効なファイルパスを見つけた場合ループを抜ける
-		if (PathFileExists(tmp))
-		{
-			mbstowcs(filename_, tmp, MAX_PATH);
-			break;
-		}
-	}
-
-	return filename_;
 }
 
 wchar_t* Support::renameExtension(const wchar_t* SorcePath, const char* RenameExtension)
