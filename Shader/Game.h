@@ -16,7 +16,7 @@ private:
 	SkyDome* sky_;
 	Terrain* terrain_;
 	Position position_;
-	Skyplane* skyplane_;
+	Skyplane* cloud_;
 	Rendertexture* rendertexture_;
 
 	//3Dƒ‚ƒfƒ‹

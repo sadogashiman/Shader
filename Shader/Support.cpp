@@ -2,7 +2,6 @@
 #include "Support.h"
 #include"Direct3D.h"
 wchar_t Support::filename_[MAX_PATH];
-wchar_t Support::mtlfilename[MAX_PATH];
 
 Support::Support()
 {

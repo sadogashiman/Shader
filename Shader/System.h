@@ -20,7 +20,6 @@ public:
 	bool init();
 	bool run();
 	void destroy();
-	bool handleInput(const float FrameTime);
 	
 	//get
 	static inline const HINSTANCE getAppInstance(){ return instance_; }

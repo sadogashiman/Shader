@@ -26,19 +26,20 @@ bool Camera::init()
 
 void Camera::update()
 {
-	//カメラ制御
+	//1フレームの時間を設定
 	poscontroller_.get()->setFrameTime(16.0F);
-
+	
+	//カメラ制御
 	poscontroller_.get()->moveRightWard(Input::getInstance()->isKeyState(DIK_D));
 	poscontroller_.get()->moveLeftWard(Input::getInstance()->isKeyState(DIK_A));
 	poscontroller_.get()->moveForWard(Input::getInstance()->isKeyState(DIK_W));
 	poscontroller_.get()->moveBackWard(Input::getInstance()->isKeyState(DIK_S));
-	poscontroller_.get()->moveUpWard(Input::getInstance()->isKeyState(DIK_UP));
-	poscontroller_.get()->moveDownWard(Input::getInstance()->isKeyState(DIK_DOWN));
+	poscontroller_.get()->moveUpWard(Input::getInstance()->isKeyState(DIK_SPACE));
+	poscontroller_.get()->moveDownWard(Input::getInstance()->isKeyState(DIK_LSHIFT));
 	poscontroller_.get()->turnLeft(Input::getInstance()->isKeyState(DIK_LEFT));
 	poscontroller_.get()->turnRight(Input::getInstance()->isKeyState(DIK_RIGHT));
-	poscontroller_.get()->lookUpWard(Input::getInstance()->isKeyState(DIK_PGUP));
-	poscontroller_.get()->lookDownWard(Input::getInstance()->isKeyState(DIK_PGDN));
+	poscontroller_.get()->lookUpWard(Input::getInstance()->isKeyState(DIK_UP));
+	poscontroller_.get()->lookDownWard(Input::getInstance()->isKeyState(DIK_DOWN));
 
 	setPosition(poscontroller_.get()->getPosition());
 	setRotation(poscontroller_.get()->getRotation());
@@ -63,7 +64,7 @@ void Camera::render()
 	lookat.y = 0.0F;
 	lookat.z = 1.0F;
 
-	//ラジアンでカメラの回転地を設定
+	//ラジアンでカメラの回転値を設定
 	pitch = XMConvertToRadians(rotation_.x);
 	yaw = XMConvertToRadians(rotation_.y);
 	roll = XMConvertToRadians(rotation_.z);
@@ -101,7 +102,7 @@ void Camera::renderBaseViewMatrix()
 	lookat.y = 0.0F;
 	lookat.z = 1.0F;
 
-	//ラジアンでカメラの回転地を設定
+	//ラジアンでカメラの回転値を設定
 	pitch = XMConvertToRadians(rotation_.x);
 	yaw = XMConvertToRadians(rotation_.y);
 	roll = XMConvertToRadians(rotation_.z);

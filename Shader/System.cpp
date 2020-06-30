@@ -251,11 +251,6 @@ void System::destroyWindows()
 	AppHandle = NULL;
 }
 
-bool System::handleInput(const float FrameTime)
-{
-	return false;
-}
-
 LRESULT System::MessageHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)

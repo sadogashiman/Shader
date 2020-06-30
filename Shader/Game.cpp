@@ -95,13 +95,13 @@ bool Game::init()
 	position_.setPosition(Vector3(123.0F, 10.0F, -10.0F));
 	position_.setRotation(Vector3::Zero);
 
-	skyplane_ = new Skyplane;
-	if (!skyplane_)
+	cloud_ = new Skyplane;
+	if (!cloud_)
 	{
 		return false;
 	}
 
-	result = skyplane_->init(L"Resource/cloud001.dds", L"Resource/perturb001.dds");
+	result = cloud_->init(L"Resource/cloud001.dds", L"Resource/perturb001.dds");
 	if (!result)
 	{
 		Error::showDialog("skyplaneの初期化に失敗");
@@ -202,7 +202,7 @@ void Game::destroy()
 	//破棄
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
-	SAFE_DELETE_DESTROY(skyplane_);
+	SAFE_DELETE_DESTROY(cloud_);
 	SAFE_DELETE_DESTROY(texmodel_);
 	SAFE_DELETE_DESTROY(shadowmodel_);
 	SAFE_DELETE_DESTROY(rendertexture_);
@@ -232,10 +232,7 @@ void Game::switchWireFrame()
 bool Game::modelRender()
 {
 	Matrix world, projection;
-	Matrix skyworld;
 	Matrix view;
-
-
 
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
@@ -292,14 +289,15 @@ bool Game::worldRender()
 	Matrix skyworld;
 	Matrix view;
 
+	//カメラ視点をレンダリング
+	camera_->render();
+
 	//行列を取得
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
 	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
 
-	//カメラ視点をレンダリング
-	camera_->render();
 
 	//Zバッファ・カリングをオフ
 	Direct3D::getInstance()->turnCullingDisable();
@@ -318,7 +316,7 @@ bool Game::worldRender()
 	Direct3D::getInstance()->turnAddBlendEnable();
 
 	//雲をレンダリング
-	if (!(ShaderManager::getInstance()->skyPlaneRender(skyplane_, skyworld, view, projection)))
+	if (!(ShaderManager::getInstance()->skyPlaneRender(cloud_, skyworld, view, projection)))
 	{
 		return false;
 	}
@@ -328,8 +326,8 @@ bool Game::worldRender()
 
 	//Zバッファオン
 	Direct3D::getInstance()->turnZbufferEnable();
-	//ワイヤーフレーム切り替え
 
+	//ワイヤーフレーム切り替え
 	if (wire_)
 		Direct3D::getInstance()->wireFrameEnable();
 

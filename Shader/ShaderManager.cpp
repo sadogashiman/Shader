@@ -77,7 +77,6 @@ bool ShaderManager::init()
 		return false;
 	}
 
-
 	multitexshader_.reset(new Multitexture);
 	if (!multitexshader_.get())
 	{

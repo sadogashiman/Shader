@@ -21,7 +21,6 @@ private:
 	std::vector<char> pixeldataarray_;
 	std::vector<char> computedataarray_;
 	static wchar_t filename_[MAX_PATH];
-	static wchar_t mtlfilename[MAX_PATH];
 
 public:
 	Support();

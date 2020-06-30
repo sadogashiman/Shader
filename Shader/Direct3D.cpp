@@ -192,7 +192,6 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	swapchaindesc.Flags = 0;
 
 	//スワップチェーン・Direct3Dデバイス・Direct3Dデバイスコンテキストの作成
-
 	hr = D3D11CreateDeviceAndSwapChain(
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -564,7 +563,7 @@ void Direct3D::turnAddBlendEnable()
 	blendfactor[2] = 0.0F;
 	blendfactor[3] = 0.0F;
 
-	//アルファブレンドオン
+	//加算合成オン
 	cpdevicecontext_->OMSetBlendState(cpaddalphablendstate_.Get(), blendfactor, 0xffffff);
 }
 
@@ -578,7 +577,7 @@ void Direct3D::turnAlphaBlendEnable()
 	blendfactor[2] = 0.0F;
 	blendfactor[3] = 0.0F;
 
-	//ブレンドステートをセット
+	//アルファブレンドオン
 	cpdevicecontext_->OMSetBlendState(cpenabledalphablendstate_.Get(), blendfactor, 0xffffff);
 }
 
@@ -592,6 +591,6 @@ void Direct3D::turnAlphablendDisable()
 	blendfactor[2] = 0.0F;
 	blendfactor[3] = 0.0F;
 
-	//ブレンドステートをセット
+	//アルファブレンオフ
 	cpdevicecontext_->OMSetBlendState(cpdisabledalphablendstate_.Get(), blendfactor, 0xffffff);
 }

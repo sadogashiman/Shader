@@ -10,7 +10,7 @@ struct ParticleData
 	float velocity;				//移動速度(Y軸)
 	float velocityVariation;	//移動速度のランダム幅)
 	float size;					//サイズ
-	float interval;			//一秒間当たりの発生数
+	float interval;				//一秒間当たりの発生数
 	unsigned int max;			//最大数
 	float colorbase;			//基本色
 	float colorrange;			//色のランダム幅
