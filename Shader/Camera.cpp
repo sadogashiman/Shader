@@ -29,12 +29,14 @@ void Camera::update()
 	//ƒJƒƒ‰§Œä
 	poscontroller_.get()->setFrameTime(16.0F);
 
+	poscontroller_.get()->moveRightWard(Input::getInstance()->isKeyState(DIK_D));
+	poscontroller_.get()->moveLeftWard(Input::getInstance()->isKeyState(DIK_A));
+	poscontroller_.get()->moveForWard(Input::getInstance()->isKeyState(DIK_W));
+	poscontroller_.get()->moveBackWard(Input::getInstance()->isKeyState(DIK_S));
+	poscontroller_.get()->moveUpWard(Input::getInstance()->isKeyState(DIK_UP));
+	poscontroller_.get()->moveDownWard(Input::getInstance()->isKeyState(DIK_DOWN));
 	poscontroller_.get()->turnLeft(Input::getInstance()->isKeyState(DIK_LEFT));
 	poscontroller_.get()->turnRight(Input::getInstance()->isKeyState(DIK_RIGHT));
-	poscontroller_.get()->moveForWard(Input::getInstance()->isKeyState(DIK_UP));
-	poscontroller_.get()->moveBackWard(Input::getInstance()->isKeyState(DIK_DOWN));
-	poscontroller_.get()->moveUpWard(Input::getInstance()->isKeyState(DIK_A));
-	poscontroller_.get()->moveDownWard(Input::getInstance()->isKeyState(DIK_Z));
 	poscontroller_.get()->lookUpWard(Input::getInstance()->isKeyState(DIK_PGUP));
 	poscontroller_.get()->lookDownWard(Input::getInstance()->isKeyState(DIK_PGDN));
 

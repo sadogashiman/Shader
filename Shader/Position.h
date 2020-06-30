@@ -5,14 +5,6 @@ private:
 	Vector3 position_;
 	Vector3 rotation_;
 	float frametime_;
-	float forwardspeed_;
-	float backwardspeed_;
-	float upwardspeed_;
-	float downwardspeed_;
-	float leftturnspeed_;
-	float rightturnspeed_;
-	float lookupspeed_;
-	float lookdownspeed_;
 public:
 	Position();
 	//set
@@ -29,7 +21,9 @@ public:
 	void moveBackWard(bool KeyDown);
 	void moveUpWard(bool KeyDown);
 	void moveDownWard(bool KeyDown);
-
+	void moveLeftWard(bool KeyDown);
+	void moveRightWard(bool KeyDown);
+		
 	//turn
 	void turnLeft(bool KeyDown);
 	void turnRight(bool KeyDown);

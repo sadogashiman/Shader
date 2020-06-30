@@ -145,9 +145,10 @@ bool Game::init()
 	multimodel_->setPosition(54.0F, 1.5F, 50.0F);
 
 	particle_ = new ParticleSystem;
-	particle_->setEmitMax(100000);
+	particle_->setEmitMax(1000);
 	particle_->setEmitPosition(50.0F, 1.5F, 50.0F);
 	particle_->setVelcity(0.01F);
+	particle_->setEmitInterval(50.0F);
 	result = particle_->init(L"Resource/star.dds");
 	if(!result)
 	{
@@ -180,11 +181,6 @@ bool Game::render()
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
-	if (!renderToScene())
-	{
-		return false;
-	}
-
 	if (!worldRender())
 	{
 		return false;
@@ -203,6 +199,7 @@ bool Game::render()
 
 void Game::destroy()
 {
+	//破棄
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE_DESTROY(skyplane_);
@@ -214,44 +211,6 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(particle_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
-}
-
-bool Game::renderToScene()
-{
-	Matrix world, view, projection;
-
-	//レンダーターゲットをセット
-	rendertexture_->setRenderTarget();
-
-	//レンダーターゲットクリア
-	rendertexture_->clearRenderTarget();
-
-	//行列を生成
-	light_->generateProjection(kScreen_depth, kScreen_near);
-	light_->generateView();
-
-	//行列を取得
-	world = Direct3D::getInstance()->getWorld();
-	view = light_->getViewMatrix();
-	projection = light_->getProjection();
-
-
-	//深度情報を書き込み
-	terrain_->render();
-	if (!(ShaderManager::getInstance()->depthRender(terrain_->getIndexCount(), world, view, projection)))
-		return false;
-
-	world = Support::worldPosition(shadowmodel_);
-	if (!(ShaderManager::getInstance()->depthRender(shadowmodel_->getIndexCount(), world, view, projection)))
-		return false;
-
-	//バックバッファにレンダーターゲットを移す
-	Direct3D::getInstance()->setRenderTarget();
-
-	//ビューポートをリセット
-	Direct3D::getInstance()->resetViewPort();
-
-	return true;
 }
 
 void Game::switchWireFrame()
@@ -276,13 +235,6 @@ bool Game::modelRender()
 	Matrix skyworld;
 	Matrix view;
 
-	static float rotation = 0;
-
-	if (rotation < 360.0F)
-	{
-		rotation += 0.6F;
-	}
-	rotation -= 360.0F;
 
 
 	//行列を取得
@@ -295,10 +247,12 @@ bool Game::modelRender()
 	if (!(ShaderManager::getInstance()->textureRender(texmodel_, world, view, projection, texmodel_->getTexture())))
 		return false;
 
+	//ワールド上のモデル座標を計算
 	world = Support::worldPosition(shadowmodel_);
 	if (!(ShaderManager::getInstance()->lightRender(shadowmodel_, world, view, projection, shadowmodel_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
 		return false;
 
+	//ワールド上のモデル座標を計算
 	world = Support::worldPosition(maskmodel_);
 	ID3D11ShaderResourceView* masksrv[3];
 	masksrv[0] = maskmodel_->getTexture(0);
@@ -307,6 +261,8 @@ bool Game::modelRender()
 	if (!(ShaderManager::getInstance()->maskRender(maskmodel_, world, view, projection, masksrv)))
 		return false;
 
+
+	//ワールド上のモデル座標を計算
 	world = Support::worldPosition(multimodel_);
 	ID3D11ShaderResourceView* multisrv[2];
 	multisrv[0] = multimodel_->getTexture(0);
@@ -318,11 +274,15 @@ bool Game::modelRender()
 	Direct3D::getInstance()->turnAlphaBlendEnable();
 	Direct3D::getInstance()->turnZbufferDisable();
 
+	//ワールド行列を取得
 	world = Direct3D::getInstance()->getWorld();
 	if (!(ShaderManager::getInstance()->particleRender(particle_, world, view, projection)))
 		return false;
+
+	//ブレンドオフ・Zバッファオン
 	Direct3D::getInstance()->turnAlphablendDisable();
 	Direct3D::getInstance()->turnZbufferEnable();
+
 	return true;
 }
 

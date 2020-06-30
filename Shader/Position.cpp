@@ -14,90 +14,142 @@ Position::Position()
 void Position::moveForWard(bool KeyDown)
 {
 	float radian;
+	float forwardspeed;
 
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		forwardspeed_ = kMovespeed;
+		forwardspeed = kMovespeed;
 	}
 	else
 	{
-		forwardspeed_ = 0.0F;
+		forwardspeed = 0.0F;
 	}
 
 	//ラジアンに変換して代入
 	radian = XMConvertToRadians(rotation_.y);
 
-	position_.x += sin(radian) * forwardspeed_;
-	position_.z += cos(radian) * forwardspeed_;
+	position_.x += sin(radian) * forwardspeed;
+	position_.z += cos(radian) * forwardspeed;
 }
 
 void Position::moveBackWard(bool KeyDown)
 {
 	float radian;
+	float backwardspeed;
 
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		backwardspeed_ = kMovespeed;
+		backwardspeed = kMovespeed;
 	}
 	else
 	{
-		backwardspeed_ = 0.0F;
+		backwardspeed = 0.0F;
 	}
 
 	//ラジアンに変換して代入
 	radian = XMConvertToRadians(rotation_.y);
 
-	position_.x -= sin(radian) * backwardspeed_;
-	position_.z -= cos(radian) * backwardspeed_;
+	position_.x -= sin(radian) * backwardspeed;
+	position_.z -= cos(radian) * backwardspeed;
 }
 
 void Position::moveUpWard(bool KeyDown)
 {
+	float upwardspeed;
+
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		upwardspeed_ = kMovespeed;
+		upwardspeed = kMovespeed;
 	}
 	else
 	{
-		upwardspeed_ = 0.0F;
+		upwardspeed = 0.0F;
 	}
 
-	position_.y += upwardspeed_;
+	position_.y += upwardspeed;
 }
 
 void Position::moveDownWard(bool KeyDown)
 {
+	float downwardspeed;
+
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		downwardspeed_ = kMovespeed;
+		downwardspeed = kMovespeed;
 	}
 	else
 	{
-		downwardspeed_ = 0.0F;
+		downwardspeed = 0.0F;
 
 	}
 
-	position_.y -= downwardspeed_;
+	position_.y -= downwardspeed;
+}
+
+void Position::moveLeftWard(bool KeyDown)
+{
+	float leftwardspeed;
+	float radian;
+	float offset = -270.0F;
+
+	if (KeyDown)
+	{
+		leftwardspeed = kMovespeed / 2;
+	}
+	else
+	{
+		leftwardspeed = 0;
+	}
+
+	radian = XMConvertToRadians(rotation_.y + offset);
+
+	position_.x -= sin(radian) * leftwardspeed;
+	position_.z -= cos(radian) * leftwardspeed;
+}
+
+void Position::moveRightWard(bool KeyDown)
+{
+	float radian;
+	float rightwardspeed;
+	float offset = 90.0F;
+
+	//キーが押されている間加速
+	if (KeyDown)
+	{
+		rightwardspeed = kMovespeed / 2;
+	}
+	else
+	{
+		rightwardspeed = 0.0F;
+	}
+
+	//ラジアンに変換して代入
+	radian = XMConvertToRadians(rotation_.y + offset);
+
+	position_.x += sin(radian) * rightwardspeed;
+	position_.z += cos(radian) * rightwardspeed;
 }
 
 void Position::turnLeft(bool KeyDown)
 {
+	float leftturnspeed;
+
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		leftturnspeed_ = kTurnspeed;
+		leftturnspeed = kTurnspeed;
 	}
 	else
 	{
-		leftturnspeed_ = 0.0F;
+		leftturnspeed = 0.0F;
 
 	}
 
-	rotation_.y -= leftturnspeed_;
+	rotation_.y -= leftturnspeed;
 
 	if (rotation_.y < 0.0F)
 	{
@@ -107,17 +159,19 @@ void Position::turnLeft(bool KeyDown)
 
 void Position::turnRight(bool KeyDown)
 {
+	float rightturnspeed;
+
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		rightturnspeed_ = kTurnspeed;
+		rightturnspeed = kTurnspeed;
 	}
 	else
 	{
-		rightturnspeed_ = 0.0F;
+		rightturnspeed = 0.0F;
 	}
 
-	rotation_.y += rightturnspeed_;
+	rotation_.y += rightturnspeed;
 
 	if (rotation_.y > 360.0F)
 	{
@@ -127,17 +181,19 @@ void Position::turnRight(bool KeyDown)
 
 void Position::lookUpWard(bool KeyDown)
 {
+	float lookupspeed;
+
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		lookupspeed_ = kLookspeed;
+		lookupspeed = kLookspeed;
 	}
 	else
 	{
-		lookupspeed_ = 0.0F;
+		lookupspeed = 0.0F;
 	}
 
-	rotation_.x -= lookupspeed_;
+	rotation_.x -= lookupspeed;
 
 	if (rotation_.x > 90.0F)
 	{
@@ -147,17 +203,19 @@ void Position::lookUpWard(bool KeyDown)
 
 void Position::lookDownWard(bool KeyDown)
 {
+	float lookdownspeed;
+
 	//キーが押されている間加速
 	if (KeyDown)
 	{
-		lookdownspeed_ = kLookspeed;
+		lookdownspeed = kLookspeed;
 	}
 	else
 	{
-		lookdownspeed_ = 0.0F;
+		lookdownspeed = 0.0F;
 	}
 
-	rotation_.x += lookdownspeed_;
+	rotation_.x += lookdownspeed;
 
 	if (rotation_.x < -90.0F)
 	{

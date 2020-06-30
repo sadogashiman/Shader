@@ -18,11 +18,11 @@ Matrix Support::worldPosition(Model* Model)
 }
 
 
-bool Support::checkInputLayoutData(const void* shadercode, size_t codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum)
+bool Support::checkInputLayoutData(const void* Shadercode, size_t Codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t Layoutnum)
 {
 	ID3D11ShaderReflection* vsref;
 	HRESULT hr;
-	hr = D3DReflect(shadercode, codesize, IID_ID3D11ShaderReflection, (void**)&vsref);
+	hr = D3DReflect(Shadercode, Codesize, IID_ID3D11ShaderReflection, (void**)&vsref);
 	if (FAILED(hr))
 	{
 		return false;
@@ -42,20 +42,21 @@ bool Support::checkInputLayoutData(const void* shadercode, size_t codesize, cons
 		hr = vsref->GetInputParameterDesc(i, &desc);
 		if (FAILED(hr))
 		{
+			Error::showDialog("入力されたパラメーターが取得できません");
 			vsref->Release();
 			return false;
 		}
 
 		UINT j;
 
-		for (j = 0; j < layoutnum; ++j)
+		for (j = 0; j < Layoutnum; ++j)
 		{
 			if (strcmp(layout[j].SemanticName, desc.SemanticName) == 0)
 			{
 				break;
 			}
 		}
-		if (j == layoutnum)
+		if (j == Layoutnum)
 		{
 			Error::showDialog("シェーダー側とセマンティクス名が一致しません");
 			vsref->Release();
@@ -239,7 +240,7 @@ HRESULT Support::createPixelData(const wchar_t* PixelShaderFileName, ID3D11Pixel
 		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
 
 		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, pixelshaderbuffer_.GetAddressOf(), NULL);
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "ps_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, pixelshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
 			Error::showDialog("ピクセルシェーダーの動的コンパイルに失敗");
@@ -313,7 +314,7 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName, ID3D11C
 		mbstowcs(wcharfilename, charfilename, sizeof(charfilename));
 
 		//シェーダーをコンパイルしてポインタを取得
-		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "cs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, computeshaderbuffer_.GetAddressOf(), NULL);
+		hr = D3DCompileFromFile(wcharfilename, NULL, NULL, "main", "cs_4_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, computeshaderbuffer_.GetAddressOf(), NULL);
 		if (FAILED(hr))
 		{
 			Error::showDialog("コンピュートシェーダーの動的コンパイルに失敗");

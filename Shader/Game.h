@@ -31,7 +31,6 @@ private:
 
 	bool wire_;
 
-	bool renderToScene();
 	void switchWireFrame();
 	bool modelRender();
 	bool worldRender();

@@ -20,7 +20,7 @@ ParticleSystem::ParticleSystem()
 	data_.size = 0.2F;
 
 	//1秒あたりの放出数を設定
-	data_.perSecond = 25.0F;
+	data_.interval = 25.0F;
 
 	//パーティクルの最大数を設定
 	data_.max = 200;
@@ -305,14 +305,14 @@ void ParticleSystem::emitParticle()
 	accumulatedtime_ += kFrameTime;
 
 	//フラグをオフに設定
-	emit = true;
+	emit = false;
 
-	////パーティクルを放出するタイミングかを判断
-	//if (accumulatedtime_ > (1000.0F / data_.perSecond))
-	//{
-	//	accumulatedtime_ = 0.0F;
-	//	emit = true;
-	//}
+	//パーティクルを放出するタイミングかを判断
+	if (accumulatedtime_ > (1000.0F / data_.interval))
+	{
+		accumulatedtime_ = 0.0F;
+		emit = true;
+	}
 
 	//放出するパーティクルがある場合フレームごとに1つ放出
 	if (emit && (particlevector_.size() < data_.max))

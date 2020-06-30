@@ -5,18 +5,18 @@ const float kAlphaAttenuation = 0.001F;
 const float kPositionAttenuation = 0.001F;
 struct ParticleData
 {
-	Vector3 deviation;
-	float deviationrange;
-	float velocity;
-	float velocityVariation;
-	float size;
-	float perSecond;
-	unsigned int max;
-	float colorbase;
-	float colorrange;
-	float alphabase;
-	float alpharange;
-	float deleteline;
+	Vector3 deviation;			//発生位置
+	float deviationrange;		//発生位置のランダム幅)
+	float velocity;				//移動速度(Y軸)
+	float velocityVariation;	//移動速度のランダム幅)
+	float size;					//サイズ
+	float interval;			//一秒間当たりの発生数
+	unsigned int max;			//最大数
+	float colorbase;			//基本色
+	float colorrange;			//色のランダム幅
+	float alphabase;			//基本透明度
+	float alpharange;			//透明度の幅
+	float deleteline;			//この場所に到達したパーティクルを削除するライン
 };
 
 class ParticleSystem
@@ -70,15 +70,16 @@ public:
 	//個別設定
 	inline void setEmitPosition(const Vector3& EmitPosition) { data_.deviation = EmitPosition; }
 	inline void setEmitPosition(const float EmitPosX, const float EmitPosY, const float EmitPosZ) { data_.deviation = Vector3(EmitPosX, EmitPosY, EmitPosZ); }
+	inline void setEmitMax(const int Max) { data_.max = Max; }
+	inline void setEmitInterval(const float Interval) { data_.interval = Interval; }
 	inline void setVelcity(const float Velocity) { data_.velocity = Velocity; }
 	inline void setVelocityVariation(const float Variation) { data_.velocityVariation = Variation; }
 	inline void setParticleSize(const float Size) { data_.size = Size; }
-	inline void setEmitMax(const int Max) { data_.max = Max; }
 	//まとめて設定
 	inline void setParticleData(const ParticleData& ParticleData) { data_ = ParticleData; }
 
 	//Get
 	inline ID3D11ShaderResourceView* getTexture()const { return TextureFactory::getInstance()->getTexture(filename_); }
-	inline int getIndexCount()const { return indexcnt_; }
+	inline const int getIndexCount()const { return indexcnt_; }
 };
 
