@@ -10,21 +10,23 @@
 //Å@Å@		include
 //******************************
 #include<Windows.h>
-#include<d3d11.h>
-#include<DirectXMath.h>
 #include<tchar.h>
 #include<SimpleMath.h>
-#include<DDSTextureLoader.h>
-#include<WICTextureLoader.h>
 #include<math.h>
-#include<dxgidebug.h>
 #include<wrl/client.h>
 #include<mmsystem.h>
 #include<Pdh.h>
-#include<dinput.h>
-#include<d3dcompiler.h>
-#include<DirectXColors.h>
 #include<Shlwapi.h>
+
+//DirectX
+#include<DirectXMath.h>
+#include<DirectXColors.h>
+#include<d3dcompiler.h>
+#include<dinput.h>
+#include<dxgidebug.h>
+#include<d3d11.h>
+#include<DDSTextureLoader.h>
+#include<WICTextureLoader.h>
 
 //std
 #include<fstream>
