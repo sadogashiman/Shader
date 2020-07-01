@@ -266,7 +266,7 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName, ID3D11C
 	HRESULT hr;
 	std::ifstream fp;
 	computeshaderbuffer_ = nullptr;
-
+	
 	//パスが有効か確認
 	if (searchFile(ComputeShaderFileName))
 	{
