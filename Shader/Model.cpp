@@ -10,6 +10,8 @@ Model::Model()
 {
 	ZeroMemory(&texturefilename_, sizeof(texturefilename_));
 	ZeroMemory(&mapfilename_, sizeof(mapfilename_));
+	scale_ = 1.0F;
+	world_ = XMMatrixIdentity();
 }
 
 Model::~Model()
@@ -99,6 +101,18 @@ void Model::render()
 {
 	//グラフィックスパイプラインに頂点バッファをインデックスバッファを配置
 	renderBuffer();
+}
+
+Matrix Model::getWorld()
+{
+	world_ =  Matrix::Identity;
+	world_ *= Matrix::CreateScale(scale_);
+	world_ *= Matrix::CreateRotationX(XMConvertToRadians(rotation_.x));
+	world_ *= Matrix::CreateRotationY(XMConvertToRadians(rotation_.y));
+	world_ *= Matrix::CreateRotationZ(XMConvertToRadians(rotation_.z));
+	world_ *= Matrix::CreateTranslation(position_);
+
+	return world_;
 }
 
 bool Model::initBuffer()

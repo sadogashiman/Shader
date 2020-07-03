@@ -377,6 +377,9 @@
     <ClInclude Include="TerrainShader.h">
       <Filter>ShaderManager\Shader\Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="Objloader.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="terrain_vs.hlsl">

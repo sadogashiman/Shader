@@ -207,6 +207,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Multitexture.h" />
+    <ClInclude Include="Objloader.h" />
     <ClInclude Include="OrthoWindow.h" />
     <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="ParticleSystem.h" />

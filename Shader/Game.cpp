@@ -34,7 +34,7 @@ bool Game::init()
 		return false;
 	}
 
-	camera_->setPosition(Vector3(0.0F, -2.0F, -10.0F));
+	camera_->setPosition(Vector3(0.0F, 0.0F, 0.0F));
 	camera_->render();
 	camera_->renderBaseViewMatrix();
 
@@ -83,7 +83,7 @@ bool Game::init()
 		return false;
 	}
 
-	result = terrain_->init(L"Resource/setup.txt", L"Resource/dirt.dds");
+	result = terrain_->init(L"Resource/setup.txt", L"Resource/asphalt.dds");
 	if (!result)
 	{
 		return false;
@@ -107,16 +107,19 @@ bool Game::init()
 		Error::showDialog("skyplaneの初期化に失敗");
 		return false;
 	}
+	//***************************************************
+	//					モデル生成
+	//***************************************************
 
-	//モデル生成
 	texmodel_ = new Model;
-	result = texmodel_->init(L"Resource/cube.txt", L"Resource/stone.dds");
+	result = texmodel_->init(L"Resource/bill.txt", L"Resource/bill.dds");
 	if (!result)
 	{
 		return false;
 	}
 
-	texmodel_->setPosition(58.0F, 1.5F, 50.0F);
+	texmodel_->setPosition(11.0F,0.0F, 7.5F);
+	texmodel_->setRotation(0.0F, 90.0F, 0.0F);
 
 	shadowmodel_ = new Model;
 	result = shadowmodel_->init(L"Resource/cube.txt", L"Resource/stone.dds");
@@ -127,7 +130,7 @@ bool Game::init()
 	shadowmodel_->setPosition(46.0F, 1.5F, 50.0F);
 
 	maskmodel_ = new Model;
-	result = maskmodel_->init(L"Resource/cube.txt", L"Resource/dirt.dds", L"Resource/stone.dds",L"Resource/alpha.dds");
+	result = maskmodel_->init(L"Resource/cube.txt", L"Resource/dirt.dds", L"Resource/stone.dds", L"Resource/alpha.dds");
 	if (!result)
 	{
 		return false;
@@ -150,7 +153,7 @@ bool Game::init()
 	particle_->setVelcity(0.01F);
 	particle_->setEmitInterval(50.0F);
 	result = particle_->init(L"Resource/star.dds");
-	if(!result)
+	if (!result)
 	{
 		return false;
 	}
@@ -238,14 +241,14 @@ bool Game::modelRender()
 	world = Direct3D::getInstance()->getWorld();
 	projection = Direct3D::getInstance()->getProjection();
 	view = camera_->getViewMatrix();
-	
+
 	//ワールド上のモデル座標を計算
-	world = Support::worldPosition(texmodel_);
-	if (!(ShaderManager::getInstance()->textureRender(texmodel_, world, view, projection, texmodel_->getTexture())))
+	world = texmodel_->getWorld();
+	if (!(ShaderManager::getInstance()->colorRender(texmodel_, world, view, projection)))
 		return false;
 
 	//ワールド上のモデル座標を計算
-	world = Support::worldPosition(shadowmodel_);
+	world = shadowmodel_->getWorld();
 	if (!(ShaderManager::getInstance()->lightRender(shadowmodel_, world, view, projection, shadowmodel_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
 		return false;
 

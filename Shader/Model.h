@@ -2,12 +2,6 @@
 #include"TextureFactory.h"
 #include"Model3D.h"
 const int kMaxTexture = 2;
-enum 
-{
-	kBumpMap,
-	kMulti,
-
-}; 
 
 class Model:public Model3D
 {
@@ -57,6 +51,9 @@ private:
 
 	std::vector<ModelType> model_;
 	Vector3 position_;
+	Vector3 rotation_;
+	Matrix world_;
+	float scale_;
 	wchar_t texturefilename_[2][MAX_PATH];
 	wchar_t mapfilename_[MAX_PATH];
 public:
@@ -72,9 +69,14 @@ public:
 	//set
 	inline void setPosition(const float X, const float Y, const float Z) { position_ = Vector3(X, Y, Z); }
 	inline void setPosition(const Vector3& Position) {position_ = Position;}
+	inline void setRotation(const float X, const float Y, const float Z) { rotation_ = Vector3(X, Y, Z); }
+	inline void setRotation(const Vector3& Rotation) { rotation_ = Rotation; }
 	inline void setNormalTexture(const wchar_t* NormalTextureFileName) { wcscpy(mapfilename_, NormalTextureFileName); } //マッピング用のテクスチャファイルは別途指定
-	//get
-	inline Vector3 getPosition() { return position_; }
+	inline void setModelScale(const float Scale) { scale_ = Scale; }
+																														//get
+	Matrix getWorld();
+	inline Vector3 getPosition()const { return position_; }
+	inline Vector3 getRotation()const { return rotation_; }
 	inline const int getIndexCount()const { return indexcount_; }
 	inline ID3D11ShaderResourceView* getTexture(const int TextureNumber = 0)const { return TextureFactory::getInstance()->getTexture(texturefilename_[TextureNumber]); }
 	inline ID3D11ShaderResourceView* getMapTexture()const { return TextureFactory::getInstance()->getTexture(mapfilename_); }
