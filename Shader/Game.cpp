@@ -111,23 +111,23 @@ bool Game::init()
 	//					モデル生成
 	//***************************************************
 
-	texmodel_ = new Model;
-	result = texmodel_->init(L"Resource/bill.txt", L"Resource/bill.dds");
+	bill_ = new Model;
+	result = bill_->init(L"Resource/bill.txt", L"Resource/bill.dds");
 	if (!result)
 	{
 		return false;
 	}
 
-	texmodel_->setPosition(11.0F,0.0F, 7.5F);
-	texmodel_->setRotation(0.0F, 90.0F, 0.0F);
+	bill_->setPosition(11.0F,0.0F, 7.5F);
+	bill_->setRotation(0.0F, 90.0F, 0.0F);
 
-	shadowmodel_ = new Model;
-	result = shadowmodel_->init(L"Resource/cube.txt", L"Resource/stone.dds");
+	house_ = new Model;
+	result = house_->init(L"Resource/house.txt", L"Resource/default.dds");
 	if (!result)
 	{
 		return false;
 	}
-	shadowmodel_->setPosition(46.0F, 1.5F, 50.0F);
+	house_->setPosition(46.0F, 1.5F, 50.0F);
 
 	maskmodel_ = new Model;
 	result = maskmodel_->init(L"Resource/cube.txt", L"Resource/dirt.dds", L"Resource/stone.dds", L"Resource/alpha.dds");
@@ -206,8 +206,8 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE_DESTROY(cloud_);
-	SAFE_DELETE_DESTROY(texmodel_);
-	SAFE_DELETE_DESTROY(shadowmodel_);
+	SAFE_DELETE_DESTROY(bill_);
+	SAFE_DELETE_DESTROY(house_);
 	SAFE_DELETE_DESTROY(rendertexture_);
 	SAFE_DELETE_DESTROY(maskmodel_);
 	SAFE_DELETE_DESTROY(multimodel_);
@@ -243,13 +243,13 @@ bool Game::modelRender()
 	view = camera_->getViewMatrix();
 
 	//ワールド上のモデル座標を計算
-	world = texmodel_->getWorld();
-	if (!(ShaderManager::getInstance()->colorRender(texmodel_, world, view, projection)))
+	world = bill_->getWorld();
+	if (!(ShaderManager::getInstance()->textureRender(bill_, world, view, projection,bill_->getTexture())))
 		return false;
 
 	//ワールド上のモデル座標を計算
-	world = shadowmodel_->getWorld();
-	if (!(ShaderManager::getInstance()->lightRender(shadowmodel_, world, view, projection, shadowmodel_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
+	world = house_->getWorld();
+	if (!(ShaderManager::getInstance()->lightRender(house_, world, view, projection, house_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
 		return false;
 
 	//ワールド上のモデル座標を計算

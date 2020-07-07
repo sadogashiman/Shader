@@ -20,9 +20,9 @@ private:
 	Rendertexture* rendertexture_;
 
 	//3Dƒ‚ƒfƒ‹
-	Model* texmodel_;
+	Model* bill_;
 	Model* bumpmodel_;
-	Model* shadowmodel_;
+	Model* house_;
 	Model* maskmodel_;
 	Model* multimodel_;
 
