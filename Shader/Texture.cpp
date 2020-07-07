@@ -220,7 +220,7 @@ bool Texture::init(const wchar_t* TextureName)
 				return false;
 			}
 		}
-		else if (wcscmp(wcsrchr(TextureName, L'.'), extensionarray[kDds]) == 0)
+		else
 		{
 			hr = CreateWICTextureFromFileEx(Direct3D::getInstance()->getDevice(), TextureName, NULL, D3D11_USAGE_DEFAULT, D3D11_BIND_SHADER_RESOURCE, 0, 0, WIC_LOADER_DEFAULT, &textureresource_, &texture_);
 			if (FAILED(hr))
