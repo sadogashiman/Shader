@@ -26,6 +26,9 @@ private:
 	float bright_;
 	float scale_;
 	float transition_;
+	Matrix world_;
+	Vector3 position_;
+	Vector3 rotation_;
 
 	bool initskyPlane(const int PlaneResolution, const float PlaneWidth, const float PlaneTop, const float PlaneBottom, const int texRepeat);
 
@@ -42,6 +45,7 @@ public:
 	inline void setCloudScale(const float CloudScale) { scale_ = CloudScale; }
 
 	//get
+	Matrix getWorldMatrix();
 	inline const int getIndexCount()const { return indexcount_; }
 	inline const float getBrightness()const { return bright_; }
 	inline const float getTransition()const { return transition_; }

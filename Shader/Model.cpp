@@ -103,7 +103,7 @@ void Model::render()
 	renderBuffer();
 }
 
-Matrix Model::getWorld()
+Matrix Model::getWorldMatrix()
 {
 	world_ =  Matrix::Identity;
 	world_ *= Matrix::CreateScale(scale_);

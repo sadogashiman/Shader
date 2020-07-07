@@ -49,7 +49,7 @@ public:
 	inline IDXGISwapChain* getSwapChain()const { return cpswapchain_.Get(); }
 
 	inline XMMATRIX getProjection()const { return projection_; }
-	inline XMMATRIX getWorld()const { return world_; }
+	inline XMMATRIX getWorldMatrix()const { return world_; }
 	inline XMMATRIX getOrtho()const { return ortho_; }
 
 	inline const char* getVideoCardName()const { return videocarddescription_; }	//GPU‚Ì–¼‘O‚ðŽæ“¾‚·‚é

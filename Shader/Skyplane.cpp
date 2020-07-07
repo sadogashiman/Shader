@@ -197,6 +197,18 @@ void Skyplane::destroy()
 {
 }
 
+Matrix Skyplane::getWorldMatrix()
+{
+	world_ = Matrix::Identity;
+	world_ *= Matrix::CreateScale(scale_);
+	world_ *= Matrix::CreateRotationX(XMConvertToRadians(rotation_.x));
+	world_ *= Matrix::CreateRotationY(XMConvertToRadians(rotation_.y));
+	world_ *= Matrix::CreateRotationZ(XMConvertToRadians(rotation_.z));
+	world_ *= Matrix::CreateTranslation(position_);
+
+	return world_;
+}
+
 bool Skyplane::initskyPlane(const int PlaneResolution, const float PlaneWidth, const float PlaneTop, const float PlaneBottom, const int texRepeat)
 {
 	float quadsize;

@@ -6,6 +6,9 @@
 
 Terrain::Terrain()
 {
+	position_ = Vector3::Zero;
+	rotation_ = Vector3::Zero;
+	modelscale_ = 1.0F;
 }
 
 Terrain::~Terrain()
@@ -95,6 +98,18 @@ void Terrain::destroy()
 {
 	destroyHightMap();
 	destroyTerrainModel();
+}
+
+Matrix Terrain::getWorldMatrix()
+{
+	world_ = Matrix::Identity;
+	world_ *= Matrix::CreateScale(modelscale_);
+	world_ *= Matrix::CreateRotationX(XMConvertToRadians(rotation_.x));
+	world_ *= Matrix::CreateRotationY(XMConvertToRadians(rotation_.y));
+	world_ *= Matrix::CreateRotationZ(XMConvertToRadians(rotation_.z));
+	world_ *= Matrix::CreateTranslation(position_);
+
+	return world_;
 }
 
 bool Terrain::initbuffer()

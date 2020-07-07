@@ -115,6 +115,18 @@ void SkyDome::destroy()
 	releaseSkyDomModel();
 }
 
+Matrix SkyDome::getWorldMatrix()
+{
+	world_ = Matrix::Identity;
+	world_ *= Matrix::CreateScale(domescale_);
+	world_ *= Matrix::CreateRotationX(XMConvertToRadians(rotation_.x));
+	world_ *= Matrix::CreateRotationY(XMConvertToRadians(rotation_.y));
+	world_ *= Matrix::CreateRotationZ(XMConvertToRadians(rotation_.z));
+	world_ *= Matrix::CreateTranslation(position_);
+
+	return world_;
+}
+
 bool SkyDome::loadSkyDomModel(const wchar_t* ModelFileName)
 {
 	if (!Support::searchFile(ModelFileName))

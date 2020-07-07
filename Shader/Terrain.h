@@ -31,11 +31,15 @@ private:
 
 	ComPtr<ID3D11Buffer> vertexbuffer_;
 	ComPtr<ID3D11Buffer> indexbuffer_;
+	Vector3 position_;
+	Vector3 rotation_;
+	Matrix world_;
 	int vertexcnt_;
 	int indexcnt_;
 	int terrainheight_;
 	int terrainwidth_;
 	float heightscale_;
+	float modelscale_;
 	char terrainfilename_[MAX_PATH];
 	wchar_t texturefilename_[MAX_PATH];
 	std::vector<HeightMapType> heightmap_;
@@ -56,8 +60,15 @@ public:
 	void render();
 	void destroy();
 	
+	//set
+	inline void setPosition(const float X, const float Y, const float Z) { position_ = Vector3(X, Y, Z); }
+	inline void setPosition(const Vector3& Position) { position_ = Position; }
+	inline void setScale(const float Scale) { modelscale_ = Scale; }
+
 	//get
+	Matrix getWorldMatrix();
 	inline const int getIndexCount()const { return indexcnt_; }
+	inline Vector3 getPosition()const { return position_; }
 	inline ID3D11ShaderResourceView* getTexture() const { return TextureFactory::getInstance()->getTexture(texturefilename_); }
 
 };

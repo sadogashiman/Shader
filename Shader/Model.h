@@ -74,7 +74,7 @@ public:
 	inline void setNormalTexture(const wchar_t* NormalTextureFileName) { wcscpy(mapfilename_, NormalTextureFileName); } //マッピング用のテクスチャファイルは別途指定
 	inline void setModelScale(const float Scale) { scale_ = Scale; }
 																														//get
-	Matrix getWorld();
+	Matrix getWorldMatrix();
 	inline Vector3 getPosition()const { return position_; }
 	inline Vector3 getRotation()const { return rotation_; }
 	inline const int getIndexCount()const { return indexcount_; }
