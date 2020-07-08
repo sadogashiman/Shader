@@ -170,13 +170,14 @@ State* Game::update()
 
 bool Game::render()
 {
-	//シーンをクリア
-	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
 	if (!renderToScene())
 	{
 		return false;
 	}
+	//シーンをクリア
+
+	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
 	if (!worldRender())
 	{
@@ -203,7 +204,7 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(bill03_);
 	SAFE_DELETE_DESTROY(bill04_);
 	SAFE_DELETE_DESTROY(bill10_);
-	SAFE_DELETE_DESTROY(rendertexture_);
+	SAFE_DELETE(rendertexture_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
 }
@@ -315,7 +316,7 @@ bool Game::worldRender()
 		Direct3D::getInstance()->wireFrameDisable();
 
 	//2Dレンダリングが終了したのでZバッファを有効にする
-	Direct3D::getInstance()->turnZbufferEnable();
+	//Direct3D::getInstance()->turnZbufferEnable();
 
 	return true;
 }
@@ -327,6 +328,7 @@ bool Game::renderToScene()
 	Matrix projection;
 
 	//描画先変更
+	Direct3D::getInstance()->turnCullingDisable();
 	rendertexture_->setRenderTarget();
 	rendertexture_->clearRenderTarget();
 
@@ -355,5 +357,6 @@ bool Game::renderToScene()
 
 	Direct3D::getInstance()->resetViewPort();
 
+	
 	return true;
 }

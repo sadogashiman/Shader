@@ -5,7 +5,7 @@ struct PixelInputType
 };
 
 
-float4 main(PixelInputType input) : SV_TARGET
+float4 main(PixelInputType input) : SV_TARGET0
 {
     float depthValue;
     float4 color;

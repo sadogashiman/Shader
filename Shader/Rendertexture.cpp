@@ -4,7 +4,6 @@
 
 Rendertexture::Rendertexture()
 {
-    ZeroMemory(this, sizeof(Rendertexture));
 }
 
 Rendertexture::~Rendertexture()
@@ -36,7 +35,7 @@ bool Rendertexture::init(int TextureWidth, int TextureHeight)
     texturedesc.MiscFlags = 0;
 
     //レンダーターゲットテクスチャを作成
-    hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&texturedesc, NULL, &rendertargettexture_);
+    hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&texturedesc, NULL, rendertargettexture_.GetAddressOf());
     if (FAILED(hr))
     {
         return false;
@@ -48,7 +47,7 @@ bool Rendertexture::init(int TextureWidth, int TextureHeight)
     rendertargetviewdesc.Texture2D.MipSlice = 0;
 
     //レンダーターゲットビューの作成
-    hr = Direct3D::getInstance()->getDevice()->CreateRenderTargetView(rendertargettexture_, &rendertargetviewdesc, &rendertargetview_);
+    hr = Direct3D::getInstance()->getDevice()->CreateRenderTargetView(rendertargettexture_.Get(), &rendertargetviewdesc, rendertargetview_.GetAddressOf());
     if (FAILED(hr))
     {
         return false;
@@ -61,7 +60,7 @@ bool Rendertexture::init(int TextureWidth, int TextureHeight)
     shaderresouceviewdesc.Texture2D.MipLevels = 1;
 
     //シェーダーリソースビューの作成
-    hr = Direct3D::getInstance()->getDevice()->CreateShaderResourceView(rendertargettexture_, &shaderresouceviewdesc, &shaderresouceview_);
+    hr = Direct3D::getInstance()->getDevice()->CreateShaderResourceView(rendertargettexture_.Get(), &shaderresouceviewdesc, shaderresouceview_.GetAddressOf());
     if (FAILED(hr))
     {
         return false;
@@ -81,7 +80,7 @@ bool Rendertexture::init(int TextureWidth, int TextureHeight)
     depthbufferdesc.CPUAccessFlags = 0;
     depthbufferdesc.MiscFlags = 0;
 
-    hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&depthbufferdesc, NULL, &depthstencilbuffer_);
+    hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&depthbufferdesc, NULL, depthstencilbuffer_.GetAddressOf());
     if (FAILED(hr))
     {
         return false;
@@ -92,7 +91,7 @@ bool Rendertexture::init(int TextureWidth, int TextureHeight)
     depthstencilviewdesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
     depthstencilviewdesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     depthstencilviewdesc.Texture2D.MipSlice = 0;
-    hr = Direct3D::getInstance()->getDevice()->CreateDepthStencilView(depthstencilbuffer_, &depthstencilviewdesc, &depthstencilview_);
+    hr = Direct3D::getInstance()->getDevice()->CreateDepthStencilView(depthstencilbuffer_.Get(), &depthstencilviewdesc, depthstencilview_.GetAddressOf());
     if (FAILED(hr))
     {
         return false;
@@ -112,19 +111,10 @@ bool Rendertexture::init(int TextureWidth, int TextureHeight)
     return true;
 }
 
-void Rendertexture::destroy()
-{
-    SAFE_RELEASE(depthstencilview_);
-    SAFE_RELEASE(depthstencilbuffer_);
-    SAFE_RELEASE(shaderresouceview_);
-    SAFE_RELEASE(rendertargetview_);
-    SAFE_RELEASE(rendertargettexture_);
-}
-
 void Rendertexture::setRenderTarget()
 {
     //レンダーターゲットビューと深度ステンシルバッファを出力レンダーパイプラインにバインド
-    Direct3D::getInstance()->getContext()->OMSetRenderTargets(1, &rendertargetview_, depthstencilview_);
+    Direct3D::getInstance()->getContext()->OMSetRenderTargets(1, rendertargetview_.GetAddressOf(), depthstencilview_.Get());
 
     Direct3D::getInstance()->getContext()->RSSetViewports(1, &viewport_);
 }
@@ -132,8 +122,8 @@ void Rendertexture::setRenderTarget()
 void Rendertexture::clearRenderTarget(XMVECTORF32 Color)
 {
     //バックバッファクリア
-    Direct3D::getInstance()->getContext()->ClearRenderTargetView(rendertargetview_, Color);
+    Direct3D::getInstance()->getContext()->ClearRenderTargetView(rendertargetview_.Get(), Color);
 
     //深度バッファクリア
-    Direct3D::getInstance()->getContext()->ClearDepthStencilView(depthstencilview_,D3D11_CLEAR_DEPTH,1.0F,0);
+    Direct3D::getInstance()->getContext()->ClearDepthStencilView(depthstencilview_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0F, 0);
 }
