@@ -34,7 +34,7 @@ bool Game::init()
 		return false;
 	}
 
-	camera_->setPosition(Vector3(0.0F, 0.0F, 0.0F));
+	camera_->setPosition(0.0F, 0.0F, 0.0F);
 	camera_->render();
 	camera_->renderBaseViewMatrix();
 
@@ -48,6 +48,7 @@ bool Game::init()
 	light_->setAmbientColor(0.05F, 0.05F, 0.05F, 1.0F);
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
 	light_->setDirection(-0.5F, -1.0F, 0.0F);
+	light_->generateOrthoMatrix(20.0F, kScreen_depth, kScreen_near);
 
 	rendertexture_ = new Rendertexture;
 	if (!rendertexture_)
@@ -115,25 +116,37 @@ bool Game::init()
 	//					モデル生成
 	//***************************************************
 
-	bill_ = new Model;
-	result = bill_->init(L"Resource/bill.txt", L"Resource/bill.dds");
+	bill03_ = new Model;
+	result = bill03_->init(L"Resource/bill.txt", L"Resource/bill.dds");
 	if (!result)
 	{
 		return false;
 	}
 
-	bill_->setPosition(35.0F,0.4F, 57.5F);
-	bill_->setRotation(0.0F, 90.0F, 0.0F);
-	bill_->setModelScale(3.0F);
+	bill03_->setPosition(35.0F,0.4F, 58.5F);
+	bill03_->setRotation(0.0F, 90.0F, 0.0F);
+	bill03_->setModelScale(3.0F);
 
-	house_ = new Model;
-	result = house_->init(L"Resource/house.txt", L"Resource/default.dds");
+	bill04_ = new Model;
+	result = bill04_->init(L"Resource/bill_04.txt", L"Resource/bill.dds");
 	if (!result)
 	{
 		return false;
 	}
-	house_->setPosition(23.0F, 0.4F, 20.5F);
-	house_->setModelScale(7.0F);
+	bill04_->setPosition(35.0F, 0.4F, 20.5F);
+	bill04_->setRotation(0.0F, 90.0F, 0.0F);
+	bill04_->setModelScale(3.0F);
+
+	bill10_ = new Model;
+	result = bill10_->init(L"Resource/bill_08.txt", L"Resource/bill.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	bill10_->setPosition(35.0F, 0.4F, 96.5F);
+	bill10_->setRotation(0.0F, 90.0F, 0.0F);
+	bill10_->setModelScale(3.0F);
 
 	wire_ = false;
 
@@ -145,7 +158,7 @@ State* Game::update()
 	bool result;
 	camera_->update();
 	switchWireFrame();
-
+	light_->update();
 	result = render();
 	if (!result)
 	{
@@ -159,6 +172,11 @@ bool Game::render()
 {
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
+
+	if (!renderToScene())
+	{
+		return false;
+	}
 
 	if (!worldRender())
 	{
@@ -182,8 +200,9 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(sky_);
 	SAFE_DELETE_DESTROY(terrain_);
 	SAFE_DELETE_DESTROY(cloud_);
-	SAFE_DELETE_DESTROY(bill_);
-	SAFE_DELETE_DESTROY(house_);
+	SAFE_DELETE_DESTROY(bill03_);
+	SAFE_DELETE_DESTROY(bill04_);
+	SAFE_DELETE_DESTROY(bill10_);
 	SAFE_DELETE_DESTROY(rendertexture_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
@@ -212,20 +231,25 @@ bool Game::modelRender()
 
 	//行列を取得
 	world = Direct3D::getInstance()->getWorldMatrix();
-	projection = Direct3D::getInstance()->getProjection();
+	projection = Direct3D::getInstance()->getProjectionMatrix();
 	view = camera_->getViewMatrix();
 
 	//ワールド上のモデル座標を計算
-	world = bill_->getWorldMatrix();
-	if (!(ShaderManager::getInstance()->textureRender(bill_, world, view, projection,bill_->getTexture())))
+	world = bill03_->getWorldMatrix();
+	if (!(ShaderManager::getInstance()->shadowRender(bill03_, world, view, projection, bill03_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
 		return false;
 
 	Direct3D::getInstance()->turnCullingDisable();
 
 	//ワールド上のモデル座標を計算
-	world = house_->getWorldMatrix();
-	if (!(ShaderManager::getInstance()->lightRender(house_, world, view, projection, house_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
+	world = bill04_->getWorldMatrix();
+	if (!(ShaderManager::getInstance()->shadowRender(bill04_, world, view, projection, bill04_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
 		return false;
+
+	world = bill10_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->shadowRender(bill10_, world, view, projection,bill10_->getTexture(),rendertexture_->getShaderResouceView(),light_))
+		return false;
+
 	Direct3D::getInstance()->turnCullingEnable();
 
 	return true;
@@ -242,7 +266,7 @@ bool Game::worldRender()
 
 	//行列を取得
 	world = Direct3D::getInstance()->getWorldMatrix();
-	projection = Direct3D::getInstance()->getProjection();
+	projection = Direct3D::getInstance()->getProjectionMatrix();
 	view = camera_->getViewMatrix();
 	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
 
@@ -292,6 +316,44 @@ bool Game::worldRender()
 
 	//2Dレンダリングが終了したのでZバッファを有効にする
 	Direct3D::getInstance()->turnZbufferEnable();
+
+	return true;
+}
+
+bool Game::renderToScene()
+{
+	Matrix world;
+	Matrix view;
+	Matrix projection;
+
+	//描画先変更
+	rendertexture_->setRenderTarget();
+	rendertexture_->clearRenderTarget();
+
+	//射影行列を生成
+	light_->generateView();
+
+	world = Direct3D::getInstance()->getWorldMatrix();
+
+	//行列を取得
+	view = light_->getViewMatrix();
+	projection = light_->getOrthoMatrix();
+
+	world = bill03_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill03_, world, view, projection))
+		return false;
+
+	world = Direct3D::getInstance()->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill04_, world, view, projection))
+		return false;
+
+	world = Direct3D::getInstance()->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill10_, world, view, projection))
+		return false;
+
+	Direct3D::getInstance()->setBackBufferRenderTarget();
+
+	Direct3D::getInstance()->resetViewPort();
 
 	return true;
 }

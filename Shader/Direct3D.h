@@ -48,7 +48,7 @@ public:
 	inline ID3D11RenderTargetView* getRenderTargetView()const { return cprendertarget_.Get(); }
 	inline IDXGISwapChain* getSwapChain()const { return cpswapchain_.Get(); }
 
-	inline XMMATRIX getProjection()const { return projection_; }
+	inline XMMATRIX getProjectionMatrix()const { return projection_; }
 	inline XMMATRIX getWorldMatrix()const { return world_; }
 	inline XMMATRIX getOrtho()const { return ortho_; }
 

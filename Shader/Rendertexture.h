@@ -21,7 +21,7 @@ public:
     void clearRenderTarget(XMVECTORF32 Color = Colors::Black);
 
     //get
-    inline Matrix getProjection()const { return projection_; }
+    inline Matrix getProjectionMatrix()const { return projection_; }
     inline Matrix getOrtho()const { return ortho_; }
     inline ID3D11ShaderResourceView* getShaderResouceView()const { return shaderresouceview_; }
 

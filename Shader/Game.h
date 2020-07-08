@@ -13,27 +13,28 @@ class Game :public State
 private:
 	Light* light_;
 	Camera* camera_;
-	SkyDome* sky_;
-	Terrain* terrain_;
 	Position position_;
-	Skyplane* cloud_;
 	Rendertexture* rendertexture_;
 
 	//3Dモデル
-	Model* bill_;
-	Model* bumpmodel_;
-	Model* house_;
-	Model* maskmodel_;
-	Model* multimodel_;
+	Terrain* terrain_;
+	SkyDome* sky_;
+	Skyplane* cloud_;
+
+	Model* bill03_;
+	Model* bill04_;
+	Model* bill10_;
+	Model* ground_;
+
 
 	//パーティクル
 	ParticleSystem* particle_;
 
 	bool wire_;
-
 	void switchWireFrame();
 	bool modelRender();
 	bool worldRender();
+	bool renderToScene();
 public:
 	Game();
 	~Game();

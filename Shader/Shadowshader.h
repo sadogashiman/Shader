@@ -17,15 +17,13 @@ private:
 	{
 		Vector4 AmbientColor;
 		Vector4 DiffuseColor;
+		Vector3 Lightdirection;
+		float padding;
 	};
 
-	struct LightBufferType2
-	{
-		Vector3 lightposition;
-		float padding1;
-	};
 
-	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, Matrix lightview, Matrix Lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor);
+
+	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, Matrix lightview, Matrix Lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor,Vector3 Direction);
 	void renderShader(const int Indexcount);
 	ComPtr<ID3D11VertexShader> vertexshader_;
 	ComPtr<ID3D11PixelShader> pixelshader_;
@@ -34,13 +32,12 @@ private:
 	ComPtr<ID3D11SamplerState> samplestatewrap_;
 	ComPtr<ID3D11Buffer> matrixbuffer_;
 	ComPtr<ID3D11Buffer> lightbuffer_;
-	ComPtr<ID3D11Buffer> lightbuffer2_;
 	std::unique_ptr<Support> support_;
 
 public:
 	Shadowshader();
 	~Shadowshader();
 	bool init();
-	bool render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, const Matrix lightview, const Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor);
+	bool render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, const Matrix lightview, const Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor, Vector3 Direction);
 };
 

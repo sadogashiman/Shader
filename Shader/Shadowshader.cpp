@@ -18,7 +18,6 @@ bool Shadowshader::init()
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
 	unsigned int numelements;
 	D3D11_BUFFER_DESC lightbufferdesc;
-	D3D11_BUFFER_DESC lightbufferdesc2;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
 
@@ -140,28 +139,14 @@ bool Shadowshader::init()
 		return false;
 	}
 
-	//頂点シェーダーにあるライトダイナミック定数バッファの設定
-	lightbufferdesc2.Usage = D3D11_USAGE_DYNAMIC;
-	lightbufferdesc2.ByteWidth = sizeof(LightBufferType2);
-	lightbufferdesc2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightbufferdesc2.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	lightbufferdesc2.MiscFlags = 0;
-	lightbufferdesc2.StructureByteStride = 0;
-
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc2, NULL, &lightbuffer2_);
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
 	return true;
 }
 
-bool Shadowshader::render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, const Matrix lightview, const Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor)
+bool Shadowshader::render(const int Indexcound, const Matrix World, const Matrix View, const Matrix Projection, const Matrix lightview, const Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor, Vector3 Direction)
 {	bool result;
 
 	//レンダリングに関するシェーダーパラメータを設定
-	result = setShaderParameters(World, View, Projection, lightview, lightprojection, texture, Depthmaptexture, lightposition, Ambientcolor, Diffusecolor);
+	result = setShaderParameters(World, View, Projection, lightview, lightprojection, texture, Depthmaptexture, lightposition, Ambientcolor, Diffusecolor,Direction);
 
 	if (!result)
 	{
@@ -174,13 +159,12 @@ bool Shadowshader::render(const int Indexcound, const Matrix World, const Matrix
 	return true;
 }
 
-bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Matrix Lightview, Matrix Lightprojection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 Lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor)
+bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Matrix Lightview, Matrix Lightprojection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 Lightposition, Vector4 Ambientcolor, Vector4 Diffusecolor, Vector3 Direction)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresouce;
 	MatrixBufferType* dataptr;
 	LightBufferType* dataptr2;
-	LightBufferType2* dataptr3;
 	unsigned int buffnumber;
 
 	//シェーダーように行列を転置
@@ -228,35 +212,17 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 
 	dataptr2 = (LightBufferType*)mappedresouce.pData;
 
+	//データ更新
 	dataptr2->AmbientColor = Ambientcolor;
 	dataptr2->DiffuseColor = Diffusecolor;
+	dataptr2->Lightdirection = Direction;
+	dataptr2->padding = 0.0F;
 
 	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_.Get(), 0);
 
 	buffnumber = 0;
 
 	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, lightbuffer_.GetAddressOf());
-
-	//2番目のライト定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer2_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
-	if (FAILED(hr))
-	{
-		return false;
-	}
-
-	//シェーダー内のデータを更新
-	dataptr3 = (LightBufferType2*)mappedresouce.pData;
-	dataptr3->lightposition = Lightposition;
-	dataptr3->padding1 = 0.0F;
-
-	//ロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(lightbuffer2_.Get(), 0);
-
-	//バッファ番号を設定
-	buffnumber = 1;
-
-	//頂点シェーダーに定数バッファをセット
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, lightbuffer2_.GetAddressOf());
 
 	return true;
 }

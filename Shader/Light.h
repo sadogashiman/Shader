@@ -11,9 +11,12 @@ private:
 	float specularpower_;
 	Matrix view_;
 	Matrix projection_;
+	Matrix ortho_;
 public:
 	Light();
 	~Light();
+
+	void update();
 
 	//set
 	inline void setDiffuseColor(const float Red, const float Green, const float Blue, const float Alpha) { diffusecolor_ = Vector4(Red, Blue, Green, Alpha); }
@@ -29,7 +32,8 @@ public:
 	inline void setLookAt(const Vector3 Lookat) { lookat_ = Lookat; }
 	inline void setPosition(const float X,const float Y,const float Z) { position_ = Vector3(X, Y, Z); }
 	inline void setPosition(const Vector3 Position) { position_ = Position; }
-	
+
+
 	//get
 	inline Vector4 getAmbientColor()const {return ambientcolor_;}
 	inline Vector4 getDiffuseColor()const { return diffusecolor_; }
@@ -38,12 +42,13 @@ public:
 	inline Vector3 getPosition()const { return position_; }
 	inline float getSpecularPower()const { return specularpower_; }
 	inline Matrix getViewMatrix()const {return view_;}
-	inline Matrix getProjection()const { return projection_; }
+	inline Matrix getProjectionMatrix()const { return projection_; }
+	inline Matrix getOrthoMatrix()const { return ortho_; }
 
 	//generate
 	void generateView();
 	void generateProjection(const float ScreenDepth, const float ScreenNear);
-
+	void generateOrthoMatrix(const float Width, const float DepthPlane, const float NearPlane);
 
 
 };

@@ -7,9 +7,12 @@ private:
 	float frametime_;
 public:
 	Position();
+
 	//set
 	inline void setPosition(Vector3 Position) { position_ = Position; }
+	inline void setPosition(const float X, const float Y, const float Z) { position_ = Vector3(X, Y, Z); }
 	inline void setRotation(Vector3 Rotation) { rotation_ = Rotation; }
+	inline void setRotation(const float X, const float Y, const float Z) { rotation_ = Vector3(X, Y, Z); }
 	inline void setFrameTime(const float FrameTime) { frametime_ = FrameTime; }
 
 	//get

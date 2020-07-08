@@ -23,7 +23,9 @@ public:
 
 	//Set
 	inline void setPosition(const Vector3& Position) { position_ = Position; }
+	inline void setPosition(const float X, const float Y, const float Z) { position_ = Vector3(X, Y, Z); }
 	inline void setRotation(const Vector3& Rotation) { rotation_ = Rotation; }
+	inline void setRotation(const float X, const float Y, const float Z) { rotation_ = Vector3(X, Y, Z); }
 
 	//Get
 	inline const Vector3 getPosition()const { return position_; }

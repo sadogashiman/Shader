@@ -21,6 +21,8 @@ bool Camera::init()
 		return false;
 	}
 
+	poscontroller_.get()->setPosition(80.0F, 10.0F, -1.0F);
+
 	return true;
 }
 

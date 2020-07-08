@@ -1,15 +1,30 @@
 #include "stdafx.h"
 #include "Light.h"
-
+#include "Input.h"
 
 Light::Light()
 {
-    ZeroMemory(this, sizeof(Light));
 }
 
 
 Light::~Light()
 {
+}
+
+void Light::update()
+{
+    if (Input::getInstance()->isKeyState(DIK_NUMPAD4))
+        direction_.x -= 0.01F;
+    if (Input::getInstance()->isKeyState(DIK_NUMPAD6))
+        direction_.x += 0.01F;
+    if (Input::getInstance()->isKeyState(DIK_NUMPAD8))
+        direction_.z += 0.01F;
+    if (Input::getInstance()->isKeyState(DIK_NUMPAD2))
+        direction_.z -= 0.01F;
+    if (Input::getInstance()->isKeyState(DIK_NUMPADENTER))
+        direction_.y -= 0.01F;
+    if (Input::getInstance()->isKeyState(DIK_NUMPADPLUS))
+        direction_.y += 0.01F;
 }
 
 void Light::generateView()
@@ -36,4 +51,9 @@ void Light::generateProjection(const float ScreenDepth, const float ScreenNear)
     //ƒ‰ƒCƒg‚Ì“Š‰es—ñ‚ğì¬
     projection_ = XMMatrixPerspectiveFovLH(fieldofview, screenaspect, ScreenNear, ScreenDepth);
 
+}
+
+void Light::generateOrthoMatrix(const float Width, const float DepthPlane, const float NearPlane)
+{
+    ortho_ = XMMatrixOrthographicLH(Width, Width, NearPlane, DepthPlane);
 }
