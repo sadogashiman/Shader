@@ -123,7 +123,7 @@ bool Game::init()
 		return false;
 	}
 
-	bill03_->setPosition(35.0F,0.4F, 58.5F);
+	bill03_->setPosition(35.0F,0.4F, 60.5F);
 	bill03_->setRotation(0.0F, 90.0F, 0.0F);
 	bill03_->setModelScale(3.0F);
 
@@ -144,7 +144,7 @@ bool Game::init()
 		return false;
 	}
 
-	bill10_->setPosition(35.0F, 0.4F, 96.5F);
+	bill10_->setPosition(35.0F, 0.4F, 100.5F);
 	bill10_->setRotation(0.0F, 90.0F, 0.0F);
 	bill10_->setModelScale(3.0F);
 

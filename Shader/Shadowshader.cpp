@@ -202,7 +202,7 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 
 	//シェーダーリソースを設定
 	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
-	Direct3D::getInstance()->getContext()->PSGetShaderResources(1, 1, &Depthmaptexture);
+	Direct3D::getInstance()->getContext()->PSSetShaderResources(1, 1, &Depthmaptexture);
 
 	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD,0, & mappedresouce);
 	if (FAILED(hr))
