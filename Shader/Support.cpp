@@ -11,12 +11,6 @@ Support::~Support()
 {
 }
 
-Matrix Support::worldPosition(Model* Model)
-{
-	return XMMatrixTranslation(Model->getPosition().x, Model->getPosition().y, Model->getPosition().z);
-}
-
-
 bool Support::checkInputLayoutData(const void* Shadercode, size_t Codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t Layoutnum)
 {
 	ID3D11ShaderReflection* vsref;

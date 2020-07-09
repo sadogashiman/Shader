@@ -49,7 +49,7 @@ bool Game::init()
 	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
 	light_->setDirection(-0.5F, -1.0F, 0.0F);
 	light_->generateOrthoMatrix(20.0F, kScreen_depth, kScreen_near);
-
+	light_->setLookAt(0.0F, 0.0F, 0.0F);
 	rendertexture_ = new Rendertexture;
 	if (!rendertexture_)
 	{
@@ -133,6 +133,7 @@ bool Game::init()
 	{
 		return false;
 	}
+
 	bill04_->setPosition(35.0F, 0.4F, 20.5F);
 	bill04_->setRotation(0.0F, 90.0F, 0.0F);
 	bill04_->setModelScale(3.0F);
@@ -148,6 +149,17 @@ bool Game::init()
 	bill06_->setRotation(0.0F, 90.0F, 0.0F);
 	bill06_->setModelScale(3.0F);
 
+	bill09_ = new Model;
+	result = bill09_->init(L"Resource/Model/bill_09.txt", L"Resource/Texture/bill.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	bill09_->setPosition(35.0F, 0.4F, 180.5F);
+	bill09_->setRotation(0.0F, 90.0F, 0.0F);
+	bill09_->setModelScale(3.0F);
+
 	bill10_ = new Model;
 	result = bill10_->init(L"Resource/Model/bill_08.txt", L"Resource/Texture/bill.dds");
 	if (!result)
@@ -159,6 +171,17 @@ bool Game::init()
 	bill10_->setRotation(0.0F, 90.0F, 0.0F);
 	bill10_->setModelScale(3.0F);
 
+#ifdef _DEBUG
+	lightblock_ = new Model;
+	result = lightblock_->init(L"Resource/Model/cube.txt", L"Resource/Texture/default.dds");
+	if (!result)
+	{
+		return false;
+	}
+		 
+#endif // _DEBUG
+
+
 	wire_ = false;
 
 	return true;
@@ -167,9 +190,28 @@ bool Game::init()
 State* Game::update()
 {
 	bool result;
+	static float lightangle = 270.0F;
+	static float lightposx = 90.0F;
+
+	lightposx -= 0.003F * kFrameTime;
+	lightangle -= 0.03F * kFrameTime;
+	if (lightangle < 90.0F)
+	{
+		lightangle = 270.0F;
+		lightposx = 90.0F;
+	}
+
+	light_->setDirection(std::sin(XMConvertToRadians(lightangle)), std::cos(XMConvertToRadians(lightangle)), 0.0F);
+	light_->setPosition(lightposx, 80.0F, 0.0F);
+	light_->setLookAt(-lightposx, 0.0F, 0.0F);
+
 	camera_->update();
 	switchWireFrame();
-	light_->update();
+
+#ifdef _DEBUG
+	lightblock_->setPosition(light_->getPosition());
+	//lightblock_->setRotation(light_->getDirection());
+#endif
 
 	result = render();
 	if (!result)
@@ -215,7 +257,9 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(bill03_);
 	SAFE_DELETE_DESTROY(bill04_);
 	SAFE_DELETE_DESTROY(bill06_);
+	SAFE_DELETE_DESTROY(bill09_);
 	SAFE_DELETE_DESTROY(bill10_);
+	SAFE_DELETE_DESTROY(lightblock_);
 	SAFE_DELETE(rendertexture_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
@@ -262,8 +306,16 @@ bool Game::modelRender()
 	if (!ShaderManager::getInstance()->shadowRender(bill06_, world, view, projection, bill06_->getTexture(), rendertexture_->getShaderResouceView(), light_))
 		return false;
 
+	world = bill09_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->shadowRender(bill09_, world, view, projection,bill09_->getTexture(),rendertexture_->getShaderResouceView(),light_))
+		return false;
+
 	world = bill10_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->shadowRender(bill10_, world, view, projection, bill10_->getTexture(), rendertexture_->getShaderResouceView(), light_))
+		return false;
+
+	world = lightblock_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->textureRender(lightblock_, world, view, projection, lightblock_->getTexture()))
 		return false;
 
 	Direct3D::getInstance()->turnCullingDisable();
@@ -341,7 +393,7 @@ bool Game::renderToScene()
 	//描画先変更
 	Direct3D::getInstance()->turnCullingDisable();
 	rendertexture_->setRenderTarget();
-	rendertexture_->clearRenderTarget();
+	rendertexture_->clearRenderTarget(Colors::ForestGreen);
 
 	//射影行列を生成
 	light_->generateView();
@@ -352,6 +404,7 @@ bool Game::renderToScene()
 	view = light_->getViewMatrix();
 	projection = light_->getOrthoMatrix();
 
+	//深度マップにレンダリング
 	world = bill03_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill03_, world, view, projection))
 		return false;
@@ -362,6 +415,10 @@ bool Game::renderToScene()
 
 	world = bill06_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill06_, world, view, projection))
+		return false;
+
+	world = bill09_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill09_, world, view, projection))
 		return false;
 
 	world = bill10_->getWorldMatrix();

@@ -24,8 +24,13 @@ private:
 	Model* bill03_;
 	Model* bill04_;
 	Model* bill06_;
+	Model* bill09_;
 	Model* bill10_;
 
+#ifdef _DEBUG
+	Model* lightblock_;
+		
+#endif // _DEBUG
 
 	//パーティクル
 	ParticleSystem* particle_;
