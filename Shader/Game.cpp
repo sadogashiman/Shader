@@ -69,7 +69,7 @@ bool Game::init()
 		return false;
 	}
 
-	result = sky_->init(L"Resource/skydome.txt");
+	result = sky_->init(L"Resource/Model/skydome.txt");
 	if (!result)
 	{
 		return false;
@@ -84,14 +84,13 @@ bool Game::init()
 		return false;
 	}
 
-	result = terrain_->init(L"Resource/setup.txt", L"Resource/asphalt.dds");
+	result = terrain_->init(L"Resource/Setup/setup.txt", L"Resource/Texture/asphalt.dds");
 	if (!result)
 	{
 		return false;
 	}
 
-
-	terrain_->setPosition(0.0F, -50.0F, 0.0F);
+	terrain_->setPosition(0.0F, 0.0F, 0.0F);
 	terrain_->setScale(1.0F);
 
 	Timer::getInstance()->setTimerStatus(true);
@@ -106,18 +105,19 @@ bool Game::init()
 		return false;
 	}
 
-	result = cloud_->init(L"Resource/cloud001.dds", L"Resource/perturb001.dds");
+	result = cloud_->init(L"Resource/Texture/cloud001.dds", L"Resource/Texture/perturb001.dds");
 	if (!result)
 	{
 		Error::showDialog("skyplaneの初期化に失敗");
 		return false;
 	}
+
 	//***************************************************
 	//					モデル生成
 	//***************************************************
 
 	bill03_ = new Model;
-	result = bill03_->init(L"Resource/bill.txt", L"Resource/bill.dds");
+	result = bill03_->init(L"Resource/Model/bill.txt", L"Resource/Texture/bill.dds");
 	if (!result)
 	{
 		return false;
@@ -128,7 +128,7 @@ bool Game::init()
 	bill03_->setModelScale(3.0F);
 
 	bill04_ = new Model;
-	result = bill04_->init(L"Resource/bill_04.txt", L"Resource/bill.dds");
+	result = bill04_->init(L"Resource/Model/bill_04.txt", L"Resource/Texture/bill.dds");
 	if (!result)
 	{
 		return false;
@@ -138,7 +138,7 @@ bool Game::init()
 	bill04_->setModelScale(3.0F);
 
 	bill06_ = new Model;
-	result = bill06_->init(L"Resource/bill_06.txt", L"Resource/bill.dds");
+	result = bill06_->init(L"Resource/Model/bill_06.txt", L"Resource/Texture/bill.dds");
 	if (!result)
 	{
 		return false;
@@ -149,7 +149,7 @@ bool Game::init()
 	bill06_->setModelScale(3.0F);
 
 	bill10_ = new Model;
-	result = bill10_->init(L"Resource/bill_08.txt", L"Resource/bill.dds");
+	result = bill10_->init(L"Resource/Model/bill_08.txt", L"Resource/Texture/bill.dds");
 	if (!result)
 	{
 		return false;
@@ -170,6 +170,7 @@ State* Game::update()
 	camera_->update();
 	switchWireFrame();
 	light_->update();
+
 	result = render();
 	if (!result)
 	{
@@ -187,7 +188,6 @@ bool Game::render()
 		return false;
 	}
 	//シーンをクリア
-
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
 	if (!worldRender())
@@ -246,13 +246,12 @@ bool Game::modelRender()
 	world = Direct3D::getInstance()->getWorldMatrix();
 	projection = Direct3D::getInstance()->getProjectionMatrix();
 	view = camera_->getViewMatrix();
+	Direct3D::getInstance()->turnCullingEnable();
 
 	//ワールド上のモデル座標を計算
 	world = bill03_->getWorldMatrix();
 	if (!(ShaderManager::getInstance()->shadowRender(bill03_, world, view, projection, bill03_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
 		return false;
-
-	Direct3D::getInstance()->turnCullingDisable();
 
 	//ワールド上のモデル座標を計算
 	world = bill04_->getWorldMatrix();
@@ -267,7 +266,7 @@ bool Game::modelRender()
 	if (!ShaderManager::getInstance()->shadowRender(bill10_, world, view, projection, bill10_->getTexture(), rendertexture_->getShaderResouceView(), light_))
 		return false;
 
-	Direct3D::getInstance()->turnCullingEnable();
+	Direct3D::getInstance()->turnCullingDisable();
 
 	return true;
 }
@@ -286,7 +285,6 @@ bool Game::worldRender()
 	projection = Direct3D::getInstance()->getProjectionMatrix();
 	view = camera_->getViewMatrix();
 	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
-
 
 	//Zバッファ・カリングをオフ
 	Direct3D::getInstance()->turnCullingDisable();

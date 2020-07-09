@@ -1,4 +1,0 @@
-Filename: Resource/heightmap.bmp
-Height: 257
-Width: 257
-Scale: 5.0

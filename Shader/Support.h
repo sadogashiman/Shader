@@ -3,7 +3,6 @@
 #include"error.h"
 #include"release.h"
 #include"Model.h"
-#include"Tree.h"
 
 class Support
 {
@@ -26,12 +25,8 @@ public:
 	Support();
 	~Support();
 
-	//Matrix
-	static Matrix worldPosition(Model* Model);
-
 	//Check
-	static bool checkInputLayoutData(const void* shadercode, size_t codesize,
-								 const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum); //頂点入力レイアウトを作成するデータが有効か確認する関数
+	static bool checkInputLayoutData(const void* shadercode, size_t codesize,const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum); //頂点入力レイアウトを作成するデータが有効か確認する関数
 	//Search
 	//ファイルパスが有効か判定（有効ならtrueを返す)
 	static bool searchFile(const wchar_t* FileName);

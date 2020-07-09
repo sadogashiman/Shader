@@ -25,7 +25,6 @@ private:
 	Model* bill04_;
 	Model* bill06_;
 	Model* bill10_;
-	Model* ground_;
 
 
 	//パーティクル

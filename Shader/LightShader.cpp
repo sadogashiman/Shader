@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Lightshader.h"
 #include"Direct3D.h"
-#include"release.h"
 
 
 LightShader::LightShader()

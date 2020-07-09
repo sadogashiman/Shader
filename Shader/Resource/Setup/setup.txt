@@ -1,0 +1,4 @@
+Filename: Resource/Texture/heightmap.bmp
+Height: 257
+Width: 257
+Scale: 2.0

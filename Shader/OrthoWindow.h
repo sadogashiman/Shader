@@ -7,8 +7,8 @@ private:
 		Vector3 position;
 		Vector2 texture;
 	};
-	ID3D11Buffer* vertexbuffer_;
-	ID3D11Buffer* indexbuffer_;
+	ComPtr<ID3D11Buffer> vertexbuffer_;
+	ComPtr<ID3D11Buffer> indexbuffer_;
 	int vertexcnt_;
 	int indexcnt_;
 
@@ -17,7 +17,6 @@ public:
 	~OrthoWindow();
 	bool init(const float WindowWidth, const float WindowHeight);
 	void render();
-	void destroy();
 	inline int getIndexCount()const { return indexcnt_; }
 };
 
