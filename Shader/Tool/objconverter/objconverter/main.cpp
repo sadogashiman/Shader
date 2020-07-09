@@ -41,6 +41,7 @@ int main()
 		}
 
 		std::cout << std::endl;
+		std::cout << "要素数をカウント" << std::endl;
 		std::cout << "頂点数 : " << vertexcnt << std::endl;
 		std::cout << "UV : " << texturecnt << std::endl;
 		std::cout << "法線 : " << normalcnt << std::endl;
@@ -196,6 +197,7 @@ bool loadDataStructures(char* FileName, int VertexCount, int TextureCount, int N
 		return false;
 	}
 
+	std::cout << "データの読み取り中" << std::endl;
 	fin.get(input);
 
 	while (!fin.eof())
@@ -251,6 +253,9 @@ bool loadDataStructures(char* FileName, int VertexCount, int TextureCount, int N
 	
 	//拡張子をtxtに変換してファイル名指定
 	PathRenameExtension(tmp, L".txt");
+
+	std::cout << "データを出力中" << std::endl;
+	std::cout << std::endl;
 
 	wcstombs(output, tmp, MAX_PATH);
 

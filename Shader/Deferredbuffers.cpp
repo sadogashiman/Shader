@@ -158,7 +158,7 @@ void Deferredbuffers::clearRenderTargets(XMVECTORF32 Color)
 	}
 
 	//深度バッファをクリア
-	Direct3D::getInstance()->getContext()->ClearDepthStencilView(depthstencilview_, D3D11_CLEAR_DEPTH, 1.0F, 0);
+	Direct3D::getInstance()->getContext()->ClearDepthStencilView(depthstencilview_, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0F, 0);
 }
 
 ID3D11ShaderResourceView* Deferredbuffers::getShaderResourceView(int TextureNumber)

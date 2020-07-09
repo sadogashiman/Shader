@@ -123,7 +123,7 @@ bool Game::init()
 		return false;
 	}
 
-	bill03_->setPosition(35.0F,0.4F, 60.5F);
+	bill03_->setPosition(35.0F, 0.4F, 60.5F);
 	bill03_->setRotation(0.0F, 90.0F, 0.0F);
 	bill03_->setModelScale(3.0F);
 
@@ -136,6 +136,17 @@ bool Game::init()
 	bill04_->setPosition(35.0F, 0.4F, 20.5F);
 	bill04_->setRotation(0.0F, 90.0F, 0.0F);
 	bill04_->setModelScale(3.0F);
+
+	bill06_ = new Model;
+	result = bill06_->init(L"Resource/bill_06.txt", L"Resource/bill.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	bill06_->setPosition(35.0F, 0.4F, 140.5F);
+	bill06_->setRotation(0.0F, 90.0F, 0.0F);
+	bill06_->setModelScale(3.0F);
 
 	bill10_ = new Model;
 	result = bill10_->init(L"Resource/bill_08.txt", L"Resource/bill.dds");
@@ -203,6 +214,7 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(cloud_);
 	SAFE_DELETE_DESTROY(bill03_);
 	SAFE_DELETE_DESTROY(bill04_);
+	SAFE_DELETE_DESTROY(bill06_);
 	SAFE_DELETE_DESTROY(bill10_);
 	SAFE_DELETE(rendertexture_);
 	SAFE_DELETE(light_);
@@ -247,8 +259,12 @@ bool Game::modelRender()
 	if (!(ShaderManager::getInstance()->shadowRender(bill04_, world, view, projection, bill04_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
 		return false;
 
+	world = bill06_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->shadowRender(bill06_, world, view, projection, bill06_->getTexture(), rendertexture_->getShaderResouceView(), light_))
+		return false;
+
 	world = bill10_->getWorldMatrix();
-	if (!ShaderManager::getInstance()->shadowRender(bill10_, world, view, projection,bill10_->getTexture(),rendertexture_->getShaderResouceView(),light_))
+	if (!ShaderManager::getInstance()->shadowRender(bill10_, world, view, projection, bill10_->getTexture(), rendertexture_->getShaderResouceView(), light_))
 		return false;
 
 	Direct3D::getInstance()->turnCullingEnable();
@@ -315,9 +331,6 @@ bool Game::worldRender()
 	if (wire_)
 		Direct3D::getInstance()->wireFrameDisable();
 
-	//2Dレンダリングが終了したのでZバッファを有効にする
-	//Direct3D::getInstance()->turnZbufferEnable();
-
 	return true;
 }
 
@@ -345,11 +358,15 @@ bool Game::renderToScene()
 	if (!ShaderManager::getInstance()->depthRender(bill03_, world, view, projection))
 		return false;
 
-	world = Direct3D::getInstance()->getWorldMatrix();
+	world = bill04_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill04_, world, view, projection))
 		return false;
 
-	world = Direct3D::getInstance()->getWorldMatrix();
+	world = bill06_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill06_, world, view, projection))
+		return false;
+
+	world = bill10_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill10_, world, view, projection))
 		return false;
 
@@ -357,6 +374,6 @@ bool Game::renderToScene()
 
 	Direct3D::getInstance()->resetViewPort();
 
-	
+
 	return true;
 }

@@ -23,6 +23,7 @@ private:
 
 	Model* bill03_;
 	Model* bill04_;
+	Model* bill06_;
 	Model* bill10_;
 	Model* ground_;
 

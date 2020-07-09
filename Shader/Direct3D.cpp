@@ -496,7 +496,7 @@ void Direct3D::begin(XMVECTORF32 Color)
 	cpdevicecontext_.Get()->ClearRenderTargetView(cprendertarget_.Get(), Color);
 
 	//深度バッファクリア
-	cpdevicecontext_.Get()->ClearDepthStencilView(cpdepthview_.Get(), D3D11_CLEAR_DEPTH, 1.0F, 0);
+	cpdevicecontext_.Get()->ClearDepthStencilView(cpdepthview_.Get(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0F, 0);
 
 }
 
