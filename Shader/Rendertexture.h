@@ -20,7 +20,7 @@ public:
 
 	//get
 	inline Matrix getProjectionMatrix()const { return projection_; }
-	inline Matrix getOrtho()const { return ortho_; }
+	inline Matrix getOrthoMatrix()const { return ortho_; }
 	inline ID3D11ShaderResourceView* getShaderResouceView()const { return shaderresouceview_.Get(); }
 
 

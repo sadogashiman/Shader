@@ -46,10 +46,11 @@ bool Game::init()
 	}
 	light_->setPosition(0.0F, 1.0F, 0.0F);
 	light_->setAmbientColor(0.05F, 0.05F, 0.05F, 1.0F);
-	light_->setDiffuseColor(1.0F, 1.0F, 1.0F, 1.0F);
+	light_->setDiffuseColor(0.8F, 0.8F, 0.8F, 1.0F);
 	light_->setDirection(-0.5F, -1.0F, 0.0F);
-	light_->generateOrthoMatrix(20.0F, kScreen_depth, kScreen_near);
+	light_->generateOrthoMatrix(300.0F, kScreen_depth, kScreen_near);
 	light_->setLookAt(0.0F, 0.0F, 0.0F);
+
 	rendertexture_ = new Rendertexture;
 	if (!rendertexture_)
 	{
@@ -96,7 +97,7 @@ bool Game::init()
 	Timer::getInstance()->setTimerStatus(true);
 	Timer::getInstance()->startTimer();
 
-	position_.setPosition(Vector3(123.0F, 10.0F, -10.0F));
+	position_.setPosition(123.0F, 10.0F, -10.0F);
 	position_.setRotation(Vector3::Zero);
 
 	cloud_ = new Skyplane;
@@ -138,6 +139,17 @@ bool Game::init()
 	bill04_->setRotation(0.0F, 90.0F, 0.0F);
 	bill04_->setModelScale(3.0F);
 
+	bill05_ = new Model;
+	result = bill05_->init(L"Resource/Model/bill_05.txt", L"Resource/Texture/bill.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	bill05_->setPosition(150.0F, 0.4F, 30.0F);
+	bill05_->setRotation(0.0F, 270.0F, 0.0F);
+	bill05_->setModelScale(3.0F);
+
 	bill06_ = new Model;
 	result = bill06_->init(L"Resource/Model/bill_06.txt", L"Resource/Texture/bill.dds");
 	if (!result)
@@ -178,10 +190,7 @@ bool Game::init()
 	{
 		return false;
 	}
-		 
 #endif // _DEBUG
-
-
 	wire_ = false;
 
 	return true;
@@ -201,16 +210,18 @@ State* Game::update()
 		lightposx = 90.0F;
 	}
 
-	light_->setDirection(std::sin(XMConvertToRadians(lightangle)), std::cos(XMConvertToRadians(lightangle)), 0.0F);
-	light_->setPosition(lightposx, 80.0F, 0.0F);
-	light_->setLookAt(-lightposx, 0.0F, 0.0F);
+
+	//light_->setDirection(std::sin(XMConvertToRadians(lightangle)), std::cos(XMConvertToRadians(lightangle)), 0.0F);
+	light_->setPosition(lightposx, 100.0F, 140.0F);
+	light_->setLookAt(50.0F, 0.4F, 140.0F);
 
 	camera_->update();
 	switchWireFrame();
+	light_->update();
 
 #ifdef _DEBUG
 	lightblock_->setPosition(light_->getPosition());
-	//lightblock_->setRotation(light_->getDirection());
+	lightblock_->setRotation(light_->getDirection());
 #endif
 
 	result = render();
@@ -224,7 +235,7 @@ State* Game::update()
 
 bool Game::render()
 {
-
+	//深度マップレンダリング
 	if (!renderToScene())
 	{
 		return false;
@@ -232,6 +243,7 @@ bool Game::render()
 	//シーンをクリア
 	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
 
+	//シーンにレンダリング
 	if (!worldRender())
 	{
 		return false;
@@ -257,9 +269,12 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(bill03_);
 	SAFE_DELETE_DESTROY(bill04_);
 	SAFE_DELETE_DESTROY(bill06_);
+	SAFE_DELETE_DESTROY(bill05_);
 	SAFE_DELETE_DESTROY(bill09_);
 	SAFE_DELETE_DESTROY(bill10_);
+#ifdef _DEBUG
 	SAFE_DELETE_DESTROY(lightblock_);
+#endif // _DEBUG
 	SAFE_DELETE(rendertexture_);
 	SAFE_DELETE(light_);
 	SAFE_DELETE(camera_);
@@ -290,16 +305,21 @@ bool Game::modelRender()
 	world = Direct3D::getInstance()->getWorldMatrix();
 	projection = Direct3D::getInstance()->getProjectionMatrix();
 	view = camera_->getViewMatrix();
+
 	Direct3D::getInstance()->turnCullingEnable();
 
 	//ワールド上のモデル座標を計算
 	world = bill03_->getWorldMatrix();
-	if (!(ShaderManager::getInstance()->shadowRender(bill03_, world, view, projection, bill03_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
+	if (!ShaderManager::getInstance()->shadowRender(bill03_, world, view, projection, bill03_->getTexture(), rendertexture_->getShaderResouceView(), light_))
 		return false;
 
 	//ワールド上のモデル座標を計算
 	world = bill04_->getWorldMatrix();
-	if (!(ShaderManager::getInstance()->shadowRender(bill04_, world, view, projection, bill04_->getTexture(), rendertexture_->getShaderResouceView(), light_)))
+	if (!ShaderManager::getInstance()->shadowRender(bill04_, world, view, projection, bill04_->getTexture(), rendertexture_->getShaderResouceView(), light_))
+		return false;
+
+	world = bill05_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->shadowRender(bill05_, world, view, projection, bill05_->getTexture(), rendertexture_->getShaderResouceView(), light_))
 		return false;
 
 	world = bill06_->getWorldMatrix();
@@ -313,10 +333,11 @@ bool Game::modelRender()
 	world = bill10_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->shadowRender(bill10_, world, view, projection, bill10_->getTexture(), rendertexture_->getShaderResouceView(), light_))
 		return false;
-
+#ifdef _DEBUG
 	world = lightblock_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->textureRender(lightblock_, world, view, projection, lightblock_->getTexture()))
 		return false;
+#endif // _DEBUG
 
 	Direct3D::getInstance()->turnCullingDisable();
 
@@ -390,6 +411,8 @@ bool Game::renderToScene()
 	Matrix view;
 	Matrix projection;
 
+	Direct3D::getInstance()->setBackBufferRenderTarget();
+
 	//描画先変更
 	Direct3D::getInstance()->turnCullingDisable();
 	rendertexture_->setRenderTarget();
@@ -402,9 +425,18 @@ bool Game::renderToScene()
 
 	//行列を取得
 	view = light_->getViewMatrix();
-	projection = light_->getOrthoMatrix();
+	projection = rendertexture_->getOrthoMatrix();
 
 	//深度マップにレンダリング
+	world = terrain_->getWorldMatrix();
+	terrain_->render();
+	if (!ShaderManager::getInstance()->depthRender(terrain_->getIndexCount(), world, view, projection))
+		return false;
+
+	world = bill05_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill05_, world, view, projection))
+		return false;
+
 	world = bill03_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill03_, world, view, projection))
 		return false;
@@ -412,6 +444,8 @@ bool Game::renderToScene()
 	world = bill04_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill04_, world, view, projection))
 		return false;
+
+
 
 	world = bill06_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill06_, world, view, projection))
@@ -428,7 +462,6 @@ bool Game::renderToScene()
 	Direct3D::getInstance()->setBackBufferRenderTarget();
 
 	Direct3D::getInstance()->resetViewPort();
-
 
 	return true;
 }

@@ -50,7 +50,7 @@ public:
 
 	inline XMMATRIX getProjectionMatrix()const { return projection_; }
 	inline XMMATRIX getWorldMatrix()const { return world_; }
-	inline XMMATRIX getOrtho()const { return ortho_; }
+	inline XMMATRIX getOrthoMatrix()const { return ortho_; }
 
 	inline const char* getVideoCardName()const { return videocarddescription_; }	//GPU‚Ì–¼‘O‚ğæ“¾‚·‚é
 	inline const int getVideoCardMemroy()const { return videocardmemory_; }			//GPU‚Ìƒƒ‚ƒŠ[‚ğæ“¾‚·‚é

@@ -5,11 +5,13 @@ struct PixelInputType
 };
 
 
-float4 main(PixelInputType input) : SV_TARGET0
+float4 main(PixelInputType input) : SV_TARGET
 {
     float depthValue;
     float4 color;
-
+    
+    return input.depthPosition;
+    
     //ê[ìxílÇåvéZ
     depthValue = input.depthPosition.z / input.depthPosition.w;
 
