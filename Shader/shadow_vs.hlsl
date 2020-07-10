@@ -8,6 +8,12 @@ cbuffer MatrixBuffer
     matrix lightProjection;
 };
 
+cbuffer LightBuffer2
+{
+    float3 lightposition;
+    float padding;
+};
+
 struct VertexInputType
 {
     float4 position : POSITION;
@@ -21,12 +27,13 @@ struct PixelInputType
     float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
     float4 lightViewPosition : TEXCOORD1;
+    float3 lightpos : TEXCOORD2;
 };
 
 PixelInputType main(VertexInputType input)
 {
     PixelInputType output;
-
+    float4 worldposition;
     input.position.w = 1.0f;
     
     //頂点座標を計算
@@ -47,6 +54,12 @@ PixelInputType main(VertexInputType input)
 
     //法線を正規化
     output.normal = normalize(output.normal);
+    
+    worldposition = mul(input.position, world);
+    
+    output.lightpos = lightposition.xyz - worldposition.xyz;
+    
+    output.lightpos = normalize(output.lightpos);
 
     return output;
 }

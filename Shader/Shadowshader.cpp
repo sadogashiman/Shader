@@ -174,6 +174,7 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	D3D11_MAPPED_SUBRESOURCE mappedresouce;
 	MatrixBufferType* dataptr;
 	LightBufferType* dataptr2;
+	LightBufferType2* dataptr3;
 	unsigned int buffnumber;
 
 	//シェーダーように行列を転置
@@ -224,14 +225,30 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	//データ更新
 	dataptr2->ambientColor = Ambientcolor;
 	dataptr2->diffuseColor = Diffusecolor;
-	dataptr2->direction = LightDirection;
-	dataptr2->padding = 0.0F;
 
 	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_.Get(), 0);
 
 	buffnumber = 0;
 
 	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, lightbuffer_.GetAddressOf());
+
+	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer2_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	//ポインタキャスト
+	dataptr3 = (LightBufferType2*)mappedresouce.pData;
+
+	dataptr3->lightposition = LightDirection;
+	dataptr3->padding = 0.0F;
+
+	Direct3D::getInstance()->getContext()->Unmap(lightbuffer2_.Get(), 0);
+
+	buffnumber = 1;
+
+	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, lightbuffer2_.GetAddressOf());
 
 	return true;
 }

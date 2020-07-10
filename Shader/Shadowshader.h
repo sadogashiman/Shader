@@ -17,8 +17,6 @@ private:
 	{
 		Vector4 ambientColor;
 		Vector4 diffuseColor;
-		Vector3 direction;
-		float padding;
 	};
 
 	struct LightBufferType2
