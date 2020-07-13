@@ -46,7 +46,7 @@ void Light::generateProjection(const float ScreenDepth, const float ScreenNear)
 
     //正方形の高原の視野と画面のアスペクトを設定
     fieldofview = static_cast<float>(XM_PI) / 2.0F;
-    screenaspect = 1.0F;
+    screenaspect = kScreenWidth / kScreenHeight;
 
     //ライトの投影行列を作成
     projection_ = XMMatrixPerspectiveFovLH(fieldofview, screenaspect, ScreenNear, ScreenDepth);

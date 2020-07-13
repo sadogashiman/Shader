@@ -44,10 +44,12 @@ bool Game::init()
 	{
 		return false;
 	}
-	light_->setPosition(0.0F, 1.0F, 0.0F);
+
+	light_->setPosition(256.0F, 141.0F, 0.0F);
 	light_->setAmbientColor(0.05F, 0.05F, 0.05F, 1.0F);
 	light_->setDiffuseColor(0.8F, 0.8F, 0.8F, 1.0F);
 	light_->setDirection(-0.5F, -1.0F, 0.0F);
+	light_->generateProjection(kScreen_depth, kScreen_near);
 	light_->generateOrthoMatrix(300.0F, kScreen_depth, kScreen_near);
 	light_->setLookAt(0.0F, 0.0F, 0.0F);
 
@@ -199,21 +201,6 @@ bool Game::init()
 State* Game::update()
 {
 	bool result;
-	static float lightangle = 270.0F;
-	static float lightposx = 90.0F;
-
-	lightposx -= 0.003F * kFrameTime;
-	lightangle -= 0.03F * kFrameTime;
-	if (lightangle < 90.0F)
-	{
-		lightangle = 270.0F;
-		lightposx = 90.0F;
-	}
-
-
-	//light_->setDirection(std::sin(XMConvertToRadians(lightangle)), std::cos(XMConvertToRadians(lightangle)), 0.0F);
-	light_->setPosition(lightposx, 100.0F, 140.0F);
-	light_->setLookAt(50.0F, 0.4F, 140.0F);
 
 	camera_->update();
 	switchWireFrame();
@@ -425,7 +412,7 @@ bool Game::renderToScene()
 
 	//行列を取得
 	view = light_->getViewMatrix();
-	projection = rendertexture_->getOrthoMatrix();
+	projection = light_->getProjectionMatrix();
 
 	//深度マップにレンダリング
 	world = terrain_->getWorldMatrix();

@@ -189,7 +189,12 @@ bool ShaderManager::lightRender(const int IndexCount, Matrix World, Matrix View,
 bool ShaderManager::shadowRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata)
 {
 	Model->render();
-	return shadowshader_.get()->render(Model->getIndexCount(), World, View, Projection, Lightdata->getViewMatrix(), Lightdata->getOrthoMatrix(), Texture, Depthmaptexture, Lightdata->getDirection(), Lightdata->getAmbientColor(), Lightdata->getDiffuseColor());
+	return shadowshader_.get()->render(Model->getIndexCount(), World, View, Projection, Lightdata->getViewMatrix(), Lightdata->getProjectionMatrix(), Texture, Depthmaptexture, Lightdata->getPosition(), Lightdata->getAmbientColor(), Lightdata->getDiffuseColor());
+}
+
+bool ShaderManager::shadowRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata)
+{
+	return shadowshader_.get()->render(IndexCount, World, View, Projection, Lightdata->getViewMatrix(), Lightdata->getProjectionMatrix(), Texture, Depthmaptexture, Lightdata->getPosition(), Lightdata->getAmbientColor(), Lightdata->getDiffuseColor());
 }
 
 bool ShaderManager::textureRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)

@@ -9,8 +9,6 @@ cbuffer LightBuffer
 {
     float4 ambientColor;
     float4 diffuseColor;
-    float3 direction;
-    float padding;
 };
 
 
@@ -20,6 +18,7 @@ struct PixelInputType
     float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
     float4 lightViewPosition : TEXCOORD1;
+    float3 lightpos : TEXCOORD2;
 };
 
 float4 main(PixelInputType input) : SV_TARGET
@@ -31,9 +30,6 @@ float4 main(PixelInputType input) : SV_TARGET
     float lightDepthValue;
     float lightIntensity;
     float4 textureColor;
-    float3 lightdir;
-    
-    lightdir = -direction;
 
     bias = 0.001f;
 
@@ -53,7 +49,7 @@ float4 main(PixelInputType input) : SV_TARGET
 
         if (lightDepthValue < depthValue)
         {
-            lightIntensity = saturate(dot(input.normal, lightdir));
+            lightIntensity = saturate(dot(input.normal, input.lightpos));
             if (lightIntensity > 0.0f)
             {
                 color += (diffuseColor * lightIntensity);
@@ -62,17 +58,6 @@ float4 main(PixelInputType input) : SV_TARGET
             }
         }
     }
-    else
-    {
-        lightIntensity = saturate(dot(input.normal, lightdir));
-        if(lightIntensity>0.0F)
-        {
-            color += (diffuseColor * lightIntensity);
-            color = saturate(color);
-        }
-    }
-
-    color = saturate(color);
 
     textureColor = shaderTexture.Sample(SampleTypeWrap, input.tex);
 
