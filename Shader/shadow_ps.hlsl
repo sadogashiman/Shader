@@ -31,7 +31,7 @@ float4 main(PixelInputType input) : SV_TARGET
     float lightIntensity;
     float4 textureColor;
 
-    bias = 0.001f;
+    bias = 0.1f;
 
     //アンビエントを設定
     color = ambientColor;

@@ -45,13 +45,13 @@ bool Game::init()
 		return false;
 	}
 
-	light_->setPosition(256.0F, 141.0F, 0.0F);
+	light_->setPosition(105.0F, 261.0F, 107.0F);
 	light_->setAmbientColor(0.05F, 0.05F, 0.05F, 1.0F);
 	light_->setDiffuseColor(0.8F, 0.8F, 0.8F, 1.0F);
 	light_->setDirection(-0.5F, -1.0F, 0.0F);
 	light_->generateProjection(kScreen_depth, kScreen_near);
 	light_->generateOrthoMatrix(300.0F, kScreen_depth, kScreen_near);
-	light_->setLookAt(0.0F, 0.0F, 0.0F);
+	light_->setLookAt(128.0F, 0.0F, 128.0F);
 
 	rendertexture_ = new Rendertexture;
 	if (!rendertexture_)
@@ -153,13 +153,13 @@ bool Game::init()
 	bill05_->setModelScale(3.0F);
 
 	bill06_ = new Model;
-	result = bill06_->init(L"Resource/Model/bill_06.txt", L"Resource/Texture/bill.dds");
+	result = bill06_->init(L"Resource/Model/bill_05.txt", L"Resource/Texture/bill.dds");
 	if (!result)
 	{
 		return false;
 	}
 
-	bill06_->setPosition(35.0F, 0.4F, 140.5F);
+	bill06_->setPosition(35.0F, 0.4F, 180.5F);
 	bill06_->setRotation(0.0F, 90.0F, 0.0F);
 	bill06_->setModelScale(3.0F);
 
@@ -170,7 +170,7 @@ bool Game::init()
 		return false;
 	}
 
-	bill09_->setPosition(35.0F, 0.4F, 180.5F);
+	bill09_->setPosition(35.0F, 0.4F, 220.5F);
 	bill09_->setRotation(0.0F, 90.0F, 0.0F);
 	bill09_->setModelScale(3.0F);
 
@@ -184,6 +184,39 @@ bool Game::init()
 	bill10_->setPosition(35.0F, 0.4F, 100.5F);
 	bill10_->setRotation(0.0F, 90.0F, 0.0F);
 	bill10_->setModelScale(3.0F);
+
+	bill11_ = new Model;
+	result = bill11_->init(L"Resource/Model/bill_08.txt", L"Resource/Texture/bill.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	bill11_->setPosition(150.0F, 0.4F, 70.0F);
+	bill11_->setRotation(0.0F, 270.0F, 0.0F);
+	bill11_->setModelScale(3.0F);
+
+	bill12_ = new Model;
+	result = bill12_->init(L"Resource/Model/bill_05.txt", L"Resource/Texture/bill.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	bill12_->setPosition(150.0F, 0.4F, 190.0F);
+	bill12_->setRotation(0.0F, 270.0F, 0.0F);
+	bill12_->setModelScale(3.0F);
+
+	bill13_ = new Model;
+	result = bill13_->init(L"Resource/Model/bill.txt", L"Resource/Texture/bill.dds");
+	if (!result)
+	{
+		return false;
+	}
+
+	bill13_->setPosition(150.0F, 0.4F, 230.0F);
+	bill13_->setRotation(0.0F, 270.0F, 0.0F);
+	bill13_->setModelScale(3.0F);
 
 #ifdef _DEBUG
 	lightblock_ = new Model;
@@ -259,6 +292,9 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(bill05_);
 	SAFE_DELETE_DESTROY(bill09_);
 	SAFE_DELETE_DESTROY(bill10_);
+	SAFE_DELETE_DESTROY(bill11_);
+	SAFE_DELETE_DESTROY(bill12_);
+	SAFE_DELETE_DESTROY(bill13_);
 #ifdef _DEBUG
 	SAFE_DELETE_DESTROY(lightblock_);
 #endif // _DEBUG
@@ -319,6 +355,18 @@ bool Game::modelRender()
 
 	world = bill10_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->shadowRender(bill10_, world, view, projection, bill10_->getTexture(), rendertexture_->getShaderResouceView(), light_))
+		return false;
+
+	world = bill11_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->shadowRender(bill11_, world, view, projection, bill11_->getTexture(), rendertexture_->getShaderResouceView(), light_))
+		return false;
+
+	world = bill12_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->shadowRender(bill12_, world, view, projection, bill12_->getTexture(), rendertexture_->getShaderResouceView(), light_))
+		return false;
+
+	world = bill13_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->shadowRender(bill13_, world, view, projection, bill13_->getTexture(), rendertexture_->getShaderResouceView(), light_))
 		return false;
 #ifdef _DEBUG
 	world = lightblock_->getWorldMatrix();
@@ -432,8 +480,6 @@ bool Game::renderToScene()
 	if (!ShaderManager::getInstance()->depthRender(bill04_, world, view, projection))
 		return false;
 
-
-
 	world = bill06_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill06_, world, view, projection))
 		return false;
@@ -444,6 +490,18 @@ bool Game::renderToScene()
 
 	world = bill10_->getWorldMatrix();
 	if (!ShaderManager::getInstance()->depthRender(bill10_, world, view, projection))
+		return false;
+
+	world = bill11_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill11_, world, view, projection))
+		return false;
+
+	world = bill12_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill12_, world, view, projection))
+		return false;
+
+	world = bill13_->getWorldMatrix();
+	if (!ShaderManager::getInstance()->depthRender(bill13_, world, view, projection))
 		return false;
 
 	Direct3D::getInstance()->setBackBufferRenderTarget();

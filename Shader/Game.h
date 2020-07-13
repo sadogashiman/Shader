@@ -27,6 +27,9 @@ private:
 	Model* bill09_;
 	Model* bill10_;
 	Model* bill05_;
+	Model* bill11_;
+	Model* bill12_;
+	Model* bill13_;
 
 #ifdef _DEBUG
 	Model* lightblock_;
