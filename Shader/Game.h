@@ -21,15 +21,7 @@ private:
 	SkyDome* sky_;
 	Skyplane* cloud_;
 
-	Model* bill03_;
-	Model* bill04_;
-	Model* bill06_;
-	Model* bill09_;
-	Model* bill10_;
-	Model* bill05_;
-	Model* bill11_;
-	Model* bill12_;
-	Model* bill13_;
+	std::vector<Model*> model_;
 
 #ifdef _DEBUG
 	Model* lightblock_;
