@@ -73,7 +73,8 @@ public:
 	inline void setRotation(const Vector3& Rotation) { rotation_ = Rotation; }
 	inline void setNormalTexture(const wchar_t* NormalTextureFileName) { wcscpy(mapfilename_, NormalTextureFileName); } //マッピング用のテクスチャファイルは別途指定
 	inline void setModelScale(const float Scale) { scale_ = Scale; }
-																														//get
+	
+	//get
 	Matrix getWorldMatrix();
 	inline Vector3 getPosition()const { return position_; }
 	inline Vector3 getRotation()const { return rotation_; }

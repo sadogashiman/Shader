@@ -15,7 +15,6 @@ bool Depthshader::init()
 {
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[1];
-	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 
 	support_.reset(new Support);
@@ -47,11 +46,8 @@ bool Depthshader::init()
 	polygonlayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[0].InstanceDataStepRate = 0;
 
-	//レイアウト内の要素の数を取得
-	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
-
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout),layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");

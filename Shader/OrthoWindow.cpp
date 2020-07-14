@@ -14,8 +14,8 @@ OrthoWindow::~OrthoWindow()
 bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 {
 	float left, right, top, bottom;
-	VertexType* vertices;
-	unsigned long* indices;
+	std::vector<VertexType> vertices;
+	std::vector<unsigned long> indices;
 	D3D11_BUFFER_DESC vertexbufferdesc;
 	D3D11_BUFFER_DESC indexbufferdesc;
 	D3D11_SUBRESOURCE_DATA vertexdata;
@@ -35,15 +35,15 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 	indexcnt_ = vertexcnt_;
 
 	//頂点配列を作成
-	vertices = new VertexType[vertexcnt_];
-	if (!vertices)
+	vertices.resize(vertexcnt_);
+	if (vertices.empty())
 	{
 		return false;
 	}
 
 	//インデックス配列を作成
-	indices = new unsigned long[indexcnt_];
-	if (!indices)
+	indices.resize(indexcnt_);
+	if (indices.empty())
 	{
 		return false;
 	}
@@ -81,7 +81,7 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 	vertexbufferdesc.StructureByteStride = 0;
 
 	//サブリソースにポインターを渡す
-	vertexdata.pSysMem = vertices;
+	vertexdata.pSysMem = &vertices[0];
 	vertexdata.SysMemPitch = 0;
 	vertexdata.SysMemSlicePitch = 0;
 
@@ -100,7 +100,7 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 	indexbufferdesc.MiscFlags = 0;
 	indexbufferdesc.StructureByteStride = 0;
 
-	indexdata.pSysMem = indices;
+	indexdata.pSysMem = &indices[0];
 	indexdata.SysMemPitch = 0;
 	indexdata.SysMemSlicePitch = 0;
 
@@ -111,11 +111,8 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 	}
 
 	//破棄
-	delete[] indices;
-	indices = nullptr;
-
-	delete[] vertices;
-	vertices = nullptr;
+	vertices.clear();
+	indices.clear();
 
 	return true;
 }

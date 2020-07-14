@@ -6,7 +6,6 @@ bool SkyplaneShader::init()
 {
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
-	unsigned int numelements;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_BUFFER_DESC skybufferdesc;
@@ -50,11 +49,8 @@ bool SkyplaneShader::init()
 	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[1].InstanceDataStepRate = 0;
 
-	//要素数を計算
-	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
-
 	//頂点入力レイアウトの作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements, layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout), layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

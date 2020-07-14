@@ -16,7 +16,6 @@ bool Textureshader::init()
 {
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
-	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbuffer;
 	D3D11_SAMPLER_DESC samplerdesc;
 
@@ -59,15 +58,12 @@ bool Textureshader::init()
 	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[1].InstanceDataStepRate = 0;
 
-	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
-
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout),layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
-
 
 	//マトリックスバッファの設定
 	matrixbuffer.Usage = D3D11_USAGE_DYNAMIC;

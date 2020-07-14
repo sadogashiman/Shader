@@ -154,14 +154,14 @@ bool Game::init()
 		fs >> input;
 		mbstowcs(texpath, input.c_str(), MAX_PATH);
 
-		//取得したデータで初期化
-		if (!model_[cnt]->init(modelpath, texpath))
-			return false;
-
 		//モデルのパラメーターを取得
 		fs >> position.x >> position.y >> position.z;
 		fs >> rotation.x >> rotation.y >> rotation.z;
 		fs >> scale;
+
+		//取得したデータで初期化
+		if (!model_[cnt]->init(modelpath, texpath))
+			return false;
 
 		model_[cnt]->setPosition(position);
 		model_[cnt]->setRotation(rotation);
@@ -243,14 +243,12 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(cloud_);
 
 	//生成したモデルを破棄
-	for (int i = 0,max = static_cast<signed>(model_.size()); i <max; i++)
+	for (unsigned int i = 0,max = model_.size(); i <max; i++)
 	{
 		Model* tmp = model_.back();
 		model_.pop_back();
-		tmp->destroy();
-		delete tmp;
+		SAFE_DELETE_DESTROY(tmp);
 	}
-
 
 #ifdef _DEBUG
 	SAFE_DELETE_DESTROY(lightblock_);

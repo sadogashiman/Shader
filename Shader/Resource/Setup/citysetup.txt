@@ -10,7 +10,7 @@ Resource/Texture/bill.dds
 0.0 90.0 0.0
 3
 
-Resource/Model/bill_08.txt
+Resource/Model/bill_02.txt
 Resource/Texture/bill.dds
 35.0 0.4 100.5
 0.0 90.0 0.0
@@ -34,20 +34,26 @@ Resource/Texture/bill.dds
 0.0 270.0 0.0
 3
 
-Resource/Model/bill_05.txt
+Resource/Model/bill_02.txt
 Resource/Texture/bill.dds
 35.0 0.4 220.0
 0.0 90.0 0.0
 3
 
-Resource/Model/bill_05.txt
+Resource/Model/bill_02.txt
 Resource/Texture/bill.dds
 150.0 0.4 70.0
 0.0 270.0 0.0
 3
 
-Resource/Model/bill_05.txt
+Resource/Model/bill_04.txt
 Resource/Texture/bill.dds
 150.0 0.4 190.0
+0.0 270.0 0.0
+3
+
+Resource/Model/bill_03.txt
+Resource/Texture/bill.dds
+150.0 0.4 220.0
 0.0 270.0 0.0
 3

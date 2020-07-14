@@ -15,7 +15,6 @@ bool ParticleShader::init()
 {
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
-	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
 
@@ -64,11 +63,8 @@ bool ParticleShader::init()
 	polygonlayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[2].InstanceDataStepRate = 0;
 
-	//要素数を取得
-	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
-
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout),layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

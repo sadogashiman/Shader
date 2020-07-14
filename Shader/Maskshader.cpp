@@ -15,7 +15,6 @@ bool Maskshader::init()
 {
 	HRESULT hr;
 	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
-	unsigned int numelements;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
 
@@ -56,11 +55,8 @@ bool Maskshader::init()
 	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[1].InstanceDataStepRate = 0;
 
-	//レイアウト内の要素の数を取得
-	numelements = sizeof(polygonlayout) / sizeof(polygonlayout[0]);
-
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, numelements,layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout),layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

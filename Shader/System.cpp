@@ -166,7 +166,7 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 	wc.hInstance = instance_;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszClassName = "ClassName";
+	wc.lpszClassName = "Lookaway";
 	wc.cbSize = sizeof(WNDCLASSEX);
 
 	//WindowƒNƒ‰ƒX‚ð“o˜^
@@ -210,8 +210,8 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 
 	hwnd_ = CreateWindowEx(
 		ex_style,
-		"ClassName",
-		"DirectX",
+		"Lookaway",
+		"ShaderApp",
 		style,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,

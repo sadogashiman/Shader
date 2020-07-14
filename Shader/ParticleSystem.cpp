@@ -193,6 +193,7 @@ bool ParticleSystem::initbuffer()
 
 	//•s—v‚É‚È‚Á‚½‚Ì‚Å“à•”î•ñ‚ğ”jŠü
 	indices.clear();
+	vertices_.clear();
 
 	return true;
 }
