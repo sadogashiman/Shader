@@ -29,7 +29,7 @@ private:
 #endif // _DEBUG
 
 	//パーティクル
-	ParticleSystem* particle_;
+	//ParticleSystem* particle_;
 
 	bool wire_;
 	void switchWireFrame();

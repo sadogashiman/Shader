@@ -133,6 +133,8 @@ bool Game::init()
 		return false;
 	}
 
+	auto a = sizeof(model_);
+
 	//セットアップファイルを展開
 	fs.open(L"Resource/Setup/citysetup.txt", std::ios::beg|std::ios::in);
 	if (fs.fail())
@@ -143,6 +145,7 @@ bool Game::init()
 	//データ読み取り
 	while (!fs.eof())
 	{
+
 		//モデル生成
 		model_.push_back(new Model);
 
@@ -181,6 +184,8 @@ bool Game::init()
 	}
 #endif // _DEBUG
 	wire_ = false;
+
+	fs.close();
 
 	return true;
 }
@@ -243,11 +248,9 @@ void Game::destroy()
 	SAFE_DELETE_DESTROY(cloud_);
 
 	//生成したモデルを破棄
-	for (unsigned int i = 0,max = model_.size(); i <max; i++)
+	for (auto itr :model_)
 	{
-		Model* tmp = model_.back();
-		model_.pop_back();
-		SAFE_DELETE_DESTROY(tmp);
+		SAFE_DELETE_DESTROY(itr);
 	}
 
 #ifdef _DEBUG

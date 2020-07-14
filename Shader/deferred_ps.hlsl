@@ -15,7 +15,7 @@ struct PixelOutputType
 	float4 normal : SV_Target1;
 };
 
-PixelOutputType main(PixelInputType Input) : SV_TARGET
+PixelOutputType main(PixelInputType Input)
 {
 	PixelOutputType output;
 

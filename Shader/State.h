@@ -1,6 +1,9 @@
 #pragma once
 class State
 {
+public:
+	virtual ~State() = default;
+
 protected:
 	State* state_;
 public:

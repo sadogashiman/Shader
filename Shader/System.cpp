@@ -126,7 +126,6 @@ bool System::update()
 	{
 		return false;
 	}
-
 	//XV
 	tmp = state_.get()->update();
 
