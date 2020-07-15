@@ -152,10 +152,10 @@ bool ShaderManager::init()
 	return true;
 }
 
-bool ShaderManager::colorRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection)
+bool ShaderManager::colorRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, Vector4 Color)
 {
 	Model->render();
-	return colorshader_.get()->render(Model->getIndexCount(), World, View, Projection);
+	return colorshader_.get()->render(Model->getIndexCount(), World, View, Projection,Color);
 }
 
 bool ShaderManager::maskRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray)

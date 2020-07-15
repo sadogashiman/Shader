@@ -15,7 +15,8 @@ bool Colorshader::init()
 {
 	HRESULT hr;
 	D3D11_BUFFER_DESC matrixbufferdesc;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
+	D3D11_BUFFER_DESC colorbufferdesc;
+	D3D11_INPUT_ELEMENT_DESC polygonlayout[1];
 
 	support_.reset(new Support);
 	if (!support_.get())
@@ -45,14 +46,6 @@ bool Colorshader::init()
 	polygonlayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonlayout[0].InstanceDataStepRate = 0;
 
-	polygonlayout[1].SemanticName = "COLOR";
-	polygonlayout[1].SemanticIndex = 0;
-	polygonlayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	polygonlayout[1].InputSlot = 0;
-	polygonlayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-	polygonlayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	polygonlayout[1].InstanceDataStepRate = 0;
-
 	//頂点入力レイアウトの作成
 	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout), layout_.GetAddressOf());
 	if (FAILED(hr))
@@ -76,16 +69,30 @@ bool Colorshader::init()
 		return false;
 	}
 
+	//カラーバッファを作成
+	colorbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
+	colorbufferdesc.ByteWidth = sizeof(ColorBufferType);
+	colorbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	colorbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	colorbufferdesc.MiscFlags = 0;
+	colorbufferdesc.StructureByteStride = 0;
+
+	//カラーバッファの作成
+	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&colorbufferdesc, NULL, colorbuffer_.GetAddressOf());
+	if (FAILED(hr))
+	{
+		Error::showDialog("カラーバッファの作成に失敗");
+	}
 
 	return true;
 }
 
-bool Colorshader::render(const int IndexCount, Matrix World, Matrix View, Matrix Projection)
+bool Colorshader::render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, Vector4 Color)
 {
 	bool result;
 
 	//シェーダーパラメーターの設定
-	result = setShaderParameters(World, View, Projection);
+	result = setShaderParameters(World, View, Projection,Color);
 	if (!result)
 	{
 		Error::showDialog("シェーダーパラメーターの設定に失敗");
@@ -98,11 +105,12 @@ bool Colorshader::render(const int IndexCount, Matrix World, Matrix View, Matrix
 	return true;
 }
 
-bool Colorshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection)
+bool Colorshader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, Vector4 Color)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresource;
 	MatrixBufferType* dataptr;
+	ColorBufferType* dataptr2;
 	unsigned int buffernumber;
 
 	//シェーダーように行列を転置
@@ -134,6 +142,27 @@ bool Colorshader::setShaderParameters(Matrix World, Matrix View, Matrix Projecti
 
 	//定数バッファをセット
 	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
+
+	//ピクセルシェーダーの出力色を決定
+	hr = Direct3D::getInstance()->getContext()->Map(colorbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	if (FAILED(hr))
+	{
+		Error::showDialog("バッファのロックに失敗");
+		return false;
+	}
+
+	//ポインタキャスト
+	dataptr2 = (ColorBufferType*)mappedresource.pData;
+
+	//データ更新
+	dataptr2->color = Color;
+
+	//ロック解除
+	Direct3D::getInstance()->getContext()->Unmap(colorbuffer_.Get(), 0);
+
+	//シェーダーにセット
+	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(0, 1, colorbuffer_.GetAddressOf());
+
 
 	return true;
 }
