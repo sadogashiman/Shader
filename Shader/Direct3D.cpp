@@ -474,7 +474,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	resetViewPort();
 
 	//射影行列の作成
-	fieldofview = XM_PI / 14.0F;
+	fieldofview = XMConvertToRadians(45.0F);
 	screenaspect = static_cast<float>(ScreenWidth) / static_cast<float>(ScreenHeight);
 
 	//3Dレンダリングの投影行列を作成

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Position.h"
 const float kMovespeed = 1.0F;
-const float kTurnspeed = 0.5F;
-const float kLookspeed = 0.3F;
+const float kTurnspeed = 1.0F;
+const float kLookspeed = 1.0F;
 
 Position::Position()
 {
