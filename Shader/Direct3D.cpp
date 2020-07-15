@@ -196,7 +196,12 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
+#ifdef _DEBUG
 		D3D11_CREATE_DEVICE_DEBUG,
+#else
+		0,
+#endif // _DEBUG
+
 		featurelebel,
 		3,
 		D3D11_SDK_VERSION,
@@ -212,7 +217,11 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 			NULL,
 			D3D_DRIVER_TYPE_WARP,
 			NULL,
+#ifdef _DEBUG
 			D3D11_CREATE_DEVICE_DEBUG,
+#else
+			0,
+#endif // _DEBUG
 			featurelebel,
 			3,
 			D3D11_SDK_VERSION,
