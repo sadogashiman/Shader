@@ -27,13 +27,13 @@ bool Deferredshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"deferred_vs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/deferred_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"deferred_ps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/deferred_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

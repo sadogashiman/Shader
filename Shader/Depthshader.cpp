@@ -25,13 +25,13 @@ bool Depthshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"depth_vs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/depth_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"depth_ps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/depth_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

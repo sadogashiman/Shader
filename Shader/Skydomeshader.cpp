@@ -27,13 +27,13 @@ bool Skydomeshader::init()
 	}
 
 	//シェーダーを読み込み
-	hr = support_.get()->createVertexData(L"skydome_vs.cso", vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/skydome_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"skydome_ps.cso", pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/skydome_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

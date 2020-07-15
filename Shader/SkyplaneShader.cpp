@@ -19,14 +19,14 @@ bool SkyplaneShader::init()
 	}
 
 	//頂点シェーダーの作成
-	hr = support_.get()->createVertexData(L"skyplane_vs.cso", vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/skyplane_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
 	//ピクセルシェーダーの作成
-	hr = support_.get()->createPixelData(L"skyplane_ps.cso", pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/skyplane_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

@@ -30,13 +30,13 @@ bool Multitexture::init()
 	vertexshaderbuffer_ = nullptr;
 	pixelshaderbuffer_ = nullptr;
 
-	hr = support_.get()->createVertexData(L"multitexture_vs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/multitexture_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"multitexture_ps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/multitexture_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

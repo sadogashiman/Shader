@@ -27,13 +27,13 @@ bool Textureshader::init()
 	}
 
 	//シェーダー作成
-	hr = support_.get()->createVertexData(L"texture_vs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/texture_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"texture_ps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/texture_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

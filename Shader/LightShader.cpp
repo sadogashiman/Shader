@@ -28,13 +28,13 @@ bool LightShader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"light_vs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/light_vs.cso",vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"light_ps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/light_ps.cso",pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

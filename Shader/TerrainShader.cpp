@@ -19,13 +19,13 @@ bool TerrainShader::init()
 	}
 
 	//シェーダー作成
-	hr = support_.get()->createVertexData(L"terrain_vs.cso", vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/terrain_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"terrain_ps.cso", pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/terrain_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

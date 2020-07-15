@@ -25,13 +25,13 @@ bool Colorshader::init()
 		return false;
 	}
 
-	hr = support_.get()->createVertexData(L"color_vs.cso", vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/color_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"color_ps.cso", pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/color_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
