@@ -31,9 +31,6 @@
     <Filter Include="MainSystem\2D">
       <UniqueIdentifier>{16fb15f2-c53e-44d8-b5cc-161e934915a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI">
-      <UniqueIdentifier>{6fd6c1e0-0e83-438e-8c8d-73be4ef3ca9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ParticleSystem">
       <UniqueIdentifier>{2957ac51-fe1a-44eb-8ba4-112e6639966c}</UniqueIdentifier>
     </Filter>
@@ -63,9 +60,6 @@
     </Filter>
     <Filter Include="ShaderManager\Shader\Particle">
       <UniqueIdentifier>{e0984b7c-7540-489a-9ccd-4248a68d9ce4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Timer">
-      <UniqueIdentifier>{5bb2d030-beb2-4bc5-94bb-cf329f3e9dcf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{94975e98-f674-4520-b0a4-c4c20fe5ec91}</UniqueIdentifier>
@@ -148,6 +142,9 @@
     <Filter Include="ShaderManager\Shader\Terrain">
       <UniqueIdentifier>{13e26043-9ba3-4070-82a7-a955788e70c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{5bb2d030-beb2-4bc5-94bb-cf329f3e9dcf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -217,7 +214,7 @@
       <Filter>ParticleSystem</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>UI\Timer</Filter>
+      <Filter>Timer</Filter>
     </ClCompile>
     <ClCompile Include="Position.cpp">
       <Filter>ソース ファイル</Filter>
@@ -327,7 +324,7 @@
       <Filter>ParticleSystem</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>UI\Timer</Filter>
+      <Filter>Timer</Filter>
     </ClInclude>
     <ClInclude Include="Position.h">
       <Filter>ヘッダー ファイル</Filter>

@@ -4,8 +4,6 @@
 //******************************
 #define _CRT_SECURE_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN //使われていないAPIの一部を除外するマクロ
-#define STRICT				//型チェックを厳密にするマクロ
-#define ALIGN16 _declspec(align(16)) //16アライメント
 //******************************
 //　　		include
 //******************************
@@ -34,10 +32,8 @@
 #include<map>
 #include<chrono>
 #include<iostream>
-#include<list>
 #include<random>
 #include<algorithm>
-#include<functional>
 
 //******************************
 //　　		リンク

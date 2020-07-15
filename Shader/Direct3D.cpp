@@ -491,13 +491,11 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 
 void Direct3D::begin(XMVECTORF32 Color)
 {
-
 	//バックバッファクリア
 	cpdevicecontext_.Get()->ClearRenderTargetView(cprendertarget_.Get(), Color);
 
 	//深度バッファクリア
 	cpdevicecontext_.Get()->ClearDepthStencilView(cpdepthview_.Get(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0F, 0);
-
 }
 
 void Direct3D::end()
@@ -517,6 +515,7 @@ void Direct3D::end()
 
 void Direct3D::destroy()
 {
+#ifdef _DEBUG
 	//インターフェースの解放忘れを出力
 	typedef HRESULT(__stdcall* fPtr)(const IID&, void**);
 	HMODULE hDll = GetModuleHandleW(L"dxgidebug.dll");
@@ -530,6 +529,7 @@ void Direct3D::destroy()
 		cpdevice_.Get()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(cpdebug_.GetAddressOf()));
 		cpdebug_.Get()->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 	}
+#endif // _DEBUG
 }
 
 void Direct3D::setVideoCardInfo(char* CardName, int& Memory)

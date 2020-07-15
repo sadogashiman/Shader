@@ -27,6 +27,7 @@ public:
 
 	//Check
 	static bool checkInputLayoutData(const void* shadercode, size_t codesize,const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum); //頂点入力レイアウトを作成するデータが有効か確認する関数
+	
 	//Search
 	//ファイルパスが有効か判定（有効ならtrueを返す)
 	static bool searchFile(const wchar_t* FileName);
@@ -45,7 +46,7 @@ public:
 	//Get
 	inline const LPVOID getVertexBufferPtr()const { return vertexblob_; }			//頂点シェーダーのバッファポインタを返す
 	inline const LPVOID getPixelBufferPtr()const { return pixelblob_; }				//ピクセルシェーダーのバッファポインタを返す
-	inline const LPVOID getcomputeBufferPtr()const { return computeblob_; }			//コンピュートシェーダーのバッファポインタを返す
+	inline const LPVOID getComputeBufferPtr()const { return computeblob_; }			//コンピュートシェーダーのバッファポインタを返す
 	inline const size_t getVertexBufferSize()const { return vertexsize_; }			//頂点シェーダーのバッファサイズを返す
 	inline const size_t getPixelBufferSize()const { return pixelsize_; }			//ピクセルシェーダーのバッファサイズを返す
 	inline const size_t getComputeBufferSize()const { return computesize_; }		//コンピュートシェーダーのバッファサイズを返す
