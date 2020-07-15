@@ -1,6 +1,16 @@
 #include "stdafx.h"
 #include "SkyplaneShader.h"
-#include"Direct3D.h"
+
+SkyplaneShader::SkyplaneShader()
+{
+	ZeroMemory(this, sizeof(SkyplaneShader));
+	instanceptr_ = Direct3D::getInstance();
+}
+
+SkyplaneShader::~SkyplaneShader()
+{
+}
+
 
 bool SkyplaneShader::init()
 {

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Game.h"
-#include "Direct3D.h"
 #include "Input.h"
 #include "ShaderManager.h"
 #include "System.h"
@@ -8,8 +7,10 @@
 #include "SkyDome.h"
 #include "Support.h"
 
+
 Game::Game()
 {
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Game::~Game()
@@ -126,6 +127,8 @@ bool Game::init()
 	wchar_t modelpath[MAX_PATH];
 	wchar_t texpath[MAX_PATH];
 	std::string input;
+	std::vector <std::thread> initthread;
+	bool success = true;
 
 	if (!Support::searchFile(L"Resource/Setup/citysetup.txt"))
 	{
@@ -163,8 +166,8 @@ bool Game::init()
 		fs >> scale;
 
 		//取得したデータで初期化
-		if (!model_[cnt]->init(modelpath, texpath))
-			return false;
+		auto initialize = [&, cnt]()->void {success &= model_[cnt]->init(modelpath, texpath); };
+		initthread.push_back(std::thread(initialize));
 
 		model_[cnt]->setPosition(position);
 		model_[cnt]->setRotation(rotation);
@@ -173,6 +176,9 @@ bool Game::init()
 		//添え字を加算
 		cnt++;
 	}
+
+	//ファイルクローズ
+	fs.close();
 
 #ifdef _DEBUG
 	//デバック時のみライト位置にモデルを生成する
@@ -183,11 +189,17 @@ bool Game::init()
 		return false;
 	}
 #endif // _DEBUG
+
 	wire_ = false;
 
-	fs.close();
 
-	return true;
+	//終了待ち
+	for (auto& itr : initthread)
+	{
+		itr.join();
+	}
+
+	return success;
 }
 
 State* Game::update()
@@ -221,7 +233,7 @@ bool Game::render()
 		return false;
 	}
 	//シーンをクリア
-	Direct3D::getInstance()->begin(Colors::CornflowerBlue);
+	instanceptr_->begin(Colors::CornflowerBlue);
 
 	//シーンにレンダリング
 	if (!worldRender())
@@ -235,7 +247,7 @@ bool Game::render()
 	}
 
 	//描画終了
-	Direct3D::getInstance()->end();
+	instanceptr_->end();
 
 	return true;
 }
@@ -283,11 +295,11 @@ bool Game::modelRender()
 	Matrix view;
 
 	//行列を取得
-	world = Direct3D::getInstance()->getWorldMatrix();
-	projection = Direct3D::getInstance()->getProjectionMatrix();
+	world = instanceptr_->getWorldMatrix();
+	projection = instanceptr_->getProjectionMatrix();
 	view = camera_->getViewMatrix();
 
-	Direct3D::getInstance()->turnCullingEnable();
+	instanceptr_->turnCullingEnable();
 
 	for (auto& itr : model_)
 	{
@@ -302,7 +314,7 @@ bool Game::modelRender()
 		return false;
 #endif // _DEBUG
 
-	Direct3D::getInstance()->turnCullingDisable();
+	instanceptr_->turnCullingDisable();
 
 	return true;
 }
@@ -317,14 +329,14 @@ bool Game::worldRender()
 	camera_->render();
 
 	//行列を取得
-	world = Direct3D::getInstance()->getWorldMatrix();
-	projection = Direct3D::getInstance()->getProjectionMatrix();
+	world = instanceptr_->getWorldMatrix();
+	projection = instanceptr_->getProjectionMatrix();
 	view = camera_->getViewMatrix();
 	skyworld = XMMatrixTranslation(camera_->getPosition().x, camera_->getPosition().y, camera_->getPosition().z);
 
 	//Zバッファ・カリングをオフ
-	Direct3D::getInstance()->turnCullingDisable();
-	Direct3D::getInstance()->turnZbufferDisable();
+	instanceptr_->turnCullingDisable();
+	instanceptr_->turnZbufferDisable();
 
 	//スカイドームをレンダリング
 	if (!(ShaderManager::getInstance()->skyDomeRender(sky_, skyworld, view, projection)))
@@ -333,10 +345,10 @@ bool Game::worldRender()
 	}
 
 	//カリングをオン
-	Direct3D::getInstance()->turnCullingEnable();
+	instanceptr_->turnCullingEnable();
 
 	//加算合成オン
-	Direct3D::getInstance()->turnAddBlendEnable();
+	instanceptr_->turnAddBlendEnable();
 
 	//雲をレンダリング
 	if (!(ShaderManager::getInstance()->skyPlaneRender(cloud_, skyworld, view, projection)))
@@ -345,14 +357,14 @@ bool Game::worldRender()
 	}
 
 	//合成オフ
-	Direct3D::getInstance()->turnAlphablendDisable();
+	instanceptr_->turnAlphablendDisable();
 
 	//Zバッファオン
-	Direct3D::getInstance()->turnZbufferEnable();
+	instanceptr_->turnZbufferEnable();
 
 	//ワイヤーフレーム切り替え
 	if (wire_)
-		Direct3D::getInstance()->wireFrameEnable();
+		instanceptr_->wireFrameEnable();
 
 	world = terrain_->getWorldMatrix();
 
@@ -363,7 +375,7 @@ bool Game::worldRender()
 	}
 
 	if (wire_)
-		Direct3D::getInstance()->wireFrameDisable();
+		instanceptr_->wireFrameDisable();
 
 	return true;
 }
@@ -374,17 +386,17 @@ bool Game::renderToScene()
 	Matrix view;
 	Matrix projection;
 
-	Direct3D::getInstance()->setBackBufferRenderTarget();
+	instanceptr_->setBackBufferRenderTarget();
 
 	//描画先変更
-	Direct3D::getInstance()->turnCullingDisable();
+	instanceptr_->turnCullingDisable();
 	rendertexture_->setRenderTarget();
 	rendertexture_->clearRenderTarget(Colors::ForestGreen);
 
 	//射影行列を生成
 	light_->generateView();
 
-	world = Direct3D::getInstance()->getWorldMatrix();
+	world = instanceptr_->getWorldMatrix();
 
 	//行列を取得
 	view = light_->getViewMatrix();
@@ -403,10 +415,11 @@ bool Game::renderToScene()
 			return false;
 	}
 
+	//バックバッファにレンダーターゲットを移す
+	instanceptr_->setBackBufferRenderTarget();
 
-	Direct3D::getInstance()->setBackBufferRenderTarget();
-
-	Direct3D::getInstance()->resetViewPort();
+	//ビューポートをリセット
+	instanceptr_->resetViewPort();
 
 	return true;
 }

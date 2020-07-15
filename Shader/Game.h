@@ -8,6 +8,8 @@
 #include"Skyplane.h"
 #include"Rendertexture.h"
 #include"ParticleSystem.h"
+#include "Direct3D.h"
+
 class Game :public State
 {
 private:
@@ -15,6 +17,7 @@ private:
 	Camera* camera_;
 	Position position_;
 	Rendertexture* rendertexture_;
+	Direct3D* instanceptr_;
 
 	//3Dƒ‚ƒfƒ‹
 	Terrain* terrain_;

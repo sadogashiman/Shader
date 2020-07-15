@@ -1,5 +1,7 @@
 #pragma once
 #include"Support.h"
+#include"Direct3D.h"
+
 class ParticleShader
 {
 private:
@@ -9,6 +11,7 @@ private:
 		Matrix view;
 		Matrix projection;
 	};
+	Direct3D* instanceptr_;
 	ComPtr<ID3D11VertexShader> vertexshader_;
 	ComPtr<ID3D11PixelShader> pixelshader_;
 	ComPtr<ID3D11InputLayout> layout_;

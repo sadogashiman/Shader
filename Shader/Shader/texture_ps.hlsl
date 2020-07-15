@@ -11,6 +11,7 @@ float4 main(PixelInputType Input) :SV_TARGET
 {
 	float4 textureColor;
 
+	//テクスチャからピクセルカラーをサンプリング
 	textureColor = ShaderTexture.Sample(SampleType, Input.tex);
 
 	return textureColor;

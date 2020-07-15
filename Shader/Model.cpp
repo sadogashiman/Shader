@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "model.h"
-#include"Direct3D.h"
 #include"Support.h"
 #include"Texture.h"
 
@@ -12,6 +11,7 @@ Model::Model()
 	ZeroMemory(&mapfilename_, sizeof(mapfilename_));
 	scale_ = 1.0F;
 	world_ = XMMatrixIdentity();
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Model::~Model()
@@ -154,7 +154,7 @@ bool Model::initBuffer()
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbuffdesc, &vertexdata, vertexbuff_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&vertexbuffdesc, &vertexdata, vertexbuff_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -174,7 +174,7 @@ bool Model::initBuffer()
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbuffdesc, &indexdata, indexbuff_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&indexbuffdesc, &indexdata, indexbuff_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -193,19 +193,22 @@ void Model::renderBuffer()
 	offset = 0;
 
 	//入力アセンブラで頂点バッファをアクティブにしてレンダリング可能に
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuff_.GetAddressOf(), &stride, &offset);
+	instanceptr_->getContext()->IASetVertexBuffers(0, 1, vertexbuff_.GetAddressOf(), &stride, &offset);
 
 	//入力アセンブラでインデックスバッファをアクティブにしてレンダリング可能に
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuff_.Get(), DXGI_FORMAT_R32_UINT, 0);
+	instanceptr_->getContext()->IASetIndexBuffer(indexbuff_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//頂点バッファからレンダリングされるプリミティブのタイプ
-	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	instanceptr_->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 bool Model::loadModel(const wchar_t* ModelFileName)
 {
-	std::fstream fp;
+	std::fstream fs;
 	char input;
+	FILE* fp;
+	char tmp[MAX_PATH];
+	char buffer[256];
 
 	//ファイルパスが有効か確認
 	if (!Support::searchFile(ModelFileName))
@@ -213,50 +216,58 @@ bool Model::loadModel(const wchar_t* ModelFileName)
 		return false;
 	}
 
-	//ファイルパスが有効なのを確認したので展開
-	fp.open(ModelFileName, std::ios::beg | std::ios::in);
+	//ファイル展開のために文字列の型変換
+	wcstombs(tmp, ModelFileName,MAX_PATH);
 
-	if (fp.fail())
-	{
+	//ファイル展開
+	fp = fopen(tmp,"r");
+	if (fp == nullptr)
 		return false;
-	}
 
-	//頂点の数を取得
-	fp.get(input);
+	//ファイル読み込み
+	input = fgetc(fp);
+
+	//頂点数まで飛ばす
 	while (input != ':')
 	{
-		fp.get(input);
+		input = fgetc(fp);
 	}
 
-	//頂点カウントを読み取り
-	fp >> vertexcount_;
+	//頂点数を取得
+	fscanf(fp, "%d", &vertexcount_);
 
-	//インデックスの数を頂点の数と同じに設定
+	//インデックス数を設定
 	indexcount_ = vertexcount_;
 
-	//読み込まれた頂点数を使用してモデル配列を作成
+	//配列サイズを変更
 	model_.resize(vertexcount_);
 
-	//データを先頭まで読み取る
-	fp.get(input);
+	input = fgetc(fp);
+
+	//先頭まで読み飛ばす
 	while (input != ':')
 	{
-		fp.get(input);
+		input = fgetc(fp);
 	}
 
 	//改行を飛ばす
-	fp.get(input);
-	fp.get(input);
+	fgets(buffer, 256, fp);
 
-	//頂点データを読み込み
+	//モデルパラメーター取得
 	for (int i = 0; i < vertexcount_; i++)
 	{
-		fp >> model_[i].x >> model_[i].y >> model_[i].z;
-		fp >> model_[i].tu >> model_[i].tv;
-		fp >> model_[i].nx >> model_[i].ny >> model_[i].nz;
+		//座標を取得
+		fscanf(fp, "%f %f %f",&model_[i].x, &model_[i].y, &model_[i].z);
+
+		//テクスチャUVを取得
+		fscanf(fp, "%f %f", &model_[i].tu, &model_[i].tv);
+
+		//法線を取得
+		fscanf(fp, "%f %f %f", &model_[i].nx, &model_[i].ny, &model_[i].nz);
 	}
 
-	fp.close();
+	//ファイルクローズ
+	fclose(fp);
 
 	return true;
 }

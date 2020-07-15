@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SkyDome.h"
-#include "Direct3D.h"
 #include"Support.h"
 
 
@@ -60,7 +59,7 @@ bool SkyDome::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点バッファの作成に失敗");
@@ -81,7 +80,7 @@ bool SkyDome::init(const wchar_t* ModelFileName, const wchar_t* TextureFileName)
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("インデックスバッファの作成に失敗");
@@ -101,13 +100,13 @@ void SkyDome::render()
 	offset = 0;
 
 	//頂点バッファをアクティブに設定
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
+	instanceptr_->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
 
 	//インデックスバッファをアクティブに設定
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
+	instanceptr_->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//プリミティブタイプを設定
-	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	instanceptr_->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void SkyDome::destroy()

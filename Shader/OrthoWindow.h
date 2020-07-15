@@ -1,4 +1,5 @@
 #pragma once
+#include"Direct3D.h"
 class OrthoWindow
 {
 private:
@@ -7,6 +8,8 @@ private:
 		Vector3 position;
 		Vector2 texture;
 	};
+
+	Direct3D* instanceptr_;
 	ComPtr<ID3D11Buffer> vertexbuffer_;
 	ComPtr<ID3D11Buffer> indexbuffer_;
 	int vertexcnt_;

@@ -59,6 +59,7 @@ float4 main(PixelInputType input) : SV_TARGET
         }
     }
 
+    //テクスチャカラーと光の色を組み合わせる
     textureColor = shaderTexture.Sample(SampleTypeWrap, input.tex);
 
     color = color * textureColor;

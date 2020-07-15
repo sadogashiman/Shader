@@ -1,6 +1,8 @@
 #pragma once
 #include"TextureFactory.h"
 #include"Support.h"
+#include "Direct3D.h"
+
 class Tree
 {
 private:
@@ -17,7 +19,7 @@ private:
 		Vector2 texpos;
 		Vector3 normalpos;
 	};
-
+	Direct3D* instanceptr_;
 	ComPtr<ID3D11Buffer> trunkvertexbuffer_;
 	ComPtr<ID3D11Buffer> trunkindexbuffer_;
 	ComPtr<ID3D11Buffer> leafvertexbuffer_;

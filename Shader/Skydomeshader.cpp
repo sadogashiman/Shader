@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Skydomeshader.h"
-#include "Direct3D.h"
 
 Skydomeshader::Skydomeshader()
 {
 	ZeroMemory(this, sizeof(Skydomeshader));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Skydomeshader::~Skydomeshader()
@@ -65,7 +65,7 @@ bool Skydomeshader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//マトリックスバッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("マトリックスバッファの作成に失敗");
@@ -81,7 +81,7 @@ bool Skydomeshader::init()
 	gradientbufferdesc.StructureByteStride = 0;
 
 	//グラデーション用バッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&gradientbufferdesc, NULL, gradientbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&gradientbufferdesc, NULL, gradientbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("グラデーション用バッファの作成に失敗");
@@ -122,7 +122,7 @@ bool Skydomeshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 	Projection = XMMatrixTranspose(Projection);
 
 	//バッファロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = instanceptr_->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("バッファのロックに失敗");
@@ -138,16 +138,16 @@ bool Skydomeshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 	dataptr->projection = Projection;
 
 	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//スロット番号を設定
 	buffernumber = 0;
 
 	//定数バッファをセット
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
+	instanceptr_->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
 
 	//バッファロック
-	hr = Direct3D::getInstance()->getContext()->Map(gradientbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = instanceptr_->getContext()->Map(gradientbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("バッファのロックに失敗");
@@ -162,13 +162,13 @@ bool Skydomeshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 	dataptr2->centorcolor = CentorColor;
 
 	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(gradientbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(gradientbuffer_.Get(), 0);
 
 	//スロット番号を設定
 	buffernumber = 0;
 
 	//更新した値でピクセルシェーダーの定数バッファを更新
-	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffernumber, 1, gradientbuffer_.GetAddressOf());
+	instanceptr_->getContext()->PSSetConstantBuffers(buffernumber, 1, gradientbuffer_.GetAddressOf());
 
 	return true;
 }
@@ -176,12 +176,12 @@ bool Skydomeshader::setShaderParameters(Matrix World, Matrix View, Matrix Projec
 void Skydomeshader::renderShader(const int IndexCount)
 {
 	//頂点入力レイアウトをセット
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
+	instanceptr_->getContext()->IASetInputLayout(layout_.Get());
 
 	//シェーダーをセット
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(),NULL, 0);
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->PSSetShader(pixelshader_.Get(),NULL, 0);
+	instanceptr_->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
 
 	//レンダリング
-	Direct3D::getInstance()->getContext()->DrawIndexed(IndexCount, 0, 0);
+	instanceptr_->getContext()->DrawIndexed(IndexCount, 0, 0);
 }

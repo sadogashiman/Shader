@@ -1,5 +1,7 @@
 #pragma once
 #include"TextureFactory.h"
+#include"Direct3D.h"
+
 const int kFrameTime = 16;
 const float kAlphaAttenuation = 0.001F;
 const float kPositionAttenuation = 0.001F;
@@ -51,7 +53,7 @@ private:
 	int indexcnt_;
 
 	float accumulatedtime_;
-
+	Direct3D* instanceptr_;
 	std::vector<VertexType> vertices_;
 	std::vector<ParticleType> particlevector_;
 	ComPtr<ID3D11Buffer> vertexbuffer_;

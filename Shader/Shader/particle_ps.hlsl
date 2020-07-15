@@ -19,7 +19,5 @@ float4 main(PixelInputType Input) :SV_TARGET
 	//最終的なカラーを決定
 	finalcolor = texturecolor * Input.color;
 
-
 	return finalcolor;
-
 }

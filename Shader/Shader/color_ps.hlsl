@@ -11,5 +11,6 @@ cbuffer ColorBuffer:register(b0)
 
 float4 main() : SV_TARGET
 {
+    //“ü—Í‚³‚ê‚½F‚ğo—Í
     return color;
 }

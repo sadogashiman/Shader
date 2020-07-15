@@ -47,7 +47,6 @@ public:
 	inline ID3D11DepthStencilView* getStencilView()const { return cpdepthview_.Get(); }
 	inline ID3D11RenderTargetView* getRenderTargetView()const { return cprendertarget_.Get(); }
 	inline IDXGISwapChain* getSwapChain()const { return cpswapchain_.Get(); }
-
 	inline XMMATRIX getProjectionMatrix()const { return projection_; }
 	inline XMMATRIX getWorldMatrix()const { return world_; }
 	inline XMMATRIX getOrthoMatrix()const { return ortho_; }

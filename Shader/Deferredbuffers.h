@@ -1,9 +1,11 @@
 #pragma once
+#include"Direct3D.h"
+
 const int kBuffer_cnt = 2;
 class Deferredbuffers
 {
 private:
-
+	Direct3D* instanceptr_;
 	ID3D11Texture2D* rendertargettexturearray_[kBuffer_cnt];
 	ID3D11RenderTargetView* rendertargetviewarray_[kBuffer_cnt];
 	ID3D11ShaderResourceView* shaderresourceviewarray_[kBuffer_cnt];

@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Shadowshader.h"
-#include"Direct3D.h"
 
 
 Shadowshader::Shadowshader()
 {
 	ZeroMemory(this, sizeof(Shadowshader));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Shadowshader::~Shadowshader()
@@ -88,7 +88,7 @@ bool Shadowshader::init()
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	//テクスチャのサンプラーを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplestateclamp_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateSamplerState(&samplerdesc, samplestateclamp_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -99,7 +99,7 @@ bool Shadowshader::init()
 	samplerdesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerdesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplestatewrap_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateSamplerState(&samplerdesc, samplestatewrap_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -114,7 +114,7 @@ bool Shadowshader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//定数バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -129,7 +129,7 @@ bool Shadowshader::init()
 	lightbufferdesc.StructureByteStride = 0;
 
 	//ライトバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc, NULL, lightbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&lightbufferdesc, NULL, lightbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -138,7 +138,7 @@ bool Shadowshader::init()
 	lightbufferdesc.ByteWidth = sizeof(LightBufferType2);
 
 	//二つ目のライトバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&lightbufferdesc, NULL, lightbuffer2_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&lightbufferdesc, NULL, lightbuffer2_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -181,7 +181,7 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	Lightprojection = XMMatrixTranspose(Lightprojection);
 
 	//書き込み可能なように定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = instanceptr_->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -198,19 +198,19 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	dataptr->lightprojection = Lightprojection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//頂点シェーダで定数バッファの位置を設定
 	buffnumber = 0;
 
 	//更新された値で頂点シェーダの定数バッファを最後に設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
+	instanceptr_->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
 
 	//シェーダーリソースを設定
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(1, 1, &Depthmaptexture);
+	instanceptr_->getContext()->PSSetShaderResources(0, 1, &Texture);
+	instanceptr_->getContext()->PSSetShaderResources(1, 1, &Depthmaptexture);
 
-	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD,0, & mappedresouce);
+	hr = instanceptr_->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD,0, & mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -222,13 +222,13 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	dataptr2->ambientColor = Ambientcolor;
 	dataptr2->diffuseColor = Diffusecolor;
 
-	Direct3D::getInstance()->getContext()->Unmap(lightbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(lightbuffer_.Get(), 0);
 
 	buffnumber = 0;
 
-	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(buffnumber, 1, lightbuffer_.GetAddressOf());
+	instanceptr_->getContext()->PSSetConstantBuffers(buffnumber, 1, lightbuffer_.GetAddressOf());
 
-	hr = Direct3D::getInstance()->getContext()->Map(lightbuffer2_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = instanceptr_->getContext()->Map(lightbuffer2_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -240,11 +240,11 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	dataptr3->lightposition = LightDirection;
 	dataptr3->padding = 0.0F;
 
-	Direct3D::getInstance()->getContext()->Unmap(lightbuffer2_.Get(), 0);
+	instanceptr_->getContext()->Unmap(lightbuffer2_.Get(), 0);
 
 	buffnumber = 1;
 
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, lightbuffer2_.GetAddressOf());
+	instanceptr_->getContext()->VSSetConstantBuffers(buffnumber, 1, lightbuffer2_.GetAddressOf());
 
 	return true;
 }
@@ -252,16 +252,16 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 void Shadowshader::renderShader(const int Indexcount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
+	instanceptr_->getContext()->IASetInputLayout(layout_.Get());
 
 	//レンダリングに使用するシェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラーの設定
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplestateclamp_.GetAddressOf());
-	Direct3D::getInstance()->getContext()->PSSetSamplers(1, 1, samplestatewrap_.GetAddressOf());
+	instanceptr_->getContext()->PSSetSamplers(0, 1, samplestateclamp_.GetAddressOf());
+	instanceptr_->getContext()->PSSetSamplers(1, 1, samplestatewrap_.GetAddressOf());
 
 	//レンダリング
-	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
+	instanceptr_->getContext()->DrawIndexed(Indexcount, 0, 0);
 }

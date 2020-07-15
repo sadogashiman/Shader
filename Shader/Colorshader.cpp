@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Colorshader.h"
-#include "Direct3D.h"
 
 
 Colorshader::Colorshader()
 {
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Colorshader::~Colorshader()
@@ -62,7 +62,7 @@ bool Colorshader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//定数バッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("定数バッファの作成に失敗");
@@ -78,7 +78,7 @@ bool Colorshader::init()
 	colorbufferdesc.StructureByteStride = 0;
 
 	//カラーバッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&colorbufferdesc, NULL, colorbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&colorbufferdesc, NULL, colorbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("カラーバッファの作成に失敗");
@@ -119,7 +119,7 @@ bool Colorshader::setShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	Projection = XMMatrixTranspose(Projection);
 
 	//バッファのロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = instanceptr_->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("バッファのロックに失敗");
@@ -135,16 +135,16 @@ bool Colorshader::setShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	dataptr->projection = Projection;
 
 	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//スロット番号を設定
 	buffernumber = 0;
 
 	//定数バッファをセット
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
+	instanceptr_->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
 
 	//ピクセルシェーダーの出力色を決定
-	hr = Direct3D::getInstance()->getContext()->Map(colorbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = instanceptr_->getContext()->Map(colorbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("バッファのロックに失敗");
@@ -158,10 +158,10 @@ bool Colorshader::setShaderParameters(Matrix World, Matrix View, Matrix Projecti
 	dataptr2->color = Color;
 
 	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(colorbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(colorbuffer_.Get(), 0);
 
 	//シェーダーにセット
-	Direct3D::getInstance()->getContext()->PSSetConstantBuffers(0, 1, colorbuffer_.GetAddressOf());
+	instanceptr_->getContext()->PSSetConstantBuffers(0, 1, colorbuffer_.GetAddressOf());
 
 
 	return true;
@@ -170,12 +170,12 @@ bool Colorshader::setShaderParameters(Matrix World, Matrix View, Matrix Projecti
 void Colorshader::renderShader(const int IndexCount)
 {
 	//頂点入力レイアウトの作成
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
+	instanceptr_->getContext()->IASetInputLayout(layout_.Get());
 
 	//シェーダーセット
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
 
 	//レンダリング
-	Direct3D::getInstance()->getContext()->DrawIndexed(IndexCount,0,0);
+	instanceptr_->getContext()->DrawIndexed(IndexCount,0,0);
 }

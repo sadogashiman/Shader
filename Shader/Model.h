@@ -1,6 +1,7 @@
 #pragma once
 #include"TextureFactory.h"
 #include"Model3D.h"
+
 const int kMaxTexture = 2;
 
 class Model:public Model3D

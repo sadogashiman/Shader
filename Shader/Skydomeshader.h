@@ -1,5 +1,7 @@
 #pragma once
 #include"Support.h"
+#include "Direct3D.h"
+
 class Skydomeshader
 {
 private:
@@ -15,6 +17,7 @@ private:
 		Vector4 apexcolor;
 		Vector4 centorcolor;
 	};
+	Direct3D* instanceptr_;
 	ComPtr<ID3D11VertexShader>vertexshader_;
 	ComPtr<ID3D11PixelShader>pixelshader_;
 	ComPtr<ID3D11InputLayout>layout_;

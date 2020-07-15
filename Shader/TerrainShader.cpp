@@ -1,6 +1,15 @@
 #include "stdafx.h"
 #include "TerrainShader.h"
-#include "Direct3D.h"
+
+TerrainShader::TerrainShader()
+{
+	ZeroMemory(this, sizeof(TerrainShader));
+	instanceptr_ = Direct3D::getInstance();
+}
+
+TerrainShader::~TerrainShader()
+{
+}
 
 bool TerrainShader::init()
 {

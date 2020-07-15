@@ -5,6 +5,7 @@
 Textureshader::Textureshader()
 {
 	ZeroMemory(this, sizeof(Textureshader));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Textureshader::~Textureshader()

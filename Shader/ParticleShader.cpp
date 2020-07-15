@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "ParticleShader.h"
-#include"Direct3D.h"
 
 ParticleShader::ParticleShader()
 {
 	ZeroMemory(this, sizeof(ParticleShader));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 ParticleShader::~ParticleShader()
@@ -79,7 +79,7 @@ bool ParticleShader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//定数バッファのポインターを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("定数バッファの作成に失敗");
@@ -102,7 +102,7 @@ bool ParticleShader::init()
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	//サンプラーを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplerstate_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateSamplerState(&samplerdesc, samplerstate_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("サンプラーの作成に失敗");
@@ -136,17 +136,17 @@ void ParticleShader::destroy()
 void ParticleShader::renderrShader(const int IndexCount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
+	instanceptr_->getContext()->IASetInputLayout(layout_.Get());
 
 	//シェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラーをピクセルシェーダーに適応
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());
+	instanceptr_->getContext()->PSSetSamplers(0, 1, samplerstate_.GetAddressOf());
 
 	//レンダリング
-	Direct3D::getInstance()->getContext()->DrawIndexed(IndexCount,0,0);
+	instanceptr_->getContext()->DrawIndexed(IndexCount,0,0);
 
 }
 
@@ -162,7 +162,7 @@ bool ParticleShader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 	View = XMMatrixTranspose(View);
 	Projection = XMMatrixTranspose(Projection);
 
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = instanceptr_->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("シェーダーのロックに失敗");
@@ -176,16 +176,16 @@ bool ParticleShader::setShaderParameters(Matrix World, Matrix View, Matrix Proje
 	dataptr->projection = Projection;
 
 	//ロック解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//定数バッファの位置を設定
 	buffernumber = 0;
 
 	//定数バッファを設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
+	instanceptr_->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
 
 	//テクスチャリソースを設定
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 1, &Texture);
+	instanceptr_->getContext()->PSSetShaderResources(0, 1, &Texture);
 
 	return true;
 }

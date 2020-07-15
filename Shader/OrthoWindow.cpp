@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "OrthoWindow.h"
-#include"Direct3D.h"
 
 OrthoWindow::OrthoWindow()
 {
@@ -86,7 +85,7 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -104,7 +103,7 @@ bool OrthoWindow::init(const float WindowWidth, const float WindowHeight)
 	indexdata.SysMemPitch = 0;
 	indexdata.SysMemSlicePitch = 0;
 
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -125,9 +124,9 @@ void OrthoWindow::render()
 	stride = sizeof(VertexType);
 	offset = 0;
 
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
+	instanceptr_->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
 
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
+	instanceptr_->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	instanceptr_->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }

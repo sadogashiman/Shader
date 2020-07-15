@@ -1,5 +1,6 @@
 #pragma once
 #include"Support.h"
+#include"Direct3D.h"
 
 class Shadowshader
 {
@@ -27,6 +28,8 @@ private:
 
 	bool setShaderParameters(Matrix World, Matrix View, Matrix Projection, Matrix lightview, Matrix Lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 LightDirection, Vector4 Ambientcolor, Vector4 Diffusecolor);
 	void renderShader(const int Indexcount);
+
+	Direct3D* instanceptr_;
 	ComPtr<ID3D11VertexShader> vertexshader_;
 	ComPtr<ID3D11PixelShader> pixelshader_;
 	ComPtr<ID3D11InputLayout> layout_;

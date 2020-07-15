@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Tree.h"
-#include "Direct3D.h"
 Tree::Tree()
 {
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Tree::~Tree()
@@ -124,7 +124,7 @@ bool Tree::initTrunkBuffer()
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, trunkvertexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, trunkvertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点バッファの作成に失敗");
@@ -145,7 +145,7 @@ bool Tree::initTrunkBuffer()
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, trunkindexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, trunkindexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("インデックスバッファの作成に失敗");
@@ -199,7 +199,7 @@ bool Tree::initLeafBuffer()
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, leafvertexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, leafvertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点バッファの作成に失敗");
@@ -220,7 +220,7 @@ bool Tree::initLeafBuffer()
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファの作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, leafindexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, leafindexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("インデックスバッファの作成に失敗");
@@ -244,13 +244,13 @@ void Tree::renderTrunkBuffer()
 	offset = 0;
 
 	//頂点バッファをレンダリングできるようにセット
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, trunkindexbuffer_.GetAddressOf(), &stride, &offset);
+	instanceptr_->getContext()->IASetVertexBuffers(0, 1, trunkindexbuffer_.GetAddressOf(), &stride, &offset);
 
 	//インデックスバッファをレンダリングできるようにセット
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(trunkindexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
+	instanceptr_->getContext()->IASetIndexBuffer(trunkindexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//レンダリングのタイプを設定	
-	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	instanceptr_->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void Tree::renderLeavesBuffer()
@@ -263,13 +263,13 @@ void Tree::renderLeavesBuffer()
 	offset = 0;
 
 	//頂点バッファをレンダリングできるようにセット
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, leafindexbuffer_.GetAddressOf(), &stride, &offset);
+	instanceptr_->getContext()->IASetVertexBuffers(0, 1, leafindexbuffer_.GetAddressOf(), &stride, &offset);
 
 	//インデックスバッファをレンダリングできるようにセット
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(leafindexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
+	instanceptr_->getContext()->IASetIndexBuffer(leafindexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//レンダリングのタイプを設定	
-	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	instanceptr_->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 }
 

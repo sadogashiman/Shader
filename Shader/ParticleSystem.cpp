@@ -1,9 +1,10 @@
 #include "ParticleSystem.h"
 #include"Support.h"
-#include"Direct3D.h"
 
 ParticleSystem::ParticleSystem()
 {
+	instanceptr_ = Direct3D::getInstance();
+
 	//各パラメーターのデフォルトを設定
 	//出現位置
 	data_.deviation = Vector3::Zero;
@@ -165,7 +166,7 @@ bool ParticleSystem::initbuffer()
 	vertexdata.SysMemSlicePitch = 0;
 
 	//頂点バッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&vertexbufferdesc, &vertexdata, vertexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -185,7 +186,7 @@ bool ParticleSystem::initbuffer()
 	indexdata.SysMemSlicePitch = 0;
 
 	//インデックスバッファを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&indexbufferdesc, &indexdata, indexbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -249,7 +250,7 @@ bool ParticleSystem::updateBuffer()
 	}
 
 	//頂点バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(vertexbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
+	hr = instanceptr_->getContext()->Map(vertexbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresource);
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点バッファのロックに失敗");
@@ -263,7 +264,7 @@ bool ParticleSystem::updateBuffer()
 	memcpy(verticesptr, (void*)vertices_.data(), sizeof(VertexType) * vertexcnt_);
 
 	//頂点バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(vertexbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(vertexbuffer_.Get(), 0);
 
 	return true;
 }
@@ -278,13 +279,13 @@ void ParticleSystem::renderBuffer()
 	offset = 0;
 
 	//頂点バッファを入力アセンブラでアクティブに設定
-	Direct3D::getInstance()->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
+	instanceptr_->getContext()->IASetVertexBuffers(0, 1, vertexbuffer_.GetAddressOf(), &stride, &offset);
 
 	//インデックスバッファを入力アセンブラでアクティブに設定
-	Direct3D::getInstance()->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
+	instanceptr_->getContext()->IASetIndexBuffer(indexbuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	//頂点のプリミティブタイプを設定
-	Direct3D::getInstance()->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	instanceptr_->getContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void ParticleSystem::emitParticle()

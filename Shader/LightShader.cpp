@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Lightshader.h"
-#include"Direct3D.h"
 
 
 LightShader::LightShader()
 {
 	ZeroMemory(this, sizeof(LightShader));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 LightShader::~LightShader()

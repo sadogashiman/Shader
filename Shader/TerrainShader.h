@@ -1,5 +1,7 @@
 #pragma once
 #include"Support.h"
+#include "Direct3D.h"
+
 class TerrainShader
 {
 private:
@@ -17,7 +19,7 @@ private:
 		Vector3 lightdirection;
 		float padding;
 	};
-	
+	Direct3D* instanceptr_;
 	ComPtr<ID3D11VertexShader> vertexshader_;
 	ComPtr<ID3D11PixelShader> pixelshader_;
 	ComPtr<ID3D11InputLayout> layout_;
@@ -31,6 +33,8 @@ private:
 	void renderShader(const int IndexCount);
 
 public:
+	TerrainShader();
+	~TerrainShader();
 	bool init();
 	bool render(const int IndexCount, Matrix World, Matrix View, Matrix Projection, Vector4 AmbientColor, Vector4 DiffuseColor, Vector3 LightDirection,ID3D11ShaderResourceView* Texture);
 

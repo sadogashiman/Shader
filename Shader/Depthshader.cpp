@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Depthshader.h"
-#include"Direct3D.h"
 
 Depthshader::Depthshader()
 {
 	ZeroMemory(this, sizeof(Depthshader));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Depthshader::~Depthshader()
@@ -62,7 +62,7 @@ bool Depthshader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//バッファ作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -97,7 +97,7 @@ bool Depthshader::setShaderParameters( Matrix World, Matrix View, Matrix Project
 	Projection = XMMatrixTranspose(Projection);
 
 	//書き込み可能なように定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = instanceptr_->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -112,13 +112,13 @@ bool Depthshader::setShaderParameters( Matrix World, Matrix View, Matrix Project
 	dataptr->projection = Projection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//頂点シェーダで定数バッファの位置を設定
 	buffernumber = 0;
 
 	//更新された値で頂点シェーダの定数バッファを最後に設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
+	instanceptr_->getContext()->VSSetConstantBuffers(buffernumber, 1, matrixbuffer_.GetAddressOf());
 
 	return true;
 }
@@ -126,13 +126,13 @@ bool Depthshader::setShaderParameters( Matrix World, Matrix View, Matrix Project
 void Depthshader::renderShader(int Indexcount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
+	instanceptr_->getContext()->IASetInputLayout(layout_.Get());
 
 	//レンダリングに使用するシェーダーを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//レンダリング
-	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
+	instanceptr_->getContext()->DrawIndexed(Indexcount, 0, 0);
 
 }

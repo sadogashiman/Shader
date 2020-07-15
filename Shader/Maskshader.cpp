@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "Maskshader.h"
-#include"Direct3D.h"
 
 Maskshader::Maskshader()
 {
 	ZeroMemory(this, sizeof(Maskshader));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Maskshader::~Maskshader()
@@ -71,7 +71,7 @@ bool Maskshader::init()
 	matrixbufferdesc.StructureByteStride = 0;
 
 	//このクラスから頂点シェーダの定数バッファにアクセスできるようにポインタを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateBuffer(&matrixbufferdesc, NULL, matrixbuffer_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -93,7 +93,7 @@ bool Maskshader::init()
 	samplerdesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	//テクスチャのサンプラー状態を設定
-	hr = Direct3D::getInstance()->getDevice()->CreateSamplerState(&samplerdesc, samplestate_.GetAddressOf());
+	hr = instanceptr_->getDevice()->CreateSamplerState(&samplerdesc, samplestate_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -131,7 +131,7 @@ bool Maskshader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 	Projection = XMMatrixTranspose(Projection);
 
 	//書き込み可能なように定数バッファをロック
-	hr = Direct3D::getInstance()->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
+	hr = instanceptr_->getContext()->Map(matrixbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
@@ -146,16 +146,16 @@ bool Maskshader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 	dataptr->projection = Projection;
 
 	//定数バッファのロックを解除
-	Direct3D::getInstance()->getContext()->Unmap(matrixbuffer_.Get(), 0);
+	instanceptr_->getContext()->Unmap(matrixbuffer_.Get(), 0);
 
 	//頂点シェーダで定数バッファの位置を設定
 	buffnumber = 0;
 
 	//更新された値で頂点シェーダの定数バッファを最後に設定
-	Direct3D::getInstance()->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
+	instanceptr_->getContext()->VSSetConstantBuffers(buffnumber, 1, matrixbuffer_.GetAddressOf());
 
 	//ピクセルシェーダーでシェーダーリソーステクスチャ配列を設定
-	Direct3D::getInstance()->getContext()->PSSetShaderResources(0, 3, TextureArray);
+	instanceptr_->getContext()->PSSetShaderResources(0, 3, TextureArray);
 
 	return true;
 }
@@ -163,15 +163,15 @@ bool Maskshader::setShaderParameters(Matrix World, Matrix View, Matrix Projectio
 void Maskshader::rendershader(int Indexcount)
 {
 	//頂点入力レイアウトを設定
-	Direct3D::getInstance()->getContext()->IASetInputLayout(layout_.Get());
+	instanceptr_->getContext()->IASetInputLayout(layout_.Get());
 
 	//この三角形のレンダリングに使用される頂点シェーダとピクセルシェーダを設定
-	Direct3D::getInstance()->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
-	Direct3D::getInstance()->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->VSSetShader(vertexshader_.Get(), NULL, 0);
+	instanceptr_->getContext()->PSSetShader(pixelshader_.Get(), NULL, 0);
 
 	//サンプラー状態をピクセルシェーダーに設定
-	Direct3D::getInstance()->getContext()->PSSetSamplers(0, 1, samplestate_.GetAddressOf());
+	instanceptr_->getContext()->PSSetSamplers(0, 1, samplestate_.GetAddressOf());
 
 	//三角形をレンダリング
-	Direct3D::getInstance()->getContext()->DrawIndexed(Indexcount, 0, 0);
+	instanceptr_->getContext()->DrawIndexed(Indexcount, 0, 0);
 }

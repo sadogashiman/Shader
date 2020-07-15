@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Deferredbuffers.h"
-#include"Direct3D.h"
 #include"release.h"
 
 Deferredbuffers::Deferredbuffers()
 {
 	ZeroMemory(this, sizeof(Deferredbuffers));
+	instanceptr_ = Direct3D::getInstance();
 }
 
 Deferredbuffers::~Deferredbuffers()
@@ -41,7 +41,7 @@ bool Deferredbuffers::init(const int TextureWidth, const int TextureHeight, cons
 	//レンダーターゲットテクスチャ配列を作成
 	for (int i = 0; i < kBuffer_cnt; i++)
 	{
-		hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&texturedesc, NULL, &rendertargettexturearray_[i]);
+		hr = instanceptr_->getDevice()->CreateTexture2D(&texturedesc, NULL, &rendertargettexturearray_[i]);
 		if (FAILED(hr))
 		{
 			return false;
@@ -56,7 +56,7 @@ bool Deferredbuffers::init(const int TextureWidth, const int TextureHeight, cons
 	//レンダーターゲットビューを作成
 	for (int i = 0; i < kBuffer_cnt; i++)
 	{
-		hr = Direct3D::getInstance()->getDevice()->CreateRenderTargetView(rendertargettexturearray_[i], &rendertargetviewdesc, &rendertargetviewarray_[i]);
+		hr = instanceptr_->getDevice()->CreateRenderTargetView(rendertargettexturearray_[i], &rendertargetviewdesc, &rendertargetviewarray_[i]);
 		if (FAILED(hr))
 		{
 			return false;
@@ -72,7 +72,7 @@ bool Deferredbuffers::init(const int TextureWidth, const int TextureHeight, cons
 	//シェーダーリソースビューの作成
 	for (int i = 0; i < kBuffer_cnt; i++)
 	{
-		hr = Direct3D::getInstance()->getDevice()->CreateShaderResourceView(rendertargettexturearray_[i], &shaderresouceviewdesc, &shaderresourceviewarray_[i]);
+		hr = instanceptr_->getDevice()->CreateShaderResourceView(rendertargettexturearray_[i], &shaderresouceviewdesc, &shaderresourceviewarray_[i]);
 		if (FAILED(hr))
 		{
 			return false;
@@ -96,7 +96,7 @@ bool Deferredbuffers::init(const int TextureWidth, const int TextureHeight, cons
 	depthbufferdesc.MiscFlags = 0;
 
 	//設定した内容で深度バッファのテクスチャを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateTexture2D(&depthbufferdesc, NULL, &depthstencilbuffer_);
+	hr = instanceptr_->getDevice()->CreateTexture2D(&depthbufferdesc, NULL, &depthstencilbuffer_);
 	if (FAILED(hr))
 	{
 		return false;
@@ -111,7 +111,7 @@ bool Deferredbuffers::init(const int TextureWidth, const int TextureHeight, cons
 	depthstencilviewdesc.Texture2D.MipSlice = 0;
 
 	//ステンシルビューを作成
-	hr = Direct3D::getInstance()->getDevice()->CreateDepthStencilView(depthstencilbuffer_, &depthstencilviewdesc, &depthstencilview_);
+	hr = instanceptr_->getDevice()->CreateDepthStencilView(depthstencilbuffer_, &depthstencilviewdesc, &depthstencilview_);
 	if (FAILED(hr))
 	{
 		return false;
@@ -142,10 +142,10 @@ void Deferredbuffers::destroy()
 
 void Deferredbuffers::setRenderTargets()
 {
-	Direct3D::getInstance()->getContext()->OMSetRenderTargets(kBuffer_cnt, rendertargetviewarray_, depthstencilview_);
+	instanceptr_->getContext()->OMSetRenderTargets(kBuffer_cnt, rendertargetviewarray_, depthstencilview_);
 
 	//ビューポートを設定
-	Direct3D::getInstance()->getContext()->RSSetViewports(1, &viewport_);
+	instanceptr_->getContext()->RSSetViewports(1, &viewport_);
 
 }
 
@@ -154,11 +154,11 @@ void Deferredbuffers::clearRenderTargets(XMVECTORF32 Color)
 	//レンダーターゲットバッファをクリア
 	for (int i = 0; i < kBuffer_cnt; i++)
 	{
-		Direct3D::getInstance()->getContext()->ClearRenderTargetView(rendertargetviewarray_[i], Color);
+		instanceptr_->getContext()->ClearRenderTargetView(rendertargetviewarray_[i], Color);
 	}
 
 	//深度バッファをクリア
-	Direct3D::getInstance()->getContext()->ClearDepthStencilView(depthstencilview_, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0F, 0);
+	instanceptr_->getContext()->ClearDepthStencilView(depthstencilview_, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0F, 0);
 }
 
 ID3D11ShaderResourceView* Deferredbuffers::getShaderResourceView(int TextureNumber)

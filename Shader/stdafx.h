@@ -34,6 +34,7 @@
 #include<iostream>
 #include<random>
 #include<algorithm>
+#include <thread>
 
 //******************************
 //@@		ƒŠƒ“ƒN
