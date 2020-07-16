@@ -8,7 +8,7 @@
 #include"Light.h"
 #include"TextureShader.h"
 #include"Deferredshader.h"
-#include"Multitexture.h"
+#include"MultitexShader.h"
 #include"Skydomeshader.h"
 #include"Colorshader.h"
 #include"SkyplaneShader.h"
@@ -40,7 +40,7 @@ private:
 	std::unique_ptr<Depthshader> depthshader_;
 	std::unique_ptr<Textureshader> textureshader_;
 	std::unique_ptr<Deferredshader> deferredshader_;
-	std::unique_ptr<Multitexture> multitexshader_;
+	std::unique_ptr<MultitexShader> multitexshader_;
 	std::unique_ptr<Skydomeshader> skydomeshader_;
 	std::unique_ptr<Colorshader> colorshader_;
 	std::unique_ptr<SkyplaneShader> skyplaneshader_;

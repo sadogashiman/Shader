@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "Multitexture.h"
+#include "MultitexShader.h"
 
-Multitexture::Multitexture()
+MultitexShader::MultitexShader()
 {
-	ZeroMemory(this, sizeof(Multitexture));
+	ZeroMemory(this, sizeof(MultitexShader));
 	instanceptr_ = Direct3D::getInstance();
 }
 
-Multitexture::~Multitexture()
+MultitexShader::~MultitexShader()
 {
 }
 
-bool Multitexture::init()
+bool MultitexShader::init()
 {
 	HRESULT hr;
 	ID3D10Blob* vertexshaderbuffer_;
@@ -106,7 +106,7 @@ bool Multitexture::init()
 	return true;
 }
 
-bool Multitexture::render(const int Indexcount,Matrix World,Matrix View,Matrix Projection, ID3D11ShaderResourceView** Texturearray, const int Texturenum)
+bool MultitexShader::render(const int Indexcount,Matrix World,Matrix View,Matrix Projection, ID3D11ShaderResourceView** Texturearray, const int Texturenum)
 {
 	bool result;
 
@@ -121,7 +121,7 @@ bool Multitexture::render(const int Indexcount,Matrix World,Matrix View,Matrix P
 	return true;
 }
 
-bool Multitexture::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray,const int Texturenum)
+bool MultitexShader::setShaderParameters(Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView** TextureArray,const int Texturenum)
 {
 	HRESULT hr;
 	D3D11_MAPPED_SUBRESOURCE mappedresouce;
@@ -163,7 +163,7 @@ bool Multitexture::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	return true;
 }
 
-void Multitexture::renderShader(const int Indexcount)
+void MultitexShader::renderShader(const int Indexcount)
 {
 	//頂点入力レイアウトを設定
 	instanceptr_->getContext()->IASetInputLayout(layout_.Get());

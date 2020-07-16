@@ -2,7 +2,7 @@
 #include"Support.h"
 #include"Direct3D.h"
 
-class Multitexture
+class MultitexShader
 {
 private:
 	struct MatrixBufferType
@@ -24,8 +24,8 @@ private:
 	std::unique_ptr<Support> support_;
 
 public:
-	Multitexture();
-	~Multitexture();
+	MultitexShader();
+	~MultitexShader();
 	bool init();
 	bool render(const int Indexcount,Matrix World,Matrix View,Matrix Projection, ID3D11ShaderResourceView** Texturearray, const int Texturenum);
 };

@@ -161,7 +161,7 @@
     <ClCompile Include="LightShader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Multitexture.cpp" />
+    <ClCompile Include="MultitexShader.cpp" />
     <ClCompile Include="OrthoWindow.cpp" />
     <ClCompile Include="ParticleShader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
@@ -203,7 +203,7 @@
     <ClInclude Include="Lightshader.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Model3D.h" />
-    <ClInclude Include="Multitexture.h" />
+    <ClInclude Include="MultitexShader.h" />
     <ClInclude Include="OrthoWindow.h" />
     <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="ParticleSystem.h" />

@@ -201,9 +201,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>Scene\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Multitexture.cpp">
-      <Filter>ShaderManager\Shader\Multi</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderManager.cpp">
       <Filter>ShaderManager</Filter>
     </ClCompile>
@@ -251,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="TerrainShader.cpp">
       <Filter>ShaderManager\Shader\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="MultitexShader.cpp">
+      <Filter>ShaderManager\Shader\Multi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -311,9 +311,6 @@
     <ClInclude Include="Game.h">
       <Filter>Scene\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Multitexture.h">
-      <Filter>ShaderManager\Shader\Multi</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>ShaderManager</Filter>
     </ClInclude>
@@ -370,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="TerrainShader.h">
       <Filter>ShaderManager\Shader\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="MultitexShader.h">
+      <Filter>ShaderManager\Shader\Multi</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
