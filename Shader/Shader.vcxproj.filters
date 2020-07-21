@@ -180,17 +180,8 @@
     <ClCompile Include="Deferredbuffers.cpp">
       <Filter>ShaderManager\Shader\deferred</Filter>
     </ClCompile>
-    <ClCompile Include="Deferredshader.cpp">
-      <Filter>ShaderManager\Shader\deferred</Filter>
-    </ClCompile>
-    <ClCompile Include="Depthshader.cpp">
-      <Filter>ShaderManager\Shader\depth</Filter>
-    </ClCompile>
     <ClCompile Include="LightShader.cpp">
       <Filter>ShaderManager\Shader\light</Filter>
-    </ClCompile>
-    <ClCompile Include="Shadowshader.cpp">
-      <Filter>ShaderManager\Shader\shadow</Filter>
     </ClCompile>
     <ClCompile Include="TextureShader.cpp">
       <Filter>ShaderManager\Shader\texture</Filter>
@@ -228,9 +219,6 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>3DModel\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="Skydomeshader.cpp">
-      <Filter>ShaderManager\Shader\Skydome</Filter>
-    </ClCompile>
     <ClCompile Include="SkyDome.cpp">
       <Filter>3DModel\SkyDome</Filter>
     </ClCompile>
@@ -251,6 +239,18 @@
     </ClCompile>
     <ClCompile Include="MultitexShader.cpp">
       <Filter>ShaderManager\Shader\Multi</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowShader.cpp">
+      <Filter>ShaderManager\Shader\shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="SkydomeShader.cpp">
+      <Filter>ShaderManager\Shader\Skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthShader.cpp">
+      <Filter>ShaderManager\Shader\depth</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredShader.cpp">
+      <Filter>ShaderManager\Shader\deferred</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -289,18 +289,6 @@
     </ClInclude>
     <ClInclude Include="Deferredbuffers.h">
       <Filter>ShaderManager\Shader\deferred</Filter>
-    </ClInclude>
-    <ClInclude Include="Deferredshader.h">
-      <Filter>ShaderManager\Shader\deferred</Filter>
-    </ClInclude>
-    <ClInclude Include="Depthshader.h">
-      <Filter>ShaderManager\Shader\depth</Filter>
-    </ClInclude>
-    <ClInclude Include="Lightshader.h">
-      <Filter>ShaderManager\Shader\light</Filter>
-    </ClInclude>
-    <ClInclude Include="Shadowshader.h">
-      <Filter>ShaderManager\Shader\shadow</Filter>
     </ClInclude>
     <ClInclude Include="TextureShader.h">
       <Filter>ShaderManager\Shader\texture</Filter>
@@ -341,9 +329,6 @@
     <ClInclude Include="Terrain.h">
       <Filter>3DModel\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="Skydomeshader.h">
-      <Filter>ShaderManager\Shader\Skydome</Filter>
-    </ClInclude>
     <ClInclude Include="SkyDome.h">
       <Filter>3DModel\SkyDome</Filter>
     </ClInclude>
@@ -370,6 +355,21 @@
     </ClInclude>
     <ClInclude Include="MultitexShader.h">
       <Filter>ShaderManager\Shader\Multi</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowShader.h">
+      <Filter>ShaderManager\Shader\shadow</Filter>
+    </ClInclude>
+    <ClInclude Include="SkydomeShader.h">
+      <Filter>ShaderManager\Shader\Skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="LightShader.h">
+      <Filter>ShaderManager\Shader\light</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthShader.h">
+      <Filter>ShaderManager\Shader\depth</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShader.h">
+      <Filter>ShaderManager\Shader\deferred</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

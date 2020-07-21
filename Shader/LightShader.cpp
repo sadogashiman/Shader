@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Lightshader.h"
+#include "LightShader.h"
 
 
 LightShader::LightShader()

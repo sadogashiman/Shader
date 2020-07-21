@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Deferredshader.h"
+#include "DeferredShader.h"
 #include"Direct3D.h"
 
 
