@@ -16,7 +16,7 @@ Textureshader::~Textureshader()
 bool Textureshader::init()
 {
 	HRESULT hr;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
+	std::vector<D3D11_INPUT_ELEMENT_DESC> polygonlayout;
 	D3D11_BUFFER_DESC matrixbuffer;
 	D3D11_SAMPLER_DESC samplerdesc;
 
@@ -28,19 +28,20 @@ bool Textureshader::init()
 	}
 
 	//シェーダー作成
-	hr = support_.get()->createVertexData(L"Shader/texture_vs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/texture_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"Shader/texture_ps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/texture_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	//作成されたデータをコピー
+	//配列サイズ変更
+	polygonlayout.resize(2);
 
 	//頂点入力レイアウトの作成
 	polygonlayout[0].SemanticName = "POSITION";
@@ -60,7 +61,7 @@ bool Textureshader::init()
 	polygonlayout[1].InstanceDataStepRate = 0;
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout),layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

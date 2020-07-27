@@ -329,17 +329,17 @@ HRESULT Support::createComputeData(const wchar_t* ComputeShaderFileName, ID3D11C
 	return S_OK;
 }
 
-HRESULT Support::createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray, const unsigned int NumElements, ID3D11InputLayout** InputLayout)
+HRESULT Support::createVertexInputLayout(const std::vector<D3D11_INPUT_ELEMENT_DESC>& PolygonLayoutArray, ID3D11InputLayout** InputLayout)
 {
 	HRESULT hr;
 #ifdef _DEBUG
-	if (!(checkInputLayoutData(vertexblob_, vertexsize_, PolygonLayoutArray, NumElements)))
+	if (!(checkInputLayoutData(vertexblob_, vertexsize_, &PolygonLayoutArray[0], PolygonLayoutArray.size())))
 	{
 		Error::showDialog("頂点入力レイアウトのデータが正しくありません");
 		return S_FALSE;
 	}
 #endif // _DEBUG
-	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(PolygonLayoutArray, NumElements, vertexblob_, vertexsize_, InputLayout);
+	hr = Direct3D::getInstance()->getDevice()->CreateInputLayout(&PolygonLayoutArray[0], PolygonLayoutArray.size(), vertexblob_, vertexsize_, InputLayout);
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");

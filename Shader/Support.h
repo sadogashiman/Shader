@@ -41,8 +41,7 @@ public:
 	HRESULT createVertexData(const wchar_t* VertexShaderFileName,ID3D11VertexShader** VertexShader);		 			                          //渡されたファイル名で頂点シェーダーを作成
 	HRESULT createPixelData(const wchar_t* PixelShaderFileName,ID3D11PixelShader** PixelShader);								                  //渡されたファイル名でピクセルシェーダーを作成
 	HRESULT createComputeData(const wchar_t* ComputeShdaerFileName,ID3D11ComputeShader** ComputeShader);										  //渡されたファイル名でコンピュートシェーダーを作成
-	HRESULT createVertexInputLayout(D3D11_INPUT_ELEMENT_DESC* PolygonLayoutArray,const unsigned int NumElements,ID3D11InputLayout** InputLayout); //渡された情報で頂点入力レイアウトを作成(デバック時はデータチェックを行う)
-
+	HRESULT createVertexInputLayout(const std::vector<D3D11_INPUT_ELEMENT_DESC>& PolygonLayoutArray, ID3D11InputLayout** InputLayout);
 	//Get
 	inline const LPVOID getVertexBufferPtr()const { return vertexblob_; }			//頂点シェーダーのバッファポインタを返す
 	inline const LPVOID getPixelBufferPtr()const { return pixelblob_; }				//ピクセルシェーダーのバッファポインタを返す

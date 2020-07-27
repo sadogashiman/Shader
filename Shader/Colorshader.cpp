@@ -16,7 +16,7 @@ bool Colorshader::init()
 	HRESULT hr;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_BUFFER_DESC colorbufferdesc;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[1];
+	std::vector<D3D11_INPUT_ELEMENT_DESC> polygonlayout;
 
 	support_.reset(new Support);
 	if (!support_.get())
@@ -37,6 +37,9 @@ bool Colorshader::init()
 		return false;
 	}
 
+	//配列サイズ変更
+	polygonlayout.resize(1);
+
 	//頂点入力レイアウトの作成
 	polygonlayout[0].SemanticName = "POSITION";
 	polygonlayout[0].SemanticIndex = 0;
@@ -47,7 +50,7 @@ bool Colorshader::init()
 	polygonlayout[0].InstanceDataStepRate = 0;
 
 	//頂点入力レイアウトの作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout), layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

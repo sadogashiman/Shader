@@ -15,7 +15,7 @@ SkyplaneShader::~SkyplaneShader()
 bool SkyplaneShader::init()
 {
 	HRESULT hr;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[2];
+	std::vector<D3D11_INPUT_ELEMENT_DESC> polygonlayout;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_BUFFER_DESC skybufferdesc;
@@ -42,6 +42,9 @@ bool SkyplaneShader::init()
 		return false;
 	}
 
+	//配列サイズ変更
+	polygonlayout.resize(2);
+
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
 	polygonlayout[0].SemanticIndex = 0;
@@ -60,7 +63,7 @@ bool SkyplaneShader::init()
 	polygonlayout[1].InstanceDataStepRate = 0;
 
 	//頂点入力レイアウトの作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout), layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

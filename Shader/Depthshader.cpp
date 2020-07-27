@@ -14,7 +14,7 @@ Depthshader::~Depthshader()
 bool Depthshader::init()
 {
 	HRESULT hr;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[1];
+	std::vector<D3D11_INPUT_ELEMENT_DESC> polygonlayout;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 
 	support_.reset(new Support);
@@ -37,6 +37,9 @@ bool Depthshader::init()
 		return false;
 	}
 
+	//配列サイズ変更
+	polygonlayout.resize(1);
+
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
 	polygonlayout[0].SemanticIndex = 0;
@@ -47,7 +50,7 @@ bool Depthshader::init()
 	polygonlayout[0].InstanceDataStepRate = 0;
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout),layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout,layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Error::showDialog("頂点入力レイアウトの作成に失敗");

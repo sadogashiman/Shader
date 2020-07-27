@@ -16,7 +16,7 @@ Deferredshader::~Deferredshader()
 bool Deferredshader::init()
 {
 	HRESULT hr;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
+	std::vector<D3D11_INPUT_ELEMENT_DESC> polygonlayout;
 	D3D11_SAMPLER_DESC samplerdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 
@@ -39,6 +39,9 @@ bool Deferredshader::init()
 	{
 		return false;
 	}
+
+	//配列サイズ変更
+	polygonlayout.resize(3);
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -67,7 +70,7 @@ bool Deferredshader::init()
 
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout), layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;

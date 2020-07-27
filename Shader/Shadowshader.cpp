@@ -15,7 +15,7 @@ Shadowshader::~Shadowshader()
 bool Shadowshader::init()
 {
 	HRESULT hr;
-	D3D11_INPUT_ELEMENT_DESC polygonlayout[3];
+	std::vector<D3D11_INPUT_ELEMENT_DESC> polygonlayout;
 	D3D11_BUFFER_DESC lightbufferdesc;
 	D3D11_BUFFER_DESC matrixbufferdesc;
 	D3D11_SAMPLER_DESC samplerdesc;
@@ -28,17 +28,20 @@ bool Shadowshader::init()
 	}
 
 	//シェーダー読み込み
-	hr = support_.get()->createVertexData(L"Shader/shadow_vs.cso",vertexshader_.GetAddressOf());
+	hr = support_.get()->createVertexData(L"Shader/shadow_vs.cso", vertexshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
-	hr = support_.get()->createPixelData(L"Shader/shadow_ps.cso",pixelshader_.GetAddressOf());
+	hr = support_.get()->createPixelData(L"Shader/shadow_ps.cso", pixelshader_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
 	}
+
+	//配列サイズ変更
+	polygonlayout.resize(3);
 
 	//頂点入力レイアウトの設定
 	polygonlayout[0].SemanticName = "POSITION";
@@ -66,7 +69,7 @@ bool Shadowshader::init()
 	polygonlayout[2].InstanceDataStepRate = 0;
 
 	//頂点入力レイアウトを作成
-	hr = support_.get()->createVertexInputLayout(polygonlayout, _countof(polygonlayout),layout_.GetAddressOf());
+	hr = support_.get()->createVertexInputLayout(polygonlayout, layout_.GetAddressOf());
 	if (FAILED(hr))
 	{
 		return false;
@@ -147,8 +150,9 @@ bool Shadowshader::init()
 	return true;
 }
 
-bool Shadowshader::render(const int Indexcound,Matrix World,Matrix View,Matrix Projection,Matrix lightview,Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 LightDirection, Vector4 Ambientcolor, Vector4 Diffusecolor)
-{	bool result;
+bool Shadowshader::render(const int Indexcound, Matrix World, Matrix View, Matrix Projection, Matrix lightview, Matrix lightprojection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* Depthmaptexture, Vector3 LightDirection, Vector4 Ambientcolor, Vector4 Diffusecolor)
+{
+	bool result;
 
 	//レンダリングに関するシェーダーパラメータを設定
 	result = setShaderParameters(World, View, Projection, lightview, lightprojection, texture, Depthmaptexture, LightDirection, Ambientcolor, Diffusecolor);
@@ -210,7 +214,7 @@ bool Shadowshader::setShaderParameters(Matrix World, Matrix View, Matrix Project
 	instanceptr_->getContext()->PSSetShaderResources(0, 1, &Texture);
 	instanceptr_->getContext()->PSSetShaderResources(1, 1, &Depthmaptexture);
 
-	hr = instanceptr_->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD,0, & mappedresouce);
+	hr = instanceptr_->getContext()->Map(lightbuffer_.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedresouce);
 	if (FAILED(hr))
 	{
 		return false;
