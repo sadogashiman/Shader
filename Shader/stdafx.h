@@ -13,8 +13,8 @@
 #include<math.h>
 #include<wrl/client.h>
 #include<mmsystem.h>
-#include<Pdh.h>
 #include<Shlwapi.h>
+#include<cassert>
 
 //DirectX
 #include<DirectXMath.h>
@@ -34,7 +34,8 @@
 #include<iostream>
 #include<random>
 #include<algorithm>
-#include <thread>
+#include<thread>
+#include<mutex>
 
 //******************************
 //　　		リンク
@@ -43,7 +44,6 @@
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"d3dcompiler.lib")
-#pragma comment(lib,"pdh.lib")
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"shlwapi.lib")
 
@@ -70,7 +70,7 @@ const bool kvsync = true;
 const bool kTgs = false; //TGSブース展示用ボタン配置
 
 //******************************
-//　　		  列挙隊
+//　　		  列挙体
 //******************************
 
 

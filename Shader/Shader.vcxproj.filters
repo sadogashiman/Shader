@@ -145,6 +145,9 @@
     <Filter Include="Timer">
       <UniqueIdentifier>{5bb2d030-beb2-4bc5-94bb-cf329f3e9dcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Singleton">
+      <UniqueIdentifier>{e56bf2d1-4817-4cab-ad8f-99271b728952}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -251,6 +254,9 @@
     </ClCompile>
     <ClCompile Include="DeferredShader.cpp">
       <Filter>ShaderManager\Shader\deferred</Filter>
+    </ClCompile>
+    <ClCompile Include="Singleton.cpp">
+      <Filter>Singleton</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +376,9 @@
     </ClInclude>
     <ClInclude Include="DeferredShader.h">
       <Filter>ShaderManager\Shader\deferred</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Singleton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -23,7 +23,6 @@ private:
 	Terrain* terrain_;
 	SkyDome* sky_;
 	Skyplane* cloud_;
-
 	std::vector<Model*> model_;
 
 #ifdef _DEBUG

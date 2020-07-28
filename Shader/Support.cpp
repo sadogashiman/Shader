@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Support.h"
-#include"Direct3D.h"
+#include "Direct3D.h"
 wchar_t Support::filename_[MAX_PATH];
 
 Support::Support()
@@ -11,11 +11,11 @@ Support::~Support()
 {
 }
 
-bool Support::checkInputLayoutData(const void* Shadercode, size_t Codesize, const D3D11_INPUT_ELEMENT_DESC* layout, size_t Layoutnum)
+bool Support::checkInputLayoutData(const void* ShaderCode, size_t CodeSize, const D3D11_INPUT_ELEMENT_DESC* Layout, size_t LayoutNum)
 {
 	ID3D11ShaderReflection* vsref;
 	HRESULT hr;
-	hr = D3DReflect(Shadercode, Codesize, IID_ID3D11ShaderReflection, (void**)&vsref);
+	hr = D3DReflect(ShaderCode, CodeSize, IID_ID3D11ShaderReflection, (void**)&vsref);
 	if (FAILED(hr))
 	{
 		return false;
@@ -42,14 +42,14 @@ bool Support::checkInputLayoutData(const void* Shadercode, size_t Codesize, cons
 
 		UINT j;
 
-		for (j = 0; j < Layoutnum; ++j)
+		for (j = 0; j < LayoutNum; ++j)
 		{
-			if (strcmp(layout[j].SemanticName, desc.SemanticName) == 0)
+			if (strcmp(Layout[j].SemanticName, desc.SemanticName) == 0)
 			{
 				break;
 			}
 		}
-		if (j == Layoutnum)
+		if (j == LayoutNum)
 		{
 			Error::showDialog("シェーダー側とセマンティクス名が一致しません");
 			vsref->Release();
@@ -150,7 +150,6 @@ HRESULT Support::createVertexData(const wchar_t* VertexShaderFileName, ID3D11Ver
 		//データをメンバにコピー
 		vertexsize_ = size;
 		vertexblob_ = &vertexdataarray_[0];
-
 	}
 	else
 	{

@@ -26,7 +26,7 @@ public:
 	~Support();
 
 	//Check
-	static bool checkInputLayoutData(const void* shadercode, size_t codesize,const D3D11_INPUT_ELEMENT_DESC* layout, size_t layoutnum); //頂点入力レイアウトを作成するデータが有効か確認する関数
+	static bool checkInputLayoutData(const void* ShaderCode, size_t CodeSize,const D3D11_INPUT_ELEMENT_DESC* Layout, size_t LayoutNum); //頂点入力レイアウトを作成するデータが有効か確認する関数
 	
 	//Search
 	//ファイルパスが有効か判定（有効ならtrueを返す)
@@ -42,6 +42,7 @@ public:
 	HRESULT createPixelData(const wchar_t* PixelShaderFileName,ID3D11PixelShader** PixelShader);								                  //渡されたファイル名でピクセルシェーダーを作成
 	HRESULT createComputeData(const wchar_t* ComputeShdaerFileName,ID3D11ComputeShader** ComputeShader);										  //渡されたファイル名でコンピュートシェーダーを作成
 	HRESULT createVertexInputLayout(const std::vector<D3D11_INPUT_ELEMENT_DESC>& PolygonLayoutArray, ID3D11InputLayout** InputLayout);
+	
 	//Get
 	inline const LPVOID getVertexBufferPtr()const { return vertexblob_; }			//頂点シェーダーのバッファポインタを返す
 	inline const LPVOID getPixelBufferPtr()const { return pixelblob_; }				//ピクセルシェーダーのバッファポインタを返す

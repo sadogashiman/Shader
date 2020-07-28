@@ -10,7 +10,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(lightshader_.get()->init()))
+	if (!lightshader_.get()->init())
 	{
 		Error::showDialog("ライトシェーダーの初期化に失敗");
 		return false;
@@ -22,7 +22,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(maskshader_.get()->init()))
+	if (!maskshader_.get()->init())
 	{
 		Error::showDialog("アルファシェーダーの初期化に失敗");
 
@@ -35,7 +35,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(shadowshader_.get()->init()))
+	if (!shadowshader_.get()->init())
 	{
 		Error::showDialog("シャドウシェーダーの初期化に失敗");
 		return false;
@@ -47,7 +47,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(depthshader_.get()->init()))
+	if (!depthshader_.get()->init())
 	{
 		Error::showDialog("デプスシェーダーの初期化に失敗");
 		return false;
@@ -59,7 +59,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(textureshader_.get()->init()))
+	if (!textureshader_.get()->init())
 	{
 		Error::showDialog("テクスチャシェーダーの初期化に失敗");
 		return false;
@@ -71,7 +71,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(deferredshader_.get()->init()))
+	if (!deferredshader_.get()->init())
 	{
 		Error::showDialog("ディファードシェーダーの初期化に失敗");
 		return false;
@@ -83,7 +83,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(multitexshader_.get()->init()))
+	if (!multitexshader_.get()->init())
 	{
 		Error::showDialog("マルチテクスチャシェーダーの初期化に失敗");
 		return false;
@@ -95,7 +95,7 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	if (!(skydomeshader_.get()->init()))
+	if (!skydomeshader_.get()->init())
 	{
 		Error::showDialog("スカイドームシェーダーの初期化に失敗");
 		return false;

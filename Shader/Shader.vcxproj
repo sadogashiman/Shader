@@ -169,6 +169,7 @@
     <ClCompile Include="Rendertexture.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="ShadowShader.cpp" />
+    <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="SkyDome.cpp" />
     <ClCompile Include="SkydomeShader.cpp" />
     <ClCompile Include="Skyplane.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Rendertexture.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="ShadowShader.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="SkyDome.h" />
     <ClInclude Include="SkydomeShader.h" />
     <ClInclude Include="Skyplane.h" />
