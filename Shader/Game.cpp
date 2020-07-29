@@ -53,6 +53,9 @@ bool Game::init()
 	light_->generateProjection(kScreen_depth, kScreen_near);
 	light_->generateOrthoMatrix(300.0F, kScreen_depth, kScreen_near);
 	light_->setLookAt(128.0F, 0.0F, 128.0F);
+	light_->setAttenuator(0.4F, 0.2F, 0.0F);
+	light_->setConeSize(20.0F);
+	light_->setLightRange(100.0F);
 
 	rendertexture_ = new Rendertexture;
 	if (!rendertexture_)
@@ -305,6 +308,7 @@ bool Game::modelRender()
 	{
 		world = itr->getWorldMatrix();
 		if (!ShaderManager::getInstance()->shadowRender(itr, world, view, projection, itr->getTexture(), rendertexture_->getShaderResouceView(), light_))
+		//if(!ShaderManager::getInstance()->spotRender(itr,world,view,projection,itr->getTexture(),light_))
 			return false;
 	}
 

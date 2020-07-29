@@ -12,6 +12,9 @@ private:
 	Matrix view_;
 	Matrix projection_;
 	Matrix ortho_;
+	float range_;
+	float cone_;
+	Vector3 attenuator_;
 public:
 	Light();
 	~Light();
@@ -32,7 +35,10 @@ public:
 	inline void setLookAt(const Vector3 Lookat) { lookat_ = Lookat; }
 	inline void setPosition(const float X,const float Y,const float Z) { position_ = Vector3(X, Y, Z); }
 	inline void setPosition(const Vector3 Position) { position_ = Position; }
-
+	inline void setLightRange(const float Range) { range_ = Range; }
+	inline void setConeSize(const float ConeSize) { cone_ = ConeSize; }
+	inline void setAttenuator(const Vector3 Att) { attenuator_ = Att; }
+	inline void setAttenuator(const float X, const float Y, const float Z) { attenuator_ = Vector3(X, Y, Z); }
 
 	//get
 	inline Vector4 getAmbientColor()const {return ambientcolor_;}
@@ -44,6 +50,10 @@ public:
 	inline Matrix getViewMatrix()const {return view_;}
 	inline Matrix getProjectionMatrix()const { return projection_; }
 	inline Matrix getOrthoMatrix()const { return ortho_; }
+	inline float getLightRange()const { return range_; }
+	inline float getLightCone()const { return cone_; }
+	inline Vector3 getAttenuator()const { return attenuator_; }
+
 
 	//generate
 	void generateView();

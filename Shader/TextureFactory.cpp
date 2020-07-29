@@ -20,7 +20,7 @@ void TextureFactory::deleteTexture(const wchar_t* TextureName)
 
 		if (itr != texmap_.end())
 		{
-			SAFE_RELEASE(itr->second);
+			safeRelease(itr->second);
 			texmap_.erase(TextureName);
 			resourcemap_.erase(TextureName);
 		}
@@ -34,7 +34,7 @@ void TextureFactory::allDeleteTexture()
 	{
 		for (auto itr = texmap_.begin(); itr != end;)
 		{
-			SAFE_RELEASE(itr->second);
+			safeRelease(itr->second);
 			itr = texmap_.erase(itr);
 		}
 	}
@@ -45,7 +45,7 @@ void TextureFactory::allDeleteTexture()
 	{
 		for (auto itr = resourcemap_.begin(); itr != end2;)
 		{
-			SAFE_RELEASE(itr->second);
+			safeRelease(itr->second);
 			itr = resourcemap_.erase(itr);
 		}
 	}

@@ -148,6 +148,12 @@
     <Filter Include="Singleton">
       <UniqueIdentifier>{e56bf2d1-4817-4cab-ad8f-99271b728952}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\Spot">
+      <UniqueIdentifier>{f13f8a10-8d62-4aec-8b61-d611146b2d55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderManager\Shader\Spotlight">
+      <UniqueIdentifier>{d160482a-a8ab-438c-84e6-9de0dd119283}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -257,6 +263,9 @@
     </ClCompile>
     <ClCompile Include="Singleton.cpp">
       <Filter>Singleton</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotlightShader.cpp">
+      <Filter>ShaderManager\Shader\Spotlight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -380,6 +389,9 @@
     <ClInclude Include="Singleton.h">
       <Filter>Singleton</Filter>
     </ClInclude>
+    <ClInclude Include="SpotlightShader.h">
+      <Filter>ShaderManager\Shader\Spotlight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\color_ps.hlsl">
@@ -453,6 +465,12 @@
     </FxCompile>
     <FxCompile Include="Shader\texture_vs.hlsl">
       <Filter>リソース ファイル\Texture</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\spotlight_ps.hlsl">
+      <Filter>リソース ファイル\Spot</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\spotlight_vs.hlsl">
+      <Filter>リソース ファイル\Spot</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

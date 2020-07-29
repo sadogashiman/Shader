@@ -256,6 +256,6 @@ bool Texture::checkExtension(const wchar_t* PathName)
 
 void Texture::destroy()
 {
-	SAFE_RELEASE(textureresource_);
-	SAFE_RELEASE(texture_);
+	safeRelease(textureresource_);
+	safeRelease(texture_);
 }

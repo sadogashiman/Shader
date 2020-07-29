@@ -130,13 +130,13 @@ bool Deferredbuffers::init(const int TextureWidth, const int TextureHeight, cons
 
 void Deferredbuffers::destroy()
 {
-	SAFE_RELEASE(depthstencilview_);
-	SAFE_RELEASE(depthstencilbuffer_);
+	safeRelease(depthstencilview_);
+	safeRelease(depthstencilbuffer_);
 	for (int i = 0; i < kBuffer_cnt; i++)
 	{
-		SAFE_RELEASE(shaderresourceviewarray_[i]);
-		SAFE_RELEASE(rendertargetviewarray_[i]);
-		SAFE_RELEASE(rendertargettexturearray_[i]);
+		safeRelease(shaderresourceviewarray_[i]);
+		safeRelease(rendertargetviewarray_[i]);
+		safeRelease(rendertargettexturearray_[i]);
 	}
 }
 

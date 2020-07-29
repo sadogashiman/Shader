@@ -6,7 +6,8 @@
 ////////////////////////////////////
 // インターフェイス解放
 ////////////////////////////////////
-#define SAFE_RELEASE(x)        {if(x){x->Release(); x=nullptr;}}
+template <typename T>
+inline void safeRelease(T& Ptr) { if (Ptr != nullptr)Ptr->Release(); Ptr = nullptr; }
 
 ////////////////////////////////////
 // メモリ解放
