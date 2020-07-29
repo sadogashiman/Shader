@@ -1,5 +1,6 @@
 #include"stdafx.h"
 #include"System.h"
+#include"Singleton.h"
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow)
 {
 #ifdef _DEBUG
@@ -7,27 +8,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline,
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // _DEBUG
 
-	//ローカル変数宣言
-	std::unique_ptr<System> system;
-	bool result;
+	//システムクラスをシングルトンで登録
+	System* system = Singleton<System>::getInstancePtr();
 
-	//ユニークポインタを初期化
-	system.reset(new System);
-	if (!system.get())
+	//初期化
+	if (system->init())
 	{
-		return false;
+		//処理
+		system->run();
 	}
 
-	//システムクラス初期化
-	result = system.get()->init();
-	if (result)
-	{
-		//システムクラス実行
-		system.get()->run();
-	}
-
-	//システムクラス破棄
-	system->destroy();
+	//登録オブジェクトの破棄・解放
+	SingletonFinalizer::finalize();
 
 	return 0;
 }

@@ -6,7 +6,7 @@ class SingletonFinalizer
 public:
 	using finalizerFunc = void(*)();
 	static void addFinalizer(finalizerFunc Func);
-	static void finalize();
+	static void finalize(); 
 };
 
 template<typename T>
@@ -20,22 +20,23 @@ private:
 	inline static void create()
 	{
 		instance_ = new T;
-		SingletonFinalizer::addFinalizer(&Singleton<T>::destroy());
+		SingletonFinalizer::addFinalizer(&Singleton<T>::destroy);
 	}
 
-	//”jŠü
+	//“o˜^‚µ‚½‹t‡‚Å‰ð•ú
 	inline static void destroy()
 	{
+		instance_->destroy();
 		delete instance_;
 		instance_ = nullptr;
 	}
 
 public:
 	//ƒCƒ“ƒXƒ^ƒ“ƒXŽæ“¾
-	inline static T& getInstance() 
+	inline static T* getInstancePtr() 
 	{
 		std::call_once(initflag_, create);
-		return *instance_;
+		return instance_;
 	}
 };
 

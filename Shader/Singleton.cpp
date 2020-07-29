@@ -2,10 +2,8 @@
 #include "Singleton.h"
 namespace
 {
-	constexpr int kMaxFinalizerSize = 256;
 	std::mutex mutex;
-	int finalizersizenum;
-	SingletonFinalizer::finalizerFunc finalizers[kMaxFinalizerSize];
+	std::vector<SingletonFinalizer::finalizerFunc> finalizers;
 }
 
 void SingletonFinalizer::addFinalizer(finalizerFunc Func)
@@ -13,19 +11,22 @@ void SingletonFinalizer::addFinalizer(finalizerFunc Func)
 	std::lock_guard<std::mutex>lock(mutex);
 	
 	//ìoò^
-	finalizers[finalizersizenum++] = Func;
+	finalizers.push_back(Func);
 }
 
 void SingletonFinalizer::finalize()
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
+	//îzóÒÉTÉCÉYéÊìæ
+	unsigned int size = finalizers.size();
+
 	//ìoò^ÇµÇΩãtèáÇ≈âï˙
-	for (int i = finalizersizenum - 1; i >= 0; i--)
+	for (int i = size - 1; i >= 0; i--)
 	{
 		(*finalizers[i])();
 	}
 
-	//óvëfêîÇ0Ç…
-	finalizersizenum = 0;
+	//óvëfÇÉNÉäÉA
+	finalizers.clear();
 }

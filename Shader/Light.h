@@ -59,7 +59,5 @@ public:
 	void generateView();
 	void generateProjection(const float ScreenDepth, const float ScreenNear);
 	void generateOrthoMatrix(const float Width, const float DepthPlane, const float NearPlane);
-
-
 };
 

@@ -141,7 +141,6 @@ bool System::update()
 		state_.get()->destroy();
 	}
 
-
 	return true;
 }
 
