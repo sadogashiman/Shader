@@ -1,6 +1,5 @@
 #pragma once
-#include<cassert>
-#include<mutex>
+
 class SingletonFinalizer
 {
 public:

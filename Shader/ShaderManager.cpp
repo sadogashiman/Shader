@@ -41,18 +41,6 @@ bool ShaderManager::init()
 		return false;
 	}
 
-	spotlightshader_.reset(new SpotlightShader);
-	if (!spotlightshader_.get())
-	{
-		return false;
-	}
-
-	if (!spotlightshader_.get()->init())
-	{
-		Error::showDialog("スポットライトシェーダーの初期化に失敗");
-		return false;
-	}
-
 	depthshader_.reset(new Depthshader);
 	if (!depthshader_.get())
 	{
@@ -207,12 +195,6 @@ bool ShaderManager::shadowRender(Model3D* Model, Matrix World, Matrix View, Matr
 bool ShaderManager::shadowRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata)
 {
 	return shadowshader_.get()->render(IndexCount, World, View, Projection, Lightdata->getViewMatrix(), Lightdata->getProjectionMatrix(), Texture, Depthmaptexture, Lightdata->getPosition(), Lightdata->getAmbientColor(), Lightdata->getDiffuseColor());
-}
-
-bool ShaderManager::spotRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, Light* LightData)
-{
-	Model->render();
-	return spotlightshader_.get()->render(Model->getIndexCount(), World, View, Projection, Texture, LightData->getPosition(), LightData->getLightRange(), LightData->getDiffuseColor(), LightData->getAmbientColor(), LightData->getDirection(), LightData->getLightCone(), LightData->getAttenuator());
 }
 
 bool ShaderManager::textureRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture)

@@ -28,6 +28,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 		D3D_FEATURE_LEVEL_10_1,
 		D3D_FEATURE_LEVEL_10_0
 	};
+	
 	ID3D11Texture2D* backbufferptr;
 	D3D11_TEXTURE2D_DESC depthbufferdesc;
 	D3D11_DEPTH_STENCIL_DESC depthstencildesc;
@@ -343,8 +344,6 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	//ブレンドの状態をクリア
 	ZeroMemory(&blendstatedesc, sizeof(D3D11_BLEND_DESC));
 
-
-
 	//アルファブレンドオンの場合のブレンドステート
 	ZeroMemory(&blendstatedesc, sizeof(D3D11_BLEND_DESC));
 	blendstatedesc.RenderTarget[0].BlendEnable = TRUE;
@@ -406,7 +405,6 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	{
 		return false;
 	}
-
 
 	//レンダーターゲットと深度ステンシルバッファを出力レンダーパイプラインにバインド
 	cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());

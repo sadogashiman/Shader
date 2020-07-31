@@ -65,6 +65,8 @@ bool System::init()
 		return false;
 	}
 
+	return false;
+
 	return true;
 }
 
@@ -103,7 +105,6 @@ bool System::run()
 			}
 		}
 	}
-
 	return true;
 }
 

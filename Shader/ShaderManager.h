@@ -14,7 +14,6 @@
 #include"SkyplaneShader.h"
 #include"TerrainShader.h"
 #include"ParticleShader.h"
-#include"SpotlightShader.h"
 
 //モデル
 #include"Model3D.h"
@@ -47,7 +46,6 @@ private:
 	std::unique_ptr<SkyplaneShader> skyplaneshader_;
 	std::unique_ptr<TerrainShader> terrainshader_;
 	std::unique_ptr<ParticleShader> particleshader_;
-	std::unique_ptr<SpotlightShader> spotlightshader_;
 public:
 
 	bool init();
@@ -75,9 +73,6 @@ public:
 	//シャドウシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ、デプスマップのテクスチャ)
 	bool shadowRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata);
 	bool shadowRender(const int IndexCount, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, ID3D11ShaderResourceView* Depthmaptexture, Light* Lightdata);
-
-	//スポットライトシェーダーを使用するときのレンダー
-	bool spotRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture, Light* LightData);
 
 	//テクスチャシェーダーを使用するときのレンダー(モデルのポインタ、、各行列、テクスチャ)
 	bool textureRender(Model3D* Model, Matrix World, Matrix View, Matrix Projection, ID3D11ShaderResourceView* Texture);

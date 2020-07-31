@@ -30,9 +30,6 @@ private:
 		
 #endif // _DEBUG
 
-	//パーティクル
-	//ParticleSystem* particle_;
-
 	bool wire_;
 	void switchWireFrame();
 	bool modelRender();
