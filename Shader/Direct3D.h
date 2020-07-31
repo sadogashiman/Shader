@@ -30,6 +30,8 @@ private:
 	ComPtr<IDXGIDebug> cpdxgidebug_;
 	D3D11_VIEWPORT viewport_;
 
+	void setVideoCardInfo(char* CardName, int& Memory);
+
 public:
 	Direct3D(const Direct3D&) = delete;
 	Direct3D& operator = (const Direct3D&) = delete;
@@ -55,7 +57,6 @@ public:
 	inline const int getVideoCardMemroy()const { return videocardmemory_; }			//GPU‚Ìƒƒ‚ƒŠ[‚ðŽæ“¾‚·‚é
 	
 	//set
-	void setVideoCardInfo(char* CardName, int& Memory);
 	void setBackBufferRenderTarget();
 	inline void setRenderTarget(){cpdevicecontext_.Get()->OMSetRenderTargets(1, cprendertarget_.GetAddressOf(), cpdepthview_.Get());}
 

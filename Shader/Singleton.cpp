@@ -3,10 +3,10 @@
 namespace
 {
 	std::mutex mutex;
-	std::vector<SingletonFinalizer::finalizerFunc> finalizers;
+	std::vector<SingletonFinalizer::FinalizerFunc> finalizers;
 }
 
-void SingletonFinalizer::addFinalizer(finalizerFunc Func)
+void SingletonFinalizer::addFinalizer(FinalizerFunc Func)
 {
 	std::lock_guard<std::mutex>lock(mutex);
 	

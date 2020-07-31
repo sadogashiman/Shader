@@ -4,8 +4,8 @@
 class SingletonFinalizer
 {
 public:
-	using finalizerFunc = void(*)();
-	static void addFinalizer(finalizerFunc Func);
+	using FinalizerFunc = void(*)();
+	static void addFinalizer(FinalizerFunc Func);
 	static void finalize(); 
 };
 
