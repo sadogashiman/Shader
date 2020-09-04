@@ -1,3 +1,4 @@
+#include"Atmosphericmath.hlsli"
 cbuffer MatrixBuffer : register(b0)
 {
     column_major Matrix world;
@@ -14,12 +15,6 @@ struct VertexInputType
     
     
 };
-
-struct PixelInputType
-{
-    //float4 pos:SV_Position;
-};
-
 
 
 PixelInputType main( VertexInputType Input )

@@ -3,16 +3,16 @@ struct PixelInputType
     float4 position : POSITION;
     float4 rayleighcolor : COLOR0;
     float4 miecolor : COLOR1;
-    float3 texture : TEXCOORD;
+    float3 tex : TEXCOORD;
 };
 
 //サンプリングポイント数
-const int nSamples = 2;
-const float fSamples = (float) nSamples;
+static const int nSamples = 2;
+static const float fSamples = (float) nSamples;
 
 //大気の高さ
-const float fScaleDepth = 0.25F;
-const float fInvScaleDepth = 1.0 / fScaleDepth;
+static const float fScaleDepth = 0.25F;
+static const float fInvScaleDepth = 1.0 / fScaleDepth;
 
 //スケールを求める方程式
 float Scale(float Cos)
