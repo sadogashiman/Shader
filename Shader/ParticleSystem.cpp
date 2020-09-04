@@ -9,7 +9,7 @@ ParticleSystem::ParticleSystem()
 	//出現位置
 	data_.deviation = Vector3::Zero;
 	data_.deviationrange = 0.5F;
-	
+
 	//削除位置
 	data_.deleteline = 0.0F;
 
@@ -206,11 +206,15 @@ bool ParticleSystem::updateBuffer()
 	VertexType* verticesptr;
 	int index;
 
-	ZeroMemory(&vertices_[0], sizeof(VertexType)*vertexcnt_);
+	ZeroMemory(&vertices_[0], sizeof(VertexType) * vertexcnt_);
 
 	//インデックスを初期化
 	index = 0;
-	for (unsigned int i = 0;i<particlevector_.size();i++)
+
+	//配列サイズを取得
+	unsigned int size = particlevector_.size();
+
+	for (unsigned int i = 0; i < size; i++)
 	{
 		//左下
 		vertices_[index].position = Vector3(particlevector_[i].position.x - data_.size, particlevector_[i].position.y - data_.size, particlevector_[i].position.z);
@@ -323,7 +327,7 @@ void ParticleSystem::emitParticle()
 		newparticle.position.x = static_cast<float>(xdist(engine));
 		newparticle.position.y = static_cast<float>(ydist(engine));
 		newparticle.position.z = static_cast<float>(zdist(engine));
-		
+
 		//速度を設定
 		newparticle.velocity = data_.velocity + static_cast<float>(velodist(engine));
 
@@ -332,7 +336,7 @@ void ParticleSystem::emitParticle()
 		newparticle.color.y = static_cast<float>(colordist(engine));
 		newparticle.color.z = static_cast<float>(colordist(engine));
 		newparticle.color.w = static_cast<float>(alphadist(engine));
-		
+
 		newparticle.active = true;
 
 		//設定したデータを末尾に追加
@@ -354,9 +358,12 @@ void ParticleSystem::updateParticle()
 
 void ParticleSystem::killParticle()
 {
-	for (auto itr = particlevector_.begin(); itr != particlevector_.end();)
+	auto begin = particlevector_.begin();
+	auto end = particlevector_.end();
+
+	for (auto itr = begin; itr != end;)
 	{
-		if (itr->active && (itr->position.y<data_.deleteline||itr->color.w<=0.0F))
+		if (itr->active && (itr->position.y < data_.deleteline || itr->color.w <= 0.0F))
 		{
 			itr->active = false;
 			itr = particlevector_.erase(itr);
