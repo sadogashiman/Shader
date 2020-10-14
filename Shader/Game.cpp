@@ -308,7 +308,6 @@ bool Game::modelRender()
 	{
 		world = itr->getWorldMatrix();
 		if (!ShaderManager::getInstance()->shadowRender(itr, world, view, projection, itr->getTexture(), rendertexture_->getShaderResouceView(), light_))
-		//if(!ShaderManager::getInstance()->spotRender(itr,world,view,projection,itr->getTexture(),light_))
 			return false;
 	}
 

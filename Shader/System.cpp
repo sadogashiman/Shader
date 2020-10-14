@@ -147,6 +147,58 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 {
 	WNDCLASSEX wc;
 	DEVMODE dmscreensettings;
+	bool lua_failed = false;
+
+	//Luaファイルからウィンドウデータを取得
+	lua_State* L = luaL_newstate();
+	luaL_openlibs(L);
+
+	//Luaファイル内の初期化関数呼び出し
+	if (luaL_dofile(L, "initWindow.lua"))
+	{
+		Error::showDialog(lua_tostring(L, -1));
+		Error::showDialog("初期化用Luaファイルがありません、既定の設定を反映します");
+		ScreenHeight = kScreenHeight;
+		ScreenWidth = kScreenHeight;
+		lua_failed = true;
+	}
+
+	//luaファイルの読み込みが成功しているときのみ関数の呼び出しを行う
+	if (!lua_failed)
+	{
+		//関数を指定
+		lua_getglobal(L, "init");
+
+		//関数呼び出し
+		if (lua_pcall(L, 0, 1, 0))
+		{
+			Error::showDialog(lua_tostring(L, -1));
+			throw std::runtime_error("luaファイルからinit関数の呼び出しに失敗しました");
+		}
+
+		//テーブルからパラメータ取得
+		if (lua_type(L, -1) != LUA_TTABLE)
+		{
+			throw std::runtime_error("初期化テーブルがinit関数で返されていません");
+		}
+
+		//スタックに積む
+		lua_getfield(L, 1, "width");
+		lua_getfield(L, 1, "height");
+
+		//ウィンドウサイズをテーブルから取得
+		if (lua_type(L, 2) == LUA_TNUMBER)
+		{
+			ScreenWidth = static_cast<int>(lua_tonumber(L, 2));
+		}
+		if (lua_type(L, 3) == LUA_TNUMBER)
+		{
+			ScreenHeight = static_cast<int>(lua_tonumber(L, 3));
+		}
+	}
+
+	//luaステートを破棄
+	lua_close(L);
 
 	//このオブジェクトへの外部ポインタを取得
 	AppHandle = this;
@@ -174,11 +226,11 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 	HWND desktop = GetDesktopWindow();
 	GetWindowRect(desktop, &rec);
 
-	ScreenHeight = rec.bottom;
-	ScreenWidth = rec.right;
-
 	if (kFullScreen)
 	{
+		ScreenHeight = rec.bottom;
+		ScreenWidth = rec.right;
+
 		memset(&dmscreensettings, 0, sizeof(dmscreensettings));
 
 		//全画面表示に設定
@@ -190,12 +242,6 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 
 		//全画面表示に設定
 		ChangeDisplaySettings(&dmscreensettings, CDS_FULLSCREEN);
-	}
-	else
-	{
-		//ウィンドウモード
-		ScreenHeight = kWindow_Height;
-		ScreenWidth = kWindow_Width;
 	}
 
 	//ウィンドウサイズを設定

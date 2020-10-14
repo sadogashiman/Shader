@@ -16,6 +16,11 @@
 #include<Shlwapi.h>
 #include<cassert>
 
+//Lua関係
+#include <lua.hpp>
+#include <lualib.h>
+#include <lauxlib.h>
+
 //DirectX
 #include<DirectXMath.h>
 #include<DirectXColors.h>
@@ -36,6 +41,8 @@
 #include<algorithm>
 #include<thread>
 #include<mutex>
+#include<exception>
+#include<stdexcept>
 
 //******************************
 //　　		リンク
@@ -46,6 +53,7 @@
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"shlwapi.lib")
+#pragma comment(lib,"lua.lib")
 
 //******************************
 //　　		名前空間

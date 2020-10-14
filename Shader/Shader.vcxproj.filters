@@ -258,9 +258,6 @@
     <ClCompile Include="Singleton.cpp">
       <Filter>Singleton</Filter>
     </ClCompile>
-    <ClCompile Include="AtmosphericShader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -383,9 +380,6 @@
     <ClInclude Include="Singleton.h">
       <Filter>Singleton</Filter>
     </ClInclude>
-    <ClInclude Include="AtmosphericShader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\color_ps.hlsl">
@@ -460,11 +454,11 @@
     <FxCompile Include="Shader\texture_vs.hlsl">
       <Filter>リソース ファイル\Texture</Filter>
     </FxCompile>
-    <FxCompile Include="Atmospheric_vs.hlsl" />
-    <FxCompile Include="Atmospheric_ps.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Atmosphericmath.hlsli" />
+    <None Include="initWindow.lua">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

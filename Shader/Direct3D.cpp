@@ -13,7 +13,7 @@ Direct3D::~Direct3D()
 }
 
 
-bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vsync,const bool FullScreen, const float ScreenDepth, const float ScreenNear)
+bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vsync, const bool FullScreen, const float ScreenDepth, const float ScreenNear)
 {
 	HRESULT hr;
 	IDXGIFactory* factry;
@@ -28,7 +28,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 		D3D_FEATURE_LEVEL_10_1,
 		D3D_FEATURE_LEVEL_10_0
 	};
-	
+
 	ID3D11Texture2D* backbufferptr;
 	D3D11_TEXTURE2D_DESC depthbufferdesc;
 	D3D11_DEPTH_STENCIL_DESC depthstencildesc;
@@ -173,14 +173,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 	swapchaindesc.SampleDesc.Quality = 0;
 
 	//ウィンドウモードの設定
-	if (FullScreen)
-	{
-		swapchaindesc.Windowed = false;
-	}
-	else
-	{
-		swapchaindesc.Windowed = true;
-	}
+	swapchaindesc.Windowed = !FullScreen;
 
 	//スキャンラインの順序とスケーリングの設定
 	swapchaindesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -492,7 +485,7 @@ bool Direct3D::init(const int ScreenWidth, const int ScreenHeight, const bool Vs
 
 	//2Dレンダリング用の正投影行列を作成
 	ortho_ = XMMatrixOrthographicLH(static_cast<float>(ScreenWidth), static_cast<float>(ScreenHeight), ScreenNear, ScreenDepth);
-	
+
 	return true;
 }
 
@@ -502,7 +495,7 @@ void Direct3D::begin(XMVECTORF32 Color)
 	cpdevicecontext_.Get()->ClearRenderTargetView(cprendertarget_.Get(), Color);
 
 	//深度バッファクリア
-	cpdevicecontext_.Get()->ClearDepthStencilView(cpdepthview_.Get(), D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0F, 0);
+	cpdevicecontext_.Get()->ClearDepthStencilView(cpdepthview_.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0F, 0);
 }
 
 void Direct3D::end()
