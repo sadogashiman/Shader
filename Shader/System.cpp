@@ -154,12 +154,12 @@ void System::initWindows(int& ScreenWidth, int& ScreenHeight)
 	luaL_openlibs(L);
 
 	//Luaファイル内の初期化関数呼び出し
-	if (luaL_dofile(L, "initWindow.lua"))
+	if (luaL_dofile(L, "Lua/initWindow.lua"))
 	{
 		Error::showDialog(lua_tostring(L, -1));
 		Error::showDialog("初期化用Luaファイルがありません、既定の設定を反映します");
 		ScreenHeight = kScreenHeight;
-		ScreenWidth = kScreenHeight;
+		ScreenWidth = kScreenWidth;
 		lua_failed = true;
 	}
 
